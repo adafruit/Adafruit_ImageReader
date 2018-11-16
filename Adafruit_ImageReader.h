@@ -1,3 +1,18 @@
+/*!
+ * @file Adafruit_ImageReader.h
+ *
+ * This is part of Adafruit's ImageReader library for Arduino, designed to
+ * work with Adafruit_GFX plus a display device-specific library.
+ *
+ * Adafruit invests time and resources providing this open source code,
+ * please support Adafruit and open-source hardware by purchasing
+ * products from Adafruit!
+ *
+ * Written by Phil "PaintYourDragon" Burgess for Adafruit Industries.
+ *
+ * BSD license, all text here must be included in any redistribution.
+ */
+
 #include "Adafruit_SPITFT.h"
 
 /** Status codes returned by drawBMP() and loadBMP() */

@@ -1,3 +1,35 @@
+/*!
+ * @file Adafruit_ImageReader.cpp
+ *
+ * @mainpage Companion library for Adafruit_GFX to load images from SD card.
+ *
+ * @section intro_sec Introduction
+ *
+ * This is the documentation for Adafruit's ImageReader library for the
+ * Arduino platform. It is designed to work in conjunction with Adafruit_GFX
+ * and a display-specific library.
+ *
+ * Adafruit invests time and resources providing this open source code,
+ * please support Adafruit and open-source hardware by purchasing
+ * products from Adafruit!
+ *
+ * @section dependencies Dependencies
+ *
+ * This library depends on <a href="https://github.com/adafruit/Adafruit_GFX">
+ * Adafruit_GFX</a> plus a display device-specific library such as
+ * <a href="https://github.com/adafruit/Adafruit_ILI9341"> Adafruit_ILI9341</a>
+ * or other subclasses of SPITFT. Please make sure you have installed the
+ * latest versions before using this library.
+ *
+ * @section author Author
+ *
+ * Written by Phil "PaintYourDragon" Burgess for Adafruit Industries.
+ *
+ * @section license License
+ *
+ * BSD license, all text here must be included in any redistribution.
+ */
+
 #include <SD.h>
 #include "Adafruit_ImageReader.h"
 
@@ -27,6 +59,12 @@ Adafruit_ImageReader::Adafruit_ImageReader(void) {
 Adafruit_ImageReader::~Adafruit_ImageReader(void) {
   if(file) file.close();
 }
+
+// There's a ton of similarity between the next two functions, and if more
+// image file formats (or even different BMP variants) are added in the
+// future, this will quickly grow untenable as two functions need to be
+// kept in sync (and inevitably won't). Perhaps this will be redesigned
+// with a single decoder and situation-specific callbacks...or something.
 
 /*!
     @brief   Loads BMP image file from SD card directly to SPITFT screen.
