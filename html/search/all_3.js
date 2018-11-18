@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['imageformat',['ImageFormat',['../_adafruit___image_reader_8h.html#a22f6b18e781e3c412e7d243f7de6aa5c',1,'Adafruit_ImageReader.h']]],
-  ['imagereturncode',['ImageReturnCode',['../_adafruit___image_reader_8h.html#acb79d38140fda8bba70a1282ecfaff51',1,'Adafruit_ImageReader.h']]]
+  ['drawbmp',['drawBMP',['../class_adafruit___image_reader.html#a7c2fda80eabd0ce8eabadfbd6d9d6763',1,'Adafruit_ImageReader']]],
+  ['drawpixels',['DRAWPIXELS',['../_adafruit___image_reader_8cpp.html#af9c153c0577639453e4d784deb6ba96f',1,'Adafruit_ImageReader.cpp']]]
 ];

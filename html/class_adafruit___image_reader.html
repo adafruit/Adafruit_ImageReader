@@ -82,9 +82,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a7c2fda80eabd0ce8eabadfbd6d9d6763"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_adafruit___image_reader_8h.html#acb79d38140fda8bba70a1282ecfaff51">ImageReturnCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a7c2fda80eabd0ce8eabadfbd6d9d6763">drawBMP</a> (char *filename, Adafruit_SPITFT &amp;display, int16_t x, int16_t y)</td></tr>
 <tr class="memdesc:a7c2fda80eabd0ce8eabadfbd6d9d6763"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads BMP image file from SD card directly to SPITFT screen.  <a href="#a7c2fda80eabd0ce8eabadfbd6d9d6763">More...</a><br /></td></tr>
 <tr class="separator:a7c2fda80eabd0ce8eabadfbd6d9d6763"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a62fd88d0aec2c8ec796dda434bb87338"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_adafruit___image_reader_8h.html#acb79d38140fda8bba70a1282ecfaff51">ImageReturnCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a62fd88d0aec2c8ec796dda434bb87338">loadBMP</a> (char *filename, void **data, <a class="el" href="_adafruit___image_reader_8h.html#a22f6b18e781e3c412e7d243f7de6aa5c">ImageFormat</a> *fmt)</td></tr>
-<tr class="memdesc:a62fd88d0aec2c8ec796dda434bb87338"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads BMP image file from SD card into RAM (as one of the GFX canvas object types) for use with the bitmap-drawing functions. Not practical for most AVR microcontrollers, but some of the more capable 32-bit micros can afford some RAM for this.  <a href="#a62fd88d0aec2c8ec796dda434bb87338">More...</a><br /></td></tr>
-<tr class="separator:a62fd88d0aec2c8ec796dda434bb87338"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac4baf340eb2d4dbdedef17c5afe70d43"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_adafruit___image_reader_8h.html#acb79d38140fda8bba70a1282ecfaff51">ImageReturnCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#ac4baf340eb2d4dbdedef17c5afe70d43">loadBMP</a> (char *filename, void **canvas1, void **canvas2, void **palette, <a class="el" href="_adafruit___image_reader_8h.html#a436eabe2e5d4a62b78ff8002105c5421">CanvasFormat</a> *fmt)</td></tr>
+<tr class="memdesc:ac4baf340eb2d4dbdedef17c5afe70d43"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads BMP image file from SD card into RAM (as one of the GFX canvas object types) for use with the bitmap-drawing functions. Not practical for most AVR microcontrollers, but some of the more capable 32-bit micros can afford some RAM for this.  <a href="#ac4baf340eb2d4dbdedef17c5afe70d43">More...</a><br /></td></tr>
+<tr class="separator:ac4baf340eb2d4dbdedef17c5afe70d43"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaedc4d234ffda224b7327fbaf02eb158"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_adafruit___image_reader_8h.html#acb79d38140fda8bba70a1282ecfaff51">ImageReturnCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#aaedc4d234ffda224b7327fbaf02eb158">bmpDimensions</a> (char *filename, int32_t *w, int32_t *h)</td></tr>
+<tr class="memdesc:aaedc4d234ffda224b7327fbaf02eb158"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query pixel dimensions of BMP image file on SD card.  <a href="#aaedc4d234ffda224b7327fbaf02eb158">More...</a><br /></td></tr>
+<tr class="separator:aaedc4d234ffda224b7327fbaf02eb158"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An optional adjunct to Adafruit_SPITFT that reads RGB BMP images (maybe others in the future) from an SD card. It's purposefully been made an entirely separate class (rather than part of SPITFT or GFX classes) so that Arduino code that uses GFX or SPITFT <em>without</em> image loading does not need to incur the significant RAM overhead of the SD library by its mere inclusion. The syntaxes can therefore be a bit bizarre, see examples for use. </p>
@@ -184,8 +187,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a62fd88d0aec2c8ec796dda434bb87338"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a62fd88d0aec2c8ec796dda434bb87338">&#9670;&nbsp;</a></span>loadBMP()</h2>
+<a id="ac4baf340eb2d4dbdedef17c5afe70d43"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac4baf340eb2d4dbdedef17c5afe70d43">&#9670;&nbsp;</a></span>loadBMP()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -200,12 +203,24 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">void **&#160;</td>
-          <td class="paramname"><em>data</em>, </td>
+          <td class="paramname"><em>canvas1</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="_adafruit___image_reader_8h.html#a22f6b18e781e3c412e7d243f7de6aa5c">ImageFormat</a> *&#160;</td>
+          <td class="paramtype">void **&#160;</td>
+          <td class="paramname"><em>canvas2</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void **&#160;</td>
+          <td class="paramname"><em>palette</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="_adafruit___image_reader_8h.html#a436eabe2e5d4a62b78ff8002105c5421">CanvasFormat</a> *&#160;</td>
           <td class="paramname"><em>fmt</em>&#160;</td>
         </tr>
         <tr>
@@ -220,8 +235,55 @@ Public Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">filename</td><td>Name of BMP image file to load. </td></tr>
-    <tr><td class="paramname">data</td><td>A a canvas object vector, which type can be determined from the value returned in the third argument. (Currently will return only NULL or a GFXcanvas16, cast to a void* pointer). </td></tr>
-    <tr><td class="paramname">fmt</td><td>Pointer to an ImageFormat variable, which will indicate the canvas type that resulted from the load operation. Currently provides only IMAGE_NONE (load error, data pointer will be NULL) or IMAGE_CANVAS16 (success, data pointer can be cast to a GFXcanvas16* type, from which the buffer, width and height can be queried with other GFX functions). </td></tr>
+    <tr><td class="paramname">canvas1</td><td>A canvas object vector, which type can be determined from the value returned in the third argument. (Currently will return only NULL or a GFXcanvas16, cast to a void* pointer). </td></tr>
+    <tr><td class="paramname">canvas2</td><td>A canvas object vector &ndash; currently WILL ALWAYS RETURN NULL, no support for this in the BMP loader yet &ndash; plan is that a GFXcanvas1 type could be returned and used as a bitmask argument to the GFX drawRGBBitmap() function. </td></tr>
+    <tr><td class="paramname">palette</td><td>A uint16_t vector &ndash; currently WILL ALWAYS RETURN NULL, no support for this in the BMP loader yet &ndash; plan is that a 16-bit 5/6/5 color palette could be returned with some image formats, WOULD ALSO REQUIRE A PALETTE-ENABLED drawRGBBitmap() VARIANT IN GFX, WHICH DOES NOT CURRENTLY EXIST. </td></tr>
+    <tr><td class="paramname">fmt</td><td>Pointer to an CanvasFormat variable, which will indicate the canvas type(s) that resulted from the load operation. Currently provides only CANVAS_NONE (load error, canvas1 pointer will be NULL) or IMAGE_CANVAS16 (success, canvas1 pointer can be cast to a GFXcanvas16* type, from which the buffer, width and height can be queried with other GFX functions). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>One of the ImageReturnCode values (IMAGE_SUCCESS on successful completion, other values on failure). </dd></dl>
+
+</div>
+</div>
+<a id="aaedc4d234ffda224b7327fbaf02eb158"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaedc4d234ffda224b7327fbaf02eb158">&#9670;&nbsp;</a></span>bmpDimensions()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_adafruit___image_reader_8h.html#acb79d38140fda8bba70a1282ecfaff51">ImageReturnCode</a> Adafruit_ImageReader::bmpDimensions </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t *&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t *&#160;</td>
+          <td class="paramname"><em>height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Query pixel dimensions of BMP image file on SD card. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>Name of BMP image file to query. </td></tr>
+    <tr><td class="paramname">width</td><td>Pointer to int32_t; image width in pixels, returned. </td></tr>
+    <tr><td class="paramname">height</td><td>Pointer to int32_t; image height in pixels, returned. </td></tr>
   </table>
   </dd>
 </dl>

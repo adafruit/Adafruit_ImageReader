@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['companion_20library_20for_20adafruit_5fgfx_20to_20load_20images_20from_20sd_20card_2e',['Companion library for Adafruit_GFX to load images from SD card.',['../index.html',1,'']]]
+  ['bmpdimensions',['bmpDimensions',['../class_adafruit___image_reader.html#aaedc4d234ffda224b7327fbaf02eb158',1,'Adafruit_ImageReader']]]
 ];

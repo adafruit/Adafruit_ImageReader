@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['_7eadafruit_5fimagereader',['~Adafruit_ImageReader',['../class_adafruit___image_reader.html#a3da727d1ab406b637110743e40866ac7',1,'Adafruit_ImageReader']]]
+  ['loadbmp',['loadBMP',['../class_adafruit___image_reader.html#ac4baf340eb2d4dbdedef17c5afe70d43',1,'Adafruit_ImageReader']]]
 ];

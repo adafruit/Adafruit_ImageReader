@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['loadbmp',['loadBMP',['../class_adafruit___image_reader.html#a62fd88d0aec2c8ec796dda434bb87338',1,'Adafruit_ImageReader']]]
+  ['drawbmp',['drawBMP',['../class_adafruit___image_reader.html#a7c2fda80eabd0ce8eabadfbd6d9d6763',1,'Adafruit_ImageReader']]]
 ];
