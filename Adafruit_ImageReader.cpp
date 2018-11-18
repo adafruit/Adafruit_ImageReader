@@ -291,7 +291,7 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
 
           if((loadWidth > 0) && (loadHeight > 0)) { // Clip top/left
             if(tft) {
-              tft->startWrite(); // Start new TFT SPI transaction
+              tft->startWrite(); // Start SPI (regardless of transact)
               tft->setAddrWindow(x, y, loadWidth, loadHeight);
             } else {
               img->fmt = IMAGE_16; // Is a GFX 16-bit canvas type
@@ -343,7 +343,7 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
                   tft->writePixels(dest, destidx); // Write to screen and
                   destidx = 0;                     // reset dest index
                 }
-                if(transact) tft->endWrite();      // End TFT SPI transaction
+                tft->endWrite(); // End TFT (regardless of transact)
               }
             } // end scanline loop
           } // end top/left clip
