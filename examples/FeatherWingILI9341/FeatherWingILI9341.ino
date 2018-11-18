@@ -42,13 +42,12 @@
 #endif
 
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
-Adafruit_ImageReader img;   // Class w/image-reading functions
-GFXcanvas16 *canvas = NULL; // Dynamically-allocated canvas object
+Adafruit_ImageReader reader;   // Class w/image-reading functions
+Adafruit_Image       img; // Contains dynamically-allocated canvas object
 
 void setup(void) {
 
   ImageReturnCode stat;              // Status from image-reading functions
-  CanvasFormat    fmt;               // Image format returned by BMP loader
   int32_t         width=0, height=0; // BMP image dimensions
 
   Serial.begin(9600);
@@ -70,13 +69,13 @@ void setup(void) {
 
   // Load BMP file 'purple.bmp' at position (0, 0) (top left corner)
   Serial.print(F("Loading purple.bmp to screen..."));
-  stat = img.drawBMP("/purple.bmp", tft, 0, 0);
+  stat = reader.drawBMP("/purple.bmp", tft, 0, 0);
   // (Absolute path isn't necessary on most devices, but something
   // with the ESP32 SD library seems to require it.)
   printStatus(stat); // How'd we do?
 
   Serial.print("Querying parrot.bmp image size...");
-  stat = img.bmpDimensions("/parrot.bmp", &width, &height);
+  stat = reader.bmpDimensions("/parrot.bmp", &width, &height);
   printStatus(stat); // How'd we do?
   if(stat == IMAGE_SUCCESS) { // If it worked...
     Serial.print(F("Image dimensions: "));
@@ -85,7 +84,7 @@ void setup(void) {
     Serial.println(height);
     // Draw 4 parrots, edges are clipped as necessary...
     for(int i=0; i<4; i++) {
-      img.drawBMP("/parrot.bmp", tft,
+      reader.drawBMP("/parrot.bmp", tft,
         (tft.width()  * i / 3) - (width  / 2),
         (tft.height() * i / 3) - (height / 2));
     }
@@ -94,17 +93,16 @@ void setup(void) {
   // Load BMP 'test.bmp' into a GFX canvas in RAM.
   // This won't work on AVR and other small devices.
   Serial.print("Loading test.bmp to canvas...");
-  stat = img.loadBMP("/test.bmp", (void **)&canvas, NULL, NULL, &fmt);
+  stat = reader.loadBMP("/test.bmp", img);
   printStatus(stat); // How'd we do?
 }
 
 void loop() {
-  if(canvas) { // If second BMP successfully loaded in RAM...
-    tft.drawRGBBitmap( // Draw bitmap to screen
-      random(-canvas->width() , tft.width()) , // Horiz pos.
-      random(-canvas->height(), tft.height()), // Vert pos
-      canvas->getBuffer(),                     // Bitmap data
-      canvas->width(), canvas->height());      // Bitmap size
+//  if(img.canvas.canvas16) { // If second BMP successfully loaded in RAM...
+  if(1) {
+    img.draw(tft,
+      (int16_t)random(-img.width() , tft.width()) , // Horiz pos.
+      (int16_t)random(-img.height(), tft.height())); // Vert pos
   }
 }
 

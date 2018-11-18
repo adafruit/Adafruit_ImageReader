@@ -49,6 +49,49 @@
  #define LOADPIXELS 320 ///< 320 * 3 =  960 bytes
 #endif
 
+Adafruit_Image::Adafruit_Image(void) {
+}
+
+Adafruit_Image::~Adafruit_Image(void) {
+  if(canvas.canvas1) {
+    if(     fmt == IMAGE_1 ) delete[] canvas.canvas1;
+    else if(fmt == IMAGE_8 ) delete[] canvas.canvas8;
+    else if(fmt == IMAGE_16) delete[] canvas.canvas16;
+  }
+  if(mask)    delete[] mask;
+  if(palette) delete[] palette;
+}
+
+int16_t Adafruit_Image::width(void) {
+  if(canvas.canvas1) {
+    if(     fmt == IMAGE_1 ) return canvas.canvas1->width();
+    else if(fmt == IMAGE_8 ) return canvas.canvas8->width();
+    else if(fmt == IMAGE_16) return canvas.canvas16->width();
+  }
+}
+
+int16_t Adafruit_Image::height(void) {
+  if(canvas.canvas1) {
+    if(     fmt == IMAGE_1 ) return canvas.canvas1->height();
+    else if(fmt == IMAGE_8 ) return canvas.canvas8->height();
+    else if(fmt == IMAGE_16) return canvas.canvas16->height();
+  }
+}
+
+void Adafruit_Image::draw(Adafruit_SPITFT &tft,
+  int16_t x, int16_t y) {
+  if(canvas.canvas1) {
+    if(     fmt == IMAGE_1 ) {
+    } else if(fmt == IMAGE_8 ) {
+    } else if(fmt == IMAGE_16) {
+      tft.drawRGBBitmap(x, y, canvas.canvas16->getBuffer(),
+        canvas.canvas16->width(), canvas.canvas16->height());
+    }
+  }
+}
+
+//**************************************************************************
+
 /*!
     @brief   Constructor.
     @return  Adafruit_ImageReader object.
@@ -80,14 +123,14 @@ Adafruit_ImageReader::~Adafruit_ImageReader(void) {
     @return  One of the ImageReturnCode values (IMAGE_SUCCESS on successful
              completion, other values on failure).
 */
-ImageReturnCode Adafruit_ImageReader::drawBMP(
-  char *filename, Adafruit_SPITFT &tft, int16_t x, int16_t y) {
+ImageReturnCode Adafruit_ImageReader::drawBMP(char *filename,
+  Adafruit_SPITFT &tft, int16_t x, int16_t y, boolean transact) {
   uint16_t tftbuf[DRAWPIXELS]; // Temp space for buffering TFT data
   // Call core BMP-reading function, passing address to TFT object,
   // TFT working buffer, and X & Y position of top-left corner (image
   // will be cropped on load if necessary). Last two arguments are
   // NULL when reading straight to TFT...
-  return coreBMP(filename, &tft, tftbuf, x, y, NULL, NULL, NULL, NULL);
+  return coreBMP(filename, &tft, tftbuf, x, y, NULL, transact);
 }
 
 /*!
@@ -113,9 +156,9 @@ ImageReturnCode Adafruit_ImageReader::drawBMP(
              WOULD ALSO REQUIRE A PALETTE-ENABLED drawRGBBitmap() VARIANT
              IN GFX, WHICH DOES NOT CURRENTLY EXIST.
     @param   fmt
-             Pointer to an CanvasFormat variable, which will indicate the
-             canvas type(s) that resulted from the load operation. Currently
-             provides only CANVAS_NONE (load error, canvas1 pointer will be
+             Pointer to an ImageFormat variable, which will indicate the
+             image type that resulted from the load operation. Currently
+             provides only IMAGE_NONE (load error, canvas1 pointer will be
              NULL) or IMAGE_CANVAS16 (success, canvas1 pointer can be cast
              to a GFXcanvas16* type, from which the buffer, width and height
              can be queried with other GFX functions).
@@ -123,14 +166,13 @@ ImageReturnCode Adafruit_ImageReader::drawBMP(
              completion, other values on failure).
 */
 ImageReturnCode Adafruit_ImageReader::loadBMP(
-  char *filename, void **canvas1, void **canvas2, void **palette,
-  CanvasFormat *fmt) {
+  char *filename, Adafruit_Image &img) {
   // Call core BMP-reading function. TFT and working buffer are NULL
   // (unused and allocated in function, respectively), X & Y position are
   // always 0 because full image is loaded (RAM permitting). Last four
   // arguments allow GFX canvas object(s), palette and type to be returned
   // (palette and second canvas are NOT CURRENTLY SUPPORTED).
-  return coreBMP(filename, NULL, NULL, 0, 0, canvas1, canvas2, palette, fmt);
+  return coreBMP(filename, NULL, NULL, 0, 0, &img, false);
 }
 
 /*!
@@ -146,9 +188,9 @@ ImageReturnCode Adafruit_ImageReader::loadBMP(
              value returned in the third argument. (Currently will return
              only NULL or a GFXcanvas16, cast to a void* pointer).
     @param   fmt
-             Pointer to an CanvasFormat variable, which will indicate the
+             Pointer to an ImageFormat variable, which will indicate the
              canvas type that resulted from the load operation. Currently
-             provides only CANVAS_NONE (load error, data pointer will be
+             provides only IMAGE_NONE (load error, data pointer will be
              NULL) or IMAGE_CANVAS16 (success, data pointer can be cast to
              a GFXcanvas16* type, from which the buffer, width and height
              can be queried with other GFX functions).
@@ -156,15 +198,13 @@ ImageReturnCode Adafruit_ImageReader::loadBMP(
              completion, other values on failure).
 */
 ImageReturnCode Adafruit_ImageReader::coreBMP(
-  char            *filename, // SD file to load
-  Adafruit_SPITFT *tft,      // Pointer to TFT object, or NULL if to canvas
-  uint16_t        *dest,     // TFT working buffer, or NULL if to canvas
-  int16_t          x,        // Position if loading to TFT (else ignored)
+  char            *filename,  // SD file to load
+  Adafruit_SPITFT *tft,       // Pointer to TFT object, or NULL if to image
+  uint16_t        *dest,      // TFT working buffer, or NULL if to canvas
+  int16_t          x,         // Position if loading to TFT (else ignored)
   int16_t          y,
-  void           **canvas1,  // Canvas return (if loading to canvas)
-  void           **canvas2,  // Bitmask canvas return (NOT YET SUPPORTED)
-  void           **palette,  // Color palette return (NOT YET SUPPORTED)
-  CanvasFormat    *fmt) {    // Canvas type return (if loading to canvas)
+  Adafruit_Image  *img,        // NULL if load-to-screen
+  boolean          transact) { // SD & TFT sharing bus, use transactions
 
   ImageReturnCode status  = IMAGE_ERR_FORMAT; // IMAGE_SUCCESS on valid file
   uint32_t        offset;                     // Start of image data in file
@@ -183,11 +223,12 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
   int             loadWidth, loadHeight;      // Region being loaded (clipped)
   int             row, col;                   // Current pixel pos.
   uint8_t         r, g, b;                    // Current pixel color
-  GFXcanvas16    *canvas;                     // If loading into RAM
 
-  if(fmt)     *fmt     = CANVAS_NONE; // Nothing loaded yet
-  if(canvas2) *canvas2 = NULL;        // Not yet supported
-  if(palette) *palette = NULL;        // Not yet supported
+  if(img) {
+    img->fmt            = IMAGE_NONE; // Nothing loaded yet
+    img->canvas.canvas1 = NULL;
+    img->palette        = NULL;
+  }
 
   // If BMP is being drawn off the right or bottom edge of the screen,
   // nothing to do here. NOT an error, just a trivial clip operation.
@@ -223,6 +264,8 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
         loadWidth  = bmpWidth;
         loadHeight = bmpHeight;
 
+        // TODO: move bmpHeight reversal and cropping ABOVE image format
+        // check, since more formats are likely to be added in the future.
         if(tft) {
           // Crop area to be loaded (if destination is TFT)
           if(x < 0) {
@@ -235,11 +278,11 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
           }
           if((x + loadWidth ) > tft->width())  loadWidth  = tft->width()  - x;
           if((y + loadHeight) > tft->height()) loadHeight = tft->height() - y;
-        } else {
+        } else if(img) {
           // Loading to RAM -- allocate GFX 16-bit canvas type
           status = IMAGE_ERR_MALLOC; // Assume won't fit to start
-          if((canvas = new GFXcanvas16(bmpWidth, bmpHeight))) {
-            dest = canvas->getBuffer();
+          if((img->canvas.canvas16 = new GFXcanvas16(bmpWidth, bmpHeight))) {
+            dest = img->canvas.canvas16->getBuffer();
           }
         }
 
@@ -248,11 +291,10 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
 
           if((loadWidth > 0) && (loadHeight > 0)) { // Clip top/left
             if(tft) {
-              tft->startWrite();         // Start new TFT SPI transaction
+              tft->startWrite(); // Start new TFT SPI transaction
               tft->setAddrWindow(x, y, loadWidth, loadHeight);
             } else {
-              *canvas1 = canvas;         // Canvas to be returned
-              if(fmt) *fmt  = CANVAS_16; // Is a GFX 16-bit canvas type
+              img->fmt = IMAGE_16; // Is a GFX 16-bit canvas type
             }
 
             for(row=0; row<loadHeight; row++) { // For each scanline...
@@ -269,16 +311,16 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
               else     // Bitmap is stored top-to-bottom
                 bmpPos = offset + row * rowSize;
               if(file.position() != bmpPos) { // Need seek?
-                if(tft) tft->endWrite();      // End TFT SPI transaction
+                if(transact) tft->endWrite(); // End TFT SPI transaction
                 file.seek(bmpPos);            // Seek = SD transaction
                 srcidx = sizeof sdbuf;        // Force buffer reload
               }
               for(col=0; col<loadWidth; col++) { // For each pixel...
                 if(srcidx >= sizeof sdbuf) {        // Time to load more data?
                   if(tft) {                         // Drawing to TFT?
-                    tft->endWrite();                // End TFT SPI transaction
+                    if(transact) tft->endWrite();   // End TFT SPI transaction
                     file.read(sdbuf, sizeof sdbuf); // Load from SD
-                    tft->startWrite();              // Start TFT SPI transac
+                    if(transact) tft->startWrite(); // Start TFT SPI transac
                     if(destidx) {                   // If any buffered TFT data
                       tft->writePixels(dest, destidx); // Write it now and
                       destidx = 0;                     // reset dest index
@@ -301,7 +343,7 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
                   tft->writePixels(dest, destidx); // Write to screen and
                   destidx = 0;                     // reset dest index
                 }
-                tft->endWrite();                   // End TFT SPI transaction
+                if(transact) tft->endWrite();      // End TFT SPI transaction
               }
             } // end scanline loop
           } // end top/left clip

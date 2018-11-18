@@ -24,15 +24,37 @@ enum ImageReturnCode {
   IMAGE_ERR_MALLOC          // Could not allocate image (loadBMP() only)
 };
 
-/** Canvas formats returned by loadBMP() */
-enum CanvasFormat {
-  CANVAS_NONE,              // No image was loaded; IMAGE_ERR_* condition
-  CANVAS_1,                 // GFXcanvas1 result (NOT YET SUPPORTED)
-  CANVAS_8,                 // GFXcanvas8 result (NOT YET SUPPORTED)
-  CANVAS_16                 // GFXcanvas16 result (SUPPORTED)
-  // Might have others in the future, e.g. may return two canvases (second
-  // being a bitmask usable by some GFX drawRGBBitmap() variants), color-
-  // paletted types (though not yet GFX supported), etc.
+/** Image formats returned by loadBMP() */
+enum ImageFormat {
+  IMAGE_NONE,               // No image was loaded; IMAGE_ERR_* condition
+  IMAGE_1,                  // GFXcanvas1 image (NOT YET SUPPORTED)
+  IMAGE_8,                  // GFXcanvas8 image (NOT YET SUPPORTED)
+  IMAGE_16                  // GFXcanvas16 image (SUPPORTED)
+};
+
+/*!
+   @brief  Data bundle returned with an image loaded to RAM.
+           Used by loadBMP(), not drawBMP().
+*/
+class Adafruit_Image {
+  public:
+    Adafruit_Image(void);
+   ~Adafruit_Image(void);
+    ImageFormat    format(void); // Return image format
+    int16_t        width(void);  // Return image height in pixels
+    int16_t        height(void); // Return image width in pixels
+    void           draw(Adafruit_SPITFT &display, int16_t x, int16_t y);
+  protected:
+    ImageFormat    fmt;          // Canvas bundle type in use
+    // MOST OF THESE ARE NOT SUPPORTED YET -- WIP
+    union {                      // Single pointer, only one variant is used:
+      GFXcanvas1  *canvas1;      // Canvas object if 1bpp format
+      GFXcanvas8  *canvas8;      // Canvas object if 8bpp format
+      GFXcanvas16 *canvas16;     // Canvas object if 16bpp
+    } canvas;
+    GFXcanvas1    *mask;         // 1bpp image mask (or NULL)
+    uint16_t      *palette;      // Color palette for 8bpp image (or NULL)
+  friend class     Adafruit_ImageReader;
 };
 
 /*!
@@ -48,17 +70,19 @@ enum CanvasFormat {
 class Adafruit_ImageReader {
   public:
     Adafruit_ImageReader(void);
-    ~Adafruit_ImageReader(void);
+   ~Adafruit_ImageReader(void);
     ImageReturnCode drawBMP(char *filename, Adafruit_SPITFT &display,
-                      int16_t x, int16_t y);
-    ImageReturnCode loadBMP(char *filename, void **canvas1, void **canvas2,
-      void **palette, CanvasFormat *fmt);
+                      int16_t x, int16_t y, boolean transact = true);
+    ImageReturnCode loadBMP(char *filename, Adafruit_Image &img);
     ImageReturnCode bmpDimensions(char *filename, int32_t *w, int32_t *h);
+    void            drawImage(Adafruit_SPITFT &display,
+                      Adafruit_Image &img, boolean transact = true);
   private:
     File            file;
     ImageReturnCode coreBMP(char *filename, Adafruit_SPITFT *tft,
-      uint16_t *dest, int16_t x, int16_t y, void **canvas1, void **canvas2,
-      void **palette, CanvasFormat *fmt);
+      uint16_t *dest, int16_t x, int16_t y, Adafruit_Image *img,
+      boolean transact);
     uint16_t        readLE16(void);
     uint32_t        readLE32(void);
 };
+
