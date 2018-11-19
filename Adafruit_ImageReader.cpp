@@ -136,6 +136,14 @@ int16_t Adafruit_Image::height(void) {
 
 /*!
     @brief   Draw image to an Adafruit_SPITFT-type display.
+    @param   tft
+             Screen to draw to (any Adafruit_SPITFT-derived class).
+    @param   x
+             Horizontal offset in pixels; left edge = 0, positive = right.
+             Value is signed, image will be clipped if all or part is off
+             the screen edges. Screen rotation setting is observed.
+    @param   y
+             Vertical offset in pixels; top edge = 0, positive = down.
     @return  None (void).
 */
 void Adafruit_Image::draw(Adafruit_SPITFT &tft, int16_t x, int16_t y) {

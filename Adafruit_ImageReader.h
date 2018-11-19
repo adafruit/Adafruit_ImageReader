@@ -46,15 +46,15 @@ class Adafruit_Image {
   protected:
     // MOST OF THESE ARE NOT SUPPORTED YET -- WIP
     union {                       // Single pointer, only one variant is used:
-      GFXcanvas1  *canvas1;       // Canvas object if 1bpp format
-      GFXcanvas8  *canvas8;       // Canvas object if 8bpp format
-      GFXcanvas16 *canvas16;      // Canvas object if 16bpp
-    } canvas;
-    GFXcanvas1    *mask;          // 1bpp image mask (or NULL)
-    uint16_t      *palette;       // Color palette for 8bpp image (or NULL)
-    uint8_t        format;        // Canvas bundle type in use
-    void           dealloc(void); // Free/deinitialize variables
-  friend class     Adafruit_ImageReader;
+      GFXcanvas1  *canvas1;       ///< Canvas object if 1bpp format
+      GFXcanvas8  *canvas8;       ///< Canvas object if 8bpp format
+      GFXcanvas16 *canvas16;      ///< Canvas object if 16bpp
+    } canvas;                     ///< Union of different GFXcanvas types
+    GFXcanvas1    *mask;          ///< 1bpp image mask (or NULL)
+    uint16_t      *palette;       ///< Color palette for 8bpp image (or NULL)
+    uint8_t        format;        ///< Canvas bundle type in use
+    void           dealloc(void); ///< Free/deinitialize variables
+  friend class     Adafruit_ImageReader; ///< Loading occurs here
 };
 
 /*!
