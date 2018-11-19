@@ -72,8 +72,11 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image.html">Adafruit_Image</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data bundle returned with an image loaded to RAM. Used by ImageReader.loadBMP() and Image.draw(), not ImageReader.drawBMP().  <a href="class_adafruit___image.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html">Adafruit_ImageReader</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An optional adjunct to Adafruit_SPITFT that reads RGB BMP images (maybe others in the future) from an SD card. It's purposefully been made an entirely separate class (rather than part of SPITFT or GFX classes) so that Arduino code that uses GFX or SPITFT <em>without</em> image loading does not need to incur the significant RAM overhead of the SD library by its mere inclusion. The syntaxes can therefore be a bit bizarre, see examples for use.  <a href="class_adafruit___image_reader.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An optional adjunct to Adafruit_SPITFT that reads RGB BMP images (maybe others in the future) from an SD card. It's purposefully been made an entirely separate class (rather than part of SPITFT or GFX classes) so that Arduino code that uses GFX or SPITFT <em>without</em> image loading does not need to incur the significant RAM overhead of the SD library by its mere inclusion. The syntaxes can therefore be a bit bizarre (passing display object as an argument), see examples for use.  <a href="class_adafruit___image_reader.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
@@ -84,12 +87,12 @@ Enumerations</h2></td></tr>
 <b>IMAGE_ERR_MALLOC</b>
  }</td></tr>
 <tr class="separator:acb79d38140fda8bba70a1282ecfaff51"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a436eabe2e5d4a62b78ff8002105c5421"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_adafruit___image_reader_8h.html#a436eabe2e5d4a62b78ff8002105c5421">CanvasFormat</a> { <b>CANVAS_NONE</b>, 
-<b>CANVAS_1</b>, 
-<b>CANVAS_8</b>, 
-<b>CANVAS_16</b>
+<tr class="memitem:a22f6b18e781e3c412e7d243f7de6aa5c"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_adafruit___image_reader_8h.html#a22f6b18e781e3c412e7d243f7de6aa5c">ImageFormat</a> { <b>IMAGE_NONE</b>, 
+<b>IMAGE_1</b>, 
+<b>IMAGE_8</b>, 
+<b>IMAGE_16</b>
  }</td></tr>
-<tr class="separator:a436eabe2e5d4a62b78ff8002105c5421"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a22f6b18e781e3c412e7d243f7de6aa5c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This is part of Adafruit's ImageReader library for Arduino, designed to work with Adafruit_GFX plus a display device-specific library.</p>
@@ -112,18 +115,18 @@ Enumerations</h2></td></tr>
 
 </div>
 </div>
-<a id="a436eabe2e5d4a62b78ff8002105c5421"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a436eabe2e5d4a62b78ff8002105c5421">&#9670;&nbsp;</a></span>CanvasFormat</h2>
+<a id="a22f6b18e781e3c412e7d243f7de6aa5c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22f6b18e781e3c412e7d243f7de6aa5c">&#9670;&nbsp;</a></span>ImageFormat</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="_adafruit___image_reader_8h.html#a436eabe2e5d4a62b78ff8002105c5421">CanvasFormat</a></td>
+          <td class="memname">enum <a class="el" href="_adafruit___image_reader_8h.html#a22f6b18e781e3c412e7d243f7de6aa5c">ImageFormat</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Canvas formats returned by loadBMP() </p>
+<p>Image formats returned by loadBMP() </p>
 
 </div>
 </div>
