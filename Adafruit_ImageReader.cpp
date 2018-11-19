@@ -2,12 +2,13 @@
  * @file Adafruit_ImageReader.cpp
  *
  * @mainpage Companion library for Adafruit_GFX to load images from SD card.
+ *           Load-to-display and load-to-RAM are supported.
  *
  * @section intro_sec Introduction
  *
  * This is the documentation for Adafruit's ImageReader library for the
  * Arduino platform. It is designed to work in conjunction with Adafruit_GFX
- * and a display-specific library.
+ * and a display-specific library (e.g. Adafruit_ILI9341).
  *
  * Adafruit invests time and resources providing this open source code,
  * please support Adafruit and open-source hardware by purchasing
@@ -38,8 +39,10 @@
 // Buffers in BMP load (to canvas) require 3 bytes/pixel (R+G+B from BMP),
 // no interim 16-bit buffer as data goes straight to the canvas buffer.
 // Because buffers are flushed at the end of each scanline (to allow for
-// cropping, etc.), no point in any of these pixel counts being more than
-// the screen width.
+// cropping, vertical flip, scanline padding, etc.), no point in any of
+// these pixel counts being more than the screen width.
+// (Maybe to do: make non-AVR loader dynamically allocate buffer based
+// on screen or image size.)
 
 #ifdef __AVR__
  #define DRAWPIXELS  24 ///<  24 * 5 =  120 bytes
@@ -49,48 +52,105 @@
  #define LOADPIXELS 320 ///< 320 * 3 =  960 bytes
 #endif
 
-Adafruit_Image::Adafruit_Image(void) {
+// ADAFRUIT_IMAGE CLASS ****************************************************
+// This has been created as a class here rather than in Adafruit_GFX because
+// it's a new type returned specifically by the Adafruit_ImageReader class
+// and needs certain flexibility not present in the latter's GFXcanvas*
+// classes (having been designed for flash-resident bitmaps).
+
+/*!
+    @brief   Constructor.
+    @return  'Empty' Adafruit_Image object.
+*/
+Adafruit_Image::Adafruit_Image(void) : mask(NULL), palette(NULL),
+  format(IMAGE_NONE) {
+  canvas.canvas1 = NULL;
 }
 
+/*!
+    @brief   Destructor.
+    @return  None (void).
+*/
 Adafruit_Image::~Adafruit_Image(void) {
-  if(canvas.canvas1) {
-    if(     fmt == IMAGE_1 ) delete[] canvas.canvas1;
-    else if(fmt == IMAGE_8 ) delete[] canvas.canvas8;
-    else if(fmt == IMAGE_16) delete[] canvas.canvas16;
-  }
-  if(mask)    delete[] mask;
-  if(palette) delete[] palette;
+  dealloc();
 }
 
+/*!
+    @brief   Deallocates memory associated with Adafruit_Image object
+             and resets member variables to 'empty' state.
+    @return  None (void).
+*/
+void Adafruit_Image::dealloc(void) {
+  if(format == IMAGE_1 ) {
+    if(canvas.canvas1) {
+      delete canvas.canvas1;
+      canvas.canvas1 = NULL;
+    }
+  } else if(format == IMAGE_8 ) {
+    if(canvas.canvas8) {
+      delete canvas.canvas8;
+      canvas.canvas8 = NULL;
+    }
+  } else if(format == IMAGE_16) {
+    if(canvas.canvas16) {
+      delete canvas.canvas16;
+      canvas.canvas16 = NULL;
+    }
+  }
+  if(mask) {
+    delete mask;
+    mask = NULL;
+  }
+  if(palette) {
+    delete[] palette;
+    palette = NULL;
+  }
+  format = IMAGE_NONE;
+}
+
+/*!
+    @brief   Get width of Adafruit_Image object.
+    @return  Width in pixels, or 0 if no image loaded.
+*/
 int16_t Adafruit_Image::width(void) {
-  if(canvas.canvas1) {
-    if(     fmt == IMAGE_1 ) return canvas.canvas1->width();
-    else if(fmt == IMAGE_8 ) return canvas.canvas8->width();
-    else if(fmt == IMAGE_16) return canvas.canvas16->width();
+  if(format != IMAGE_NONE) { // Image allocated?
+    if(     format == IMAGE_1 ) return canvas.canvas1->width();
+    else if(format == IMAGE_8 ) return canvas.canvas8->width();
+    else if(format == IMAGE_16) return canvas.canvas16->width();
   }
+  return 0;
 }
 
+/*!
+    @brief   Get height of Adafruit_Image object.
+    @return  Height in pixels, or 0 if no image loaded.
+*/
 int16_t Adafruit_Image::height(void) {
-  if(canvas.canvas1) {
-    if(     fmt == IMAGE_1 ) return canvas.canvas1->height();
-    else if(fmt == IMAGE_8 ) return canvas.canvas8->height();
-    else if(fmt == IMAGE_16) return canvas.canvas16->height();
+  if(format != IMAGE_NONE) { // Image allocated?
+    if(     format == IMAGE_1 ) return canvas.canvas1->height();
+    else if(format == IMAGE_8 ) return canvas.canvas8->height();
+    else if(format == IMAGE_16) return canvas.canvas16->height();
   }
+  return 0;
 }
 
-void Adafruit_Image::draw(Adafruit_SPITFT &tft,
-  int16_t x, int16_t y) {
-  if(canvas.canvas1) {
-    if(     fmt == IMAGE_1 ) {
-    } else if(fmt == IMAGE_8 ) {
-    } else if(fmt == IMAGE_16) {
+/*!
+    @brief   Draw image to an Adafruit_SPITFT-type display.
+    @return  None (void).
+*/
+void Adafruit_Image::draw(Adafruit_SPITFT &tft, int16_t x, int16_t y) {
+  if(format != IMAGE_NONE) { // Image allocated?
+    if(format == IMAGE_1 ) {
+    } else if(format == IMAGE_8 ) {
+    } else if(format == IMAGE_16) {
       tft.drawRGBBitmap(x, y, canvas.canvas16->getBuffer(),
         canvas.canvas16->width(), canvas.canvas16->height());
     }
   }
 }
 
-//**************************************************************************
+// ADAFRUIT_IMAGEREADER CLASS **********************************************
+// Loads images from SD card to screen or RAM.
 
 /*!
     @brief   Constructor.
@@ -120,6 +180,10 @@ Adafruit_ImageReader::~Adafruit_ImageReader(void) {
              the screen edges. Screen rotation setting is observed.
     @param   y
              Vertical offset in pixels; top edge = 0, positive = down.
+    @param   transact
+             Pass 'true' if TFT and SD are on the same SPI bus, in which
+             case SPI transactions are necessary. If separate peripherals,
+             can pass 'false'.
     @return  One of the ImageReturnCode values (IMAGE_SUCCESS on successful
              completion, other values on failure).
 */
@@ -128,8 +192,8 @@ ImageReturnCode Adafruit_ImageReader::drawBMP(char *filename,
   uint16_t tftbuf[DRAWPIXELS]; // Temp space for buffering TFT data
   // Call core BMP-reading function, passing address to TFT object,
   // TFT working buffer, and X & Y position of top-left corner (image
-  // will be cropped on load if necessary). Last two arguments are
-  // NULL when reading straight to TFT...
+  // will be cropped on load if necessary). Image pointer is NULL when
+  // reading to TFT, and transact argument is passed through.
   return coreBMP(filename, &tft, tftbuf, x, y, NULL, transact);
 }
 
@@ -140,28 +204,9 @@ ImageReturnCode Adafruit_ImageReader::drawBMP(char *filename,
              more capable 32-bit micros can afford some RAM for this.
     @param   filename
              Name of BMP image file to load.
-    @param   canvas1
-             A canvas object vector, which type can be determined from the
-             value returned in the third argument. (Currently will return
-             only NULL or a GFXcanvas16, cast to a void* pointer).
-    @param   canvas2
-             A canvas object vector -- currently WILL ALWAYS RETURN NULL,
-             no support for this in the BMP loader yet -- plan is that a
-             GFXcanvas1 type could be returned and used as a bitmask argument
-             to the GFX drawRGBBitmap() function.
-    @param   palette
-             A uint16_t vector -- currently WILL ALWAYS RETURN NULL, no
-             support for this in the BMP loader yet -- plan is that a 16-bit
-             5/6/5 color palette could be returned with some image formats,
-             WOULD ALSO REQUIRE A PALETTE-ENABLED drawRGBBitmap() VARIANT
-             IN GFX, WHICH DOES NOT CURRENTLY EXIST.
-    @param   fmt
-             Pointer to an ImageFormat variable, which will indicate the
-             image type that resulted from the load operation. Currently
-             provides only IMAGE_NONE (load error, canvas1 pointer will be
-             NULL) or IMAGE_CANVAS16 (success, canvas1 pointer can be cast
-             to a GFXcanvas16* type, from which the buffer, width and height
-             can be queried with other GFX functions).
+    @param   img
+             Adafruit_Image object, contents will be initialized, allocated
+             and loaded on success (else cleared).
     @return  One of the ImageReturnCode values (IMAGE_SUCCESS on successful
              completion, other values on failure).
 */
@@ -169,9 +214,9 @@ ImageReturnCode Adafruit_ImageReader::loadBMP(
   char *filename, Adafruit_Image &img) {
   // Call core BMP-reading function. TFT and working buffer are NULL
   // (unused and allocated in function, respectively), X & Y position are
-  // always 0 because full image is loaded (RAM permitting). Last four
-  // arguments allow GFX canvas object(s), palette and type to be returned
-  // (palette and second canvas are NOT CURRENTLY SUPPORTED).
+  // always 0 because full image is loaded (RAM permitting). Adafruit_Image
+  // argument is passed through, and SPI transactions are not needed when
+  // loading to RAM (bus is not shared during load).
   return coreBMP(filename, NULL, NULL, 0, 0, &img, false);
 }
 
@@ -183,25 +228,30 @@ ImageReturnCode Adafruit_ImageReader::loadBMP(
              kept in sync in two places.
     @param   filename
              Name of BMP image file to load.
-    @param   data
-             A canvas object vector, which type can be determined from the
-             value returned in the third argument. (Currently will return
-             only NULL or a GFXcanvas16, cast to a void* pointer).
-    @param   fmt
-             Pointer to an ImageFormat variable, which will indicate the
-             canvas type that resulted from the load operation. Currently
-             provides only IMAGE_NONE (load error, data pointer will be
-             NULL) or IMAGE_CANVAS16 (success, data pointer can be cast to
-             a GFXcanvas16* type, from which the buffer, width and height
-             can be queried with other GFX functions).
+    @param   tft
+             Pointer to TFT object, if loading to screen, else NULL.
+    @param   dest
+             Working buffer for loading 16-bit TFT pixel data, if loading to
+             screen, else NULL.
+    @param   x
+             Horizontal offset in pixels (if loading to screen).
+    @param   y
+             Vertical offset in pixels (if loading to screen).
+    @param   img
+             Pointer to Adafruit_Image object, if loading to RAM (or NULL
+             if loading to screen).
+    @param   transact
+             Use SPI transactions; 'true' is needed only if loading to screen
+             and it's on the same SPI bus as the SD card. Other situations
+             can use 'false'.
     @return  One of the ImageReturnCode values (IMAGE_SUCCESS on successful
              completion, other values on failure).
 */
 ImageReturnCode Adafruit_ImageReader::coreBMP(
-  char            *filename,  // SD file to load
-  Adafruit_SPITFT *tft,       // Pointer to TFT object, or NULL if to image
-  uint16_t        *dest,      // TFT working buffer, or NULL if to canvas
-  int16_t          x,         // Position if loading to TFT (else ignored)
+  char            *filename,   // SD file to load
+  Adafruit_SPITFT *tft,        // Pointer to TFT object, or NULL if to image
+  uint16_t        *dest,       // TFT working buffer, or NULL if to canvas
+  int16_t          x,          // Position if loading to TFT (else ignored)
   int16_t          y,
   Adafruit_Image  *img,        // NULL if load-to-screen
   boolean          transact) { // SD & TFT sharing bus, use transactions
@@ -224,11 +274,7 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
   int             row, col;                   // Current pixel pos.
   uint8_t         r, g, b;                    // Current pixel color
 
-  if(img) {
-    img->fmt            = IMAGE_NONE; // Nothing loaded yet
-    img->canvas.canvas1 = NULL;
-    img->palette        = NULL;
-  }
+  if(img) img->dealloc();
 
   // If BMP is being drawn off the right or bottom edge of the screen,
   // nothing to do here. NOT an error, just a trivial clip operation.
@@ -284,6 +330,8 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
           if((img->canvas.canvas16 = new GFXcanvas16(bmpWidth, bmpHeight))) {
             dest = img->canvas.canvas16->getBuffer();
           }
+          // Future: different allocations will take place depending on
+          // image format being loaded.
         }
 
         if(dest) { // Supported format, alloc OK, etc.
@@ -294,7 +342,7 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
               tft->startWrite(); // Start SPI (regardless of transact)
               tft->setAddrWindow(x, y, loadWidth, loadHeight);
             } else {
-              img->fmt = IMAGE_16; // Is a GFX 16-bit canvas type
+              img->format = IMAGE_16; // Is a GFX 16-bit canvas type
             }
 
             for(row=0; row<loadHeight; row++) { // For each scanline...
@@ -431,4 +479,3 @@ uint32_t Adafruit_ImageReader::readLE32(void) {
     ((uint32_t)file.read() << 24);
 #endif
 }
-
