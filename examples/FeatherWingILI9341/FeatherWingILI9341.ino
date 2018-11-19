@@ -42,8 +42,8 @@
 #endif
 
 Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC);
-Adafruit_ImageReader reader;   // Class w/image-reading functions
-Adafruit_Image       img; // Contains dynamically-allocated canvas object
+Adafruit_ImageReader reader; // Class w/image-reading functions
+Adafruit_Image       img;    // Image loaded in RAM
 
 void setup(void) {
 
