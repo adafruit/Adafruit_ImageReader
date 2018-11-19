@@ -98,12 +98,9 @@ void setup(void) {
 }
 
 void loop() {
-//  if(img.canvas.canvas16) { // If second BMP successfully loaded in RAM...
-  if(1) {
-    img.draw(tft,
-      (int16_t)random(-img.width() , tft.width()) , // Horiz pos.
-      (int16_t)random(-img.height(), tft.height())); // Vert pos
-  }
+  img.draw(tft,
+    (int16_t)random(-img.width() , tft.width()) , // Horiz pos.
+    (int16_t)random(-img.height(), tft.height())); // Vert pos
 }
 
 void printStatus(ImageReturnCode stat) {

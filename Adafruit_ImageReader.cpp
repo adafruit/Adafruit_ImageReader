@@ -139,13 +139,11 @@ int16_t Adafruit_Image::height(void) {
     @return  None (void).
 */
 void Adafruit_Image::draw(Adafruit_SPITFT &tft, int16_t x, int16_t y) {
-  if(format != IMAGE_NONE) { // Image allocated?
-    if(format == IMAGE_1 ) {
-    } else if(format == IMAGE_8 ) {
-    } else if(format == IMAGE_16) {
-      tft.drawRGBBitmap(x, y, canvas.canvas16->getBuffer(),
-        canvas.canvas16->width(), canvas.canvas16->height());
-    }
+  if(format == IMAGE_1 ) {
+  } else if(format == IMAGE_8 ) {
+  } else if(format == IMAGE_16) {
+    tft.drawRGBBitmap(x, y, canvas.canvas16->getBuffer(),
+      canvas.canvas16->width(), canvas.canvas16->height());
   }
 }
 
