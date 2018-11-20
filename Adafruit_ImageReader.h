@@ -75,6 +75,7 @@ class Adafruit_ImageReader {
                       int16_t x, int16_t y, boolean transact = true);
     ImageReturnCode loadBMP(char *filename, Adafruit_Image &img);
     ImageReturnCode bmpDimensions(char *filename, int32_t *w, int32_t *h);
+    void            printStatus(ImageReturnCode stat, Stream &stream=Serial);
   private:
     File            file;
     ImageReturnCode coreBMP(char *filename, Adafruit_SPITFT *tft,

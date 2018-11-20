@@ -72,11 +72,11 @@ void setup(void) {
   stat = reader.drawBMP("/purple.bmp", tft, 0, 0);
   // (Absolute path isn't necessary on most devices, but something
   // with the ESP32 SD library seems to require it.)
-  printStatus(stat); // How'd we do?
+  reader.printStatus(stat); // How'd we do?
 
   Serial.print("Querying parrot.bmp image size...");
   stat = reader.bmpDimensions("/parrot.bmp", &width, &height);
-  printStatus(stat); // How'd we do?
+  reader.printStatus(stat); // How'd we do?
   if(stat == IMAGE_SUCCESS) { // If it worked...
     Serial.print(F("Image dimensions: "));
     Serial.print(width);
@@ -94,22 +94,11 @@ void setup(void) {
   // This won't work on AVR and other small devices.
   Serial.print("Loading test.bmp to canvas...");
   stat = reader.loadBMP("/test.bmp", img);
-  printStatus(stat); // How'd we do?
+  reader.printStatus(stat); // How'd we do?
 }
 
 void loop() {
   img.draw(tft,
-    (int16_t)random(-img.width() , tft.width()) , // Horiz pos.
+    (int16_t)random(-img.width() , tft.width()) ,  // Horiz pos.
     (int16_t)random(-img.height(), tft.height())); // Vert pos
-}
-
-void printStatus(ImageReturnCode stat) {
-  if(stat == IMAGE_SUCCESS)
-    Serial.println(F("Success!"));
-  else if(stat == IMAGE_ERR_FILE_NOT_FOUND)
-    Serial.println(F("File not found."));
-  else if(stat == IMAGE_ERR_FORMAT)
-    Serial.println(F("Not a supported BMP variant."));
-  else if(stat == IMAGE_ERR_MALLOC)
-    Serial.println(F("Malloc failed (insufficient RAM)."));
 }
