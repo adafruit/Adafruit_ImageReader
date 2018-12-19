@@ -1,13 +1,13 @@
-// Adafruit_ImageReader test for 2.4" TFT FeatherWing. Demonstrates loading
+// Adafruit_ImageReader test for 3.5" TFT FeatherWing. Demonstrates loading
 // images to the screen, to RAM, and how to query image file dimensions.
 // OPEN THE ARDUINO SERIAL MONITOR WINDOW TO START PROGRAM.
 // Requires three BMP files in root directory of SD card:
-// purple.bmp, parrot.bmp and wales.bmp.
+// gators.bmp, parrot.bmp and wales.bmp.
 
 #include <SPI.h>
 #include <SD.h>
 #include <Adafruit_GFX.h>         // Core graphics library
-#include <Adafruit_ILI9341.h>     // Hardware-specific library
+#include <Adafruit_HX8357.h>      // Hardware-specific library
 #include <Adafruit_ImageReader.h> // Image-reading functions
 
 // Pin definitions for 2.4" TFT FeatherWing vary among boards...
@@ -43,7 +43,7 @@
   #define SD_CS    5
 #endif
 
-Adafruit_ILI9341     tft    = Adafruit_ILI9341(TFT_CS, TFT_DC);
+Adafruit_HX8357      tft    = Adafruit_HX8357(TFT_CS, TFT_DC);
 Adafruit_ImageReader reader;     // Class w/image-reading functions
 Adafruit_Image       img;        // An image loaded into RAM
 int32_t              width  = 0, // BMP image dimensions
@@ -69,12 +69,12 @@ void setup(void) {
 
   // Fill screen blue. Not a required step, this just shows that we're
   // successfully communicating with the screen.
-  tft.fillScreen(ILI9341_BLUE);
+  tft.fillScreen(HX8357_BLUE);
 
-  // Load full-screen BMP file 'purple.bmp' at position (0,0) (top left).
+  // Load full-screen BMP file 'gators.bmp' at position (0,0) (top left).
   // Notice the 'reader' object performs this, with 'tft' as an argument.
-  Serial.print(F("Loading purple.bmp to screen..."));
-  stat = reader.drawBMP("/purple.bmp", tft, 0, 0);
+  Serial.print(F("Loading gators.bmp to screen..."));
+  stat = reader.drawBMP("/gators.bmp", tft, 0, 0);
   // (Absolute path isn't necessary on most devices, but something
   // with the ESP32 SD library seems to require it.)
   reader.printStatus(stat);   // How'd we do?
@@ -130,6 +130,6 @@ void loop() {
       // if the image failed to load. It's unfortunate but not disastrous.
     }
 
-    delay(2000); // Pause 2 sec.
+    delay(1000); // Pause 2 sec.
   }
 }

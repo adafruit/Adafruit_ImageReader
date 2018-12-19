@@ -279,7 +279,8 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
   uint32_t        destidx     = 0;
   boolean         flip        = true;         // BMP is stored bottom-to-top
   uint32_t        bmpPos      = 0;            // Next pixel position in file
-  int             loadWidth, loadHeight;      // Region being loaded (clipped)
+  int             loadWidth, loadHeight,      // Region being loaded (clipped)
+                  loadX    , loadY;           // "
   int             row, col;                   // Current pixel pos.
   uint8_t         r, g, b;                    // Current pixel color
 
@@ -319,15 +320,19 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
 
     loadWidth   = bmpWidth;
     loadHeight  = bmpHeight;
+    loadX       = 0;
+    loadY       = 0;
     if(tft) {
       // Crop area to be loaded (if destination is TFT)
       if(x < 0) {
-        loadWidth += x;
-        x          = 0;
+        loadX      = -x;
+        loadWidth +=  x;
+        x          =  0;
       }
       if(y < 0) {
-        loadHeight += y;
-        y          = 0;
+        loadY       = -y;
+        loadHeight +=  y;
+        y           =  0;
       }
       if((x + loadWidth ) > tft->width())  loadWidth  = tft->width()  - x;
       if((y + loadHeight) > tft->height()) loadHeight = tft->height() - y;
@@ -370,9 +375,10 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
             // the seek only takes place if the file position actually needs
             // to change (avoids a lot of cluster math in SD library).
             if(flip) // Bitmap is stored bottom-to-top order (normal BMP)
-              bmpPos = offset + (bmpHeight - 1 - row) * rowSize;
+              bmpPos = offset + (bmpHeight - 1 - (row + loadY)) * rowSize +
+                loadX * 3;
             else     // Bitmap is stored top-to-bottom
-              bmpPos = offset + row * rowSize;
+              bmpPos = offset + (row + loadY) * rowSize + loadX * 3;
             if(file.position() != bmpPos) { // Need seek?
               if(transact) tft->endWrite(); // End TFT SPI transaction
               file.seek(bmpPos);            // Seek = SD transaction
