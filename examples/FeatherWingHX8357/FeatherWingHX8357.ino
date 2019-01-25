@@ -2,7 +2,7 @@
 // images to the screen, to RAM, and how to query image file dimensions.
 // OPEN THE ARDUINO SERIAL MONITOR WINDOW TO START PROGRAM.
 // Requires three BMP files in root directory of SD card:
-// gators.bmp, parrot.bmp and wales.bmp.
+// adabot.bmp, parrot.bmp and wales.bmp.
 
 #include <SPI.h>
 #include <SD.h>
@@ -71,10 +71,10 @@ void setup(void) {
   // successfully communicating with the screen.
   tft.fillScreen(HX8357_BLUE);
 
-  // Load full-screen BMP file 'gators.bmp' at position (0,0) (top left).
+  // Load full-screen BMP file 'adabot.bmp' at position (0,0) (top left).
   // Notice the 'reader' object performs this, with 'tft' as an argument.
-  Serial.print(F("Loading gators.bmp to screen..."));
-  stat = reader.drawBMP("/gators.bmp", tft, 0, 0);
+  Serial.print(F("Loading adabot.bmp to screen..."));
+  stat = reader.drawBMP("/adabot.bmp", tft, 0, 0);
   // (Absolute path isn't necessary on most devices, but something
   // with the ESP32 SD library seems to require it.)
   reader.printStatus(stat);   // How'd we do?
