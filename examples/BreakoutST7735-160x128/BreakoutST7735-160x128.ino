@@ -1,26 +1,27 @@
-// Adafruit_ImageReader test for Adafruit ILI9341 TFT Shield for Arduino.
+// Adafruit_ImageReader test for Adafruit ST7735 TFT Breakout for Arduino.
 // Demonstrates loading images to the screen, to RAM, and how to query
 // image file dimensions.
 // Requires three BMP files in root directory of SD card:
-// purple.bmp, parrot.bmp and wales.bmp.
+// parrot.bmp, miniwoof.bmp and wales.bmp.
+// As written, this uses the microcontroller's SPI interface for the screen
+// (not 'bitbang') and must be wired to specific pins (e.g. for Arduino Uno,
+// MOSI = pin 11, MISO = 12, SCK = 13). Other pins are configurable below.
 
 #include <SPI.h>
 #include <SD.h>
 #include <Adafruit_GFX.h>         // Core graphics library
-#include <Adafruit_ILI9341.h>     // Hardware-specific library
+#include <Adafruit_ST7735.h>      // Hardware-specific library
 #include <Adafruit_ImageReader.h> // Image-reading functions
 
 // TFT display and SD card share the hardware SPI interface, using
 // 'select' pins for each to identify the active device on the bus.
-// Hardware SPI pins are specific to the Arduino board type and
-// cannot be remapped to alternate pins.  For Arduino Uno,
-// Duemilanove, etc., pin 11 = MOSI, pin 12 = MISO, pin 13 = SCK.
 
-#define SD_CS   4 // SD card select pin
-#define TFT_CS 10 // TFT select pin
-#define TFT_DC  9 // TFT display/command pin
+#define SD_CS    4 // SD card select pin
+#define TFT_CS  10 // TFT select pin
+#define TFT_DC   8 // TFT display/command pin
+#define TFT_RST  9 // Or set to -1 and connect to Arduino RESET pin
 
-Adafruit_ILI9341     tft    = Adafruit_ILI9341(TFT_CS, TFT_DC);
+Adafruit_ST7735      tft    = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 Adafruit_ImageReader reader;     // Class w/image-reading functions
 Adafruit_Image       img;        // An image loaded into RAM
 int32_t              width  = 0, // BMP image dimensions
@@ -35,7 +36,7 @@ void setup(void) {
   while(!Serial);       // Wait for Serial Monitor before continuing
 #endif
 
-  tft.begin();          // Initialize screen
+  tft.initR(INITR_GREENTAB); // Initialize screen
 
   Serial.print(F("Initializing SD card..."));
   if(!SD.begin(SD_CS)) {
@@ -46,17 +47,17 @@ void setup(void) {
 
   // Fill screen blue. Not a required step, this just shows that we're
   // successfully communicating with the screen.
-  tft.fillScreen(ILI9341_BLUE);
+  tft.fillScreen(ST7735_BLUE);
 
-  // Load full-screen BMP file 'purple.bmp' at position (0,0) (top left).
+  // Load full-screen BMP file 'parrot.bmp' at position (0,0) (top left).
   // Notice the 'reader' object performs this, with 'tft' as an argument.
-  Serial.print(F("Loading purple.bmp to screen..."));
-  stat = reader.drawBMP("/purple.bmp", tft, 0, 0);
+  Serial.print(F("Loading parrot.bmp to screen..."));
+  stat = reader.drawBMP("/parrot.bmp", tft, 0, 0);
   reader.printStatus(stat);   // How'd we do?
 
-  // Query the dimensions of image 'parrot.bmp' WITHOUT loading to screen:
-  Serial.print(F("Querying parrot.bmp image size..."));
-  stat = reader.bmpDimensions("/parrot.bmp", &width, &height);
+  // Query the dimensions of image 'miniwoof.bmp' WITHOUT loading to screen:
+  Serial.print(F("Querying miniwoof.bmp image size..."));
+  stat = reader.bmpDimensions("/miniwoof.bmp", &width, &height);
   reader.printStatus(stat);   // How'd we do?
   if(stat == IMAGE_SUCCESS) { // If it worked, print image size...
     Serial.print(F("Image dimensions: "));
@@ -81,11 +82,11 @@ void loop() {
     tft.setRotation(r);    // Set rotation
     tft.fillScreen(0);     // and clear screen
 
-    // Load 4 copies of the 'parrot.bmp' image to the screen, some
+    // Load 4 copies of the 'miniwoof.bmp' image to the screen, some
     // partially off screen edges to demonstrate clipping. Globals
     // 'width' and 'height' were set by bmpDimensions() call in setup().
     for(int i=0; i<4; i++) {
-      reader.drawBMP("/parrot.bmp", tft,
+      reader.drawBMP("/miniwoof.bmp", tft,
         (tft.width()  * i / 3) - (width  / 2),
         (tft.height() * i / 3) - (height / 2));
     }
