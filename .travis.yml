@@ -18,7 +18,7 @@ before_install:
    - source <(curl -SLs https://raw.githubusercontent.com/adafruit/travis-ci-arduino/master/install.sh)
 
 install:
-   - arduino --install-library "Adafruit ST7735 and ST7789 Library","Adafruit HX8357 Library","Adafruit ILI9341","Adafruit GFX Library"
+   - arduino --install-library "Adafruit ST7735 and ST7789 Library","Adafruit HX8357 Library","Adafruit ILI9341","Adafruit GFX Library","Adafruit seesaw Library"
 
 script:
    - build_main_platforms
