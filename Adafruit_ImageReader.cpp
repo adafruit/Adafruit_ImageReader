@@ -380,18 +380,24 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
             else     // Bitmap is stored top-to-bottom
               bmpPos = offset + (row + loadY) * rowSize + loadX * 3;
             if(file.position() != bmpPos) { // Need seek?
-              if(transact) tft->endWrite(); // End TFT SPI transaction
+              if(transact) {
+                tft->dmaWait();
+                tft->endWrite();            // End TFT SPI transaction
+              }
               file.seek(bmpPos);            // Seek = SD transaction
               srcidx = sizeof sdbuf;        // Force buffer reload
             }
             for(col=0; col<loadWidth; col++) { // For each pixel...
               if(srcidx >= sizeof sdbuf) {        // Time to load more data?
                 if(tft) {                         // Drawing to TFT?
-                  if(transact) tft->endWrite();   // End TFT SPI transaction
+                  if(transact) {
+                    tft->dmaWait();
+                    tft->endWrite();              // End TFT SPI transaction
+                  }
                   file.read(sdbuf, sizeof sdbuf); // Load from SD
                   if(transact) tft->startWrite(); // Start TFT SPI transac
                   if(destidx) {                   // If any buffered TFT data
-                    tft->writePixels(dest, destidx); // Write it now and
+                    tft->writePixels(dest, destidx, false); // Write it now and
                     destidx = 0;                     // reset dest index
                   }
                 } else {                          // Canvas is much simpler,
@@ -409,9 +415,10 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
             } // end pixel loop
             if(tft) {                            // Drawing to TFT?
               if(destidx) {                      // Any remainders?
-                tft->writePixels(dest, destidx); // Write to screen and
+                tft->writePixels(dest, destidx, false); // Write to screen and
                 destidx = 0;                     // reset dest index
               }
+              tft->dmaWait();
               tft->endWrite(); // End TFT (regardless of transact)
             }
           } // end scanline loop
