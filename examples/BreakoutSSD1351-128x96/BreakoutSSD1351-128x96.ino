@@ -20,7 +20,7 @@
 #define GREEN           0x07E0
 #define CYAN            0x07FF
 #define MAGENTA         0xF81F
-#define YELLOW          0xFFE0  
+#define YELLOW          0xFFE0
 #define WHITE           0xFFFF
 
 // Screen dimensions
@@ -34,8 +34,16 @@
 #define TFT_CS   5 // TFT select pin
 #define TFT_DC   4 // TFT display/command pin
 #define TFT_RST  6 // Or set to -1 and connect to Arduino RESET pin
+#define TFT_SCLK 2 // TFT SPI Clock
+#define TFT_MOSI 3 // TFT SPI MOSI
 
-Adafruit_SSD1351      tft    = Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, &SPI, TFT_CS, TFT_DC, TFT_RST);
+#if defined(ESP8266)
+// ESP8266 uses software SPI library
+Adafruit_SSD1351 tft = Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, TFT_CS, TFT_DC, TFT_MOSI, TFT_SCLK, TFT_RST);
+#else
+Adafruit_SSD1351 tft = Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, &SPI, TFT_CS, TFT_DC, TFT_RST);
+#endif
+
 Adafruit_ImageReader reader;     // Class w/image-reading functions
 Adafruit_Image       img;        // An image loaded into RAM
 int32_t              width  = 0, // BMP image dimensions
