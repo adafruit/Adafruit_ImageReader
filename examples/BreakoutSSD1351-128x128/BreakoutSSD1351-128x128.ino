@@ -38,8 +38,8 @@
 #define TFT_MOSI 3 // TFT SPI MOSI
 
 #if defined(ESP8266)
-// ESP8266 uses software SPI library
-Adafruit_SSD1351 tft = Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, TFT_CS, TFT_DC, TFT_MOSI, TFT_SCLK, TFT_RST);
+// ESP8266 uses its own SPI library
+Adafruit_SSD1351 tft = Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, TFT_CS, TFT_DC, TFT_RST);
 #else
 Adafruit_SSD1351 tft = Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, &SPI, TFT_CS, TFT_DC, TFT_RST);
 #endif
