@@ -55,12 +55,8 @@
 #define DC_PIN   4
 
 // to draw images from the SD card, we will share the hardware SPI interface
-#if defined(ESP8266)
-  // ESP8266 uses its own SPI library
-  Adafruit_SSD1351 tft = Adafruit_SSD1351(CS_PIN, DC_PIN, RST_PIN);
-#else
-  Adafruit_SSD1351 tft = Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, &SPI, CS_PIN, DC_PIN, RST_PIN);
-#endif
+Adafruit_SSD1351 tft = Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, &SPI, CS_PIN, DC_PIN, RST_PIN);
+
 
 // For Arduino Uno/Duemilanove, etc
 //  connect the SD card with MOSI going to pin 11, MISO going to pin 12 and SCK going to pin 13 (standard)
@@ -72,7 +68,7 @@ Adafruit_ImageReader reader;     // Class w/image-reading functions
 void setup(void) {
 
   ImageReturnCode stat; // Status from image-reading functions
-  
+
   Serial.begin(9600);
 
   pinMode(CS_PIN, OUTPUT);

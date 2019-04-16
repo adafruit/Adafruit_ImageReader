@@ -37,12 +37,7 @@
 #define TFT_SCLK 2 // TFT SPI Clock
 #define TFT_MOSI 3 // TFT SPI MOSI
 
-#if defined(ESP8266)
-// ESP8266 uses its own SPI library
-Adafruit_SSD1351 tft = Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, TFT_CS, TFT_DC, TFT_RST);
-#else
 Adafruit_SSD1351 tft = Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, &SPI, TFT_CS, TFT_DC, TFT_RST);
-#endif
 
 Adafruit_ImageReader reader;     // Class w/image-reading functions
 Adafruit_Image       img;        // An image loaded into RAM
