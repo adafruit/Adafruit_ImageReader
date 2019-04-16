@@ -25,7 +25,7 @@
 
 // Screen dimensions
 #define SCREEN_WIDTH  128
-#define SCREEN_HEIGHT 128
+#define SCREEN_HEIGHT 128   // Change this to 96 for 1.27" OLED.
 
 // TFT display and SD card share the hardware SPI interface, using
 // 'select' pins for each to identify the active device on the bus.
@@ -34,8 +34,6 @@
 #define TFT_CS   5 // TFT select pin
 #define TFT_DC   4 // TFT display/command pin
 #define TFT_RST  6 // Or set to -1 and connect to Arduino RESET pin
-#define TFT_SCLK 2 // TFT SPI Clock
-#define TFT_MOSI 3 // TFT SPI MOSI
 
 Adafruit_SSD1351 tft = Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, &SPI, TFT_CS, TFT_DC, TFT_RST);
 
