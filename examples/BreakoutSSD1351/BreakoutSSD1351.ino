@@ -20,12 +20,12 @@
 #define GREEN           0x07E0
 #define CYAN            0x07FF
 #define MAGENTA         0xF81F
-#define YELLOW          0xFFE0  
+#define YELLOW          0xFFE0
 #define WHITE           0xFFFF
 
 // Screen dimensions
 #define SCREEN_WIDTH  128
-#define SCREEN_HEIGHT 128
+#define SCREEN_HEIGHT 128   // Change this to 96 for 1.27" OLED.
 
 // TFT display and SD card share the hardware SPI interface, using
 // 'select' pins for each to identify the active device on the bus.
@@ -35,7 +35,8 @@
 #define TFT_DC   4 // TFT display/command pin
 #define TFT_RST  6 // Or set to -1 and connect to Arduino RESET pin
 
-Adafruit_SSD1351      tft    = Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, &SPI, TFT_CS, TFT_DC, TFT_RST);
+Adafruit_SSD1351 tft = Adafruit_SSD1351(SCREEN_WIDTH, SCREEN_HEIGHT, &SPI, TFT_CS, TFT_DC, TFT_RST);
+
 Adafruit_ImageReader reader;     // Class w/image-reading functions
 Adafruit_Image       img;        // An image loaded into RAM
 int32_t              width  = 0, // BMP image dimensions
