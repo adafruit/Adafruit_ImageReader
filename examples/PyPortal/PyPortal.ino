@@ -18,7 +18,7 @@
 #define TFT_BACKLIGHT 25
 #define SD_CS         32
 
-Adafruit_ILI9341     tft(tft8, TFT_D0, TFT_WR, TFT_DC, TFT_CS, TFT_RST, TFT_RD);
+Adafruit_ILI9341     tft(tft8bitbus, TFT_D0, TFT_WR, TFT_DC, TFT_CS, TFT_RST, TFT_RD);
 Adafruit_ImageReader reader;     // Class w/image-reading functions
 Adafruit_Image       img;        // An image loaded into RAM
 int32_t              width  = 0, // BMP image dimensions
