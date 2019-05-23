@@ -477,7 +477,7 @@ ImageReturnCode Adafruit_ImageReader::bmpDimensions(
     @return  Unsigned 16-bit value, native endianism.
 */
 uint16_t Adafruit_ImageReader::readLE16(void) {
-#if !defined(ESP32) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
+#if !defined(ESP32) && !defined(ESP8266) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
   // Read directly into result -- BMP data and variable both little-endian.
   uint16_t result;
   file.read(&result, sizeof result);
@@ -495,7 +495,7 @@ uint16_t Adafruit_ImageReader::readLE16(void) {
     @return  Unsigned 32-bit value, native endianism.
 */
 uint32_t Adafruit_ImageReader::readLE32(void) {
-#if !defined(ESP32) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
+#if !defined(ESP32) && !defined(ESP8266) && (__BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__)
   // Read directly into result -- BMP data and variable both little-endian.
   uint32_t result;
   file.read(&result, sizeof result);

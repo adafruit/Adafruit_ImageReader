@@ -36,7 +36,7 @@ void setup(void) {
   while(!Serial);       // Wait for Serial Monitor before continuing
 #endif
 
-  tft.initR(INITR_GREENTAB); // Initialize screen
+  tft.initR(INITR_BLACKTAB); // Initialize screen
 
   Serial.print(F("Initializing SD card..."));
   if(!SD.begin(SD_CS)) {
