@@ -60,7 +60,7 @@ void setup(void) {
   // successfully communicating with the screen.
   tft.fillScreen(BLUE);
 
-  // Load full-screen BMP file 'rgbwheel.bmp' at position (0,0) (top left).
+  // Load full-screen BMP file 'daffodil.bmp' at position (0,0) (top left).
   // Notice the 'reader' object performs this, with 'tft' as an argument.
   Serial.print(F("Loading daffodil.bmp to screen..."));
   stat = reader.drawBMP("/daffodil.bmp", tft, 0, 0);
