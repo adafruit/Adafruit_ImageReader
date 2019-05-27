@@ -60,10 +60,10 @@ void setup(void) {
   // successfully communicating with the screen.
   tft.fillScreen(BLUE);
 
-  // Load full-screen BMP file 'rgbwheel.bmp' at position (0,0) (top left).
+  // Load full-screen BMP file 'daffodil.bmp' at position (0,0) (top left).
   // Notice the 'reader' object performs this, with 'tft' as an argument.
-  Serial.print(F("Loading violet.bmp to screen..."));
-  stat = reader.drawBMP("/violet.bmp", tft, 0, 0);
+  Serial.print(F("Loading daffodil.bmp to screen..."));
+  stat = reader.drawBMP("/daffodil.bmp", tft, 0, 0);
   reader.printStatus(stat);   // How'd we do?
 
   // Query the dimensions of image 'miniwoof.bmp' WITHOUT loading to screen:
