@@ -15,6 +15,7 @@
 
 #include <SD.h>
 #include "Adafruit_SPITFT.h"
+#include "Adafruit_NeoMatrix.h"
 
 /** Status codes returned by drawBMP() and loadBMP() */
 enum ImageReturnCode {
@@ -43,6 +44,8 @@ class Adafruit_Image {
     int16_t        width(void);  // Return image width in pixels
     int16_t        height(void); // Return image height in pixels
     void           draw(Adafruit_SPITFT &tft, int16_t x, int16_t y);
+    void           draw(Adafruit_NeoMatrix &matrix, int16_t x, int16_t y);
+
   protected:
     // MOST OF THESE ARE NOT SUPPORTED YET -- WIP
     union {                       // Single pointer, only one variant is used:

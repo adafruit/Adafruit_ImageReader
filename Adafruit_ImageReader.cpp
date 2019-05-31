@@ -155,6 +155,27 @@ void Adafruit_Image::draw(Adafruit_SPITFT &tft, int16_t x, int16_t y) {
   }
 }
 
+/*!
+    @brief   Draw image to an Adafruit_Neomatrix display.
+    @param   matrix
+             Screen to draw to (any Adafruit_NeoMatrix-derived class).
+    @param   x
+             Horizontal offset in pixels; left edge = 0, positive = right.
+             Value is signed, image will be clipped if all or part is off
+             the screen edges. Screen rotation setting is observed.
+    @param   y
+             Vertical offset in pixels; top edge = 0, positive = down.
+    @return  None (void).
+*/
+void Adafruit_Image::draw(Adafruit_NeoMatrix &matrix, int16_t x, int16_t y) {
+if(format == IMAGE_1 ) {
+  } else if(format == IMAGE_8 ) {
+  } else if(format == IMAGE_16) {
+	matrix.drawRGBBitmap(x, y, canvas.canvas16->getBuffer(), 
+			canvas.canvas16->width(), canvas.canvas16->height());
+  }
+}
+
 // ADAFRUIT_IMAGEREADER CLASS **********************************************
 // Loads images from SD card to screen or RAM.
 
