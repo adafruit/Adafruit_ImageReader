@@ -112,7 +112,7 @@ void Adafruit_Image::dealloc(void) {
     @brief   Get width of Adafruit_Image object.
     @return  Width in pixels, or 0 if no image loaded.
 */
-int16_t Adafruit_Image::width(void) {
+int16_t Adafruit_Image::width(void) const {
   if(format != IMAGE_NONE) { // Image allocated?
     if(     format == IMAGE_1 ) return canvas.canvas1->width();
     else if(format == IMAGE_8 ) return canvas.canvas8->width();
@@ -125,13 +125,38 @@ int16_t Adafruit_Image::width(void) {
     @brief   Get height of Adafruit_Image object.
     @return  Height in pixels, or 0 if no image loaded.
 */
-int16_t Adafruit_Image::height(void) {
+int16_t Adafruit_Image::height(void) const {
   if(format != IMAGE_NONE) { // Image allocated?
     if(     format == IMAGE_1 ) return canvas.canvas1->height();
     else if(format == IMAGE_8 ) return canvas.canvas8->height();
     else if(format == IMAGE_16) return canvas.canvas16->height();
   }
   return 0;
+}
+
+/*!
+    @brief   Return pointer to image's GFX canvas object.
+    @return  void* pointer, must be type-converted to a GFX canvas type
+             consistent with the image's format (e.g. GFXcanvas16* if
+             image format is IMAGE_16 -- use image.format() to determine
+             the image format). Returns NULL if no canvas allocated.
+    @note    Calling function must type-convert the result to one of the
+             supported canvas object types, and must act accordingly with
+             regard to calling functions on this object (e.g. doing the
+             right thing with an 8- or 16-bit canvas, each has distinct
+             drawing functions, things like that). This is here mostly to
+             allow more advanced applications to get directly into an
+             image's canvas object (and, in turn, its raw graphics buffer
+             via canvas->getBuffer()) to move data in or out. Potential
+             for a lot of mayhem here if used wrong.
+*/
+void *Adafruit_Image::getCanvas(void) const {
+  if(format != IMAGE_NONE) { // Image allocated?
+    if(     format == IMAGE_1 ) return (void *)canvas.canvas1;
+    else if(format == IMAGE_8 ) return (void *)canvas.canvas8;
+    else if(format == IMAGE_16) return (void *)canvas.canvas16;
+  }
+  return NULL;
 }
 
 /*!

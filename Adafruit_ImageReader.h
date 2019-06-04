@@ -40,9 +40,23 @@ class Adafruit_Image {
   public:
     Adafruit_Image(void);
    ~Adafruit_Image(void);
-    int16_t        width(void);  // Return image width in pixels
-    int16_t        height(void); // Return image height in pixels
+    int16_t        width(void) const;  // Return image width in pixels
+    int16_t        height(void) const; // Return image height in pixels
     void           draw(Adafruit_SPITFT &tft, int16_t x, int16_t y);
+    /*!
+        @brief   Return canvas image format.
+        @return  An ImageFormat type: IMAGE_1 for a GFXcanvas1, IMAGE_8 for
+                 a GFXcanvas8, IMAGE_16 for a GFXcanvas16, IMAGE_NONE if no
+                 canvas currently allocated.
+    */
+    ImageFormat    getFormat(void) const { return (ImageFormat)format; }
+    void          *getCanvas(void) const;
+    /*!
+        @brief   Return pointer to 1bpp image mask canvas.
+        @return  GFXcanvas1* pointer (1-bit RAM-resident image) if present,
+                 NULL otherwise.
+    */
+    GFXcanvas1    *getMask(void) const { return mask; };
   protected:
     // MOST OF THESE ARE NOT SUPPORTED YET -- WIP
     union {                       // Single pointer, only one variant is used:
