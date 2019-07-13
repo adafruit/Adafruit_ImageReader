@@ -12,6 +12,8 @@
  *
  * BSD license, all text here must be included in any redistribution.
  */
+#ifndef __ADAFRUIT_IMAGE_READER_H__
+#define __ADAFRUIT_IMAGE_READER_H__
 
 #include <SD.h>
 #include "Adafruit_SPITFT.h"
@@ -98,3 +100,5 @@ class Adafruit_ImageReader {
     uint16_t        readLE16(void);
     uint32_t        readLE32(void);
 };
+
+#endif // __ADAFRUIT_IMAGE_READER_H__
