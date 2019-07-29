@@ -19,7 +19,7 @@ before_install:
 
 install:
    - arduino --install-library "Adafruit ST7735 and ST7789 Library","Adafruit HX8357 Library","Adafruit ILI9341","Adafruit GFX Library","Adafruit seesaw Library","Adafruit SSD1351 library","Adafruit SSD1331 OLED Driver Library for Arduino","Adafruit SPIFlash"
-   - if [! -d "$HOME/arduino_ide/libraries/SdFat" ]; then git clone https://github.com/adafruit/SdFat $HOME/arduino_ide/libraries/SdFat; fi
+   - git clone https://github.com/adafruit/SdFat $HOME/arduino_ide/libraries/SdFat
 
 script:
    - build_main_platforms
