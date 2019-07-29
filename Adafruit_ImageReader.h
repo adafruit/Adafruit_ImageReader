@@ -15,8 +15,8 @@
 #ifndef __ADAFRUIT_IMAGE_READER_H__
 #define __ADAFRUIT_IMAGE_READER_H__
 
-#include <SD.h>
 #include "Adafruit_SPITFT.h"
+#include "Adafruit_SPIFlash.h"
 
 /** Status codes returned by drawBMP() and loadBMP() */
 enum ImageReturnCode {
@@ -75,17 +75,19 @@ class Adafruit_Image {
 
 /*!
    @brief  An optional adjunct to Adafruit_SPITFT that reads RGB BMP
-           images (maybe others in the future) from an SD card. It's
-           purposefully been made an entirely separate class (rather than
-           part of SPITFT or GFX classes) so that Arduino code that uses
-           GFX or SPITFT *without* image loading does not need to incur
-           the significant RAM overhead of the SD library by its mere
-           inclusion. The syntaxes can therefore be a bit bizarre (passing
-           display object as an argument), see examples for use.
+           images (maybe others in the future) from a flash filesystem
+           (SD card or SPI/QSPI flash). It's purposefully been made an
+           entirely separate class (rather than part of SPITFT or GFX
+           classes) so that Arduino code that uses GFX or SPITFT *without*
+           image loading does not need to incur the RAM overhead and
+           additional dependencies of the Adafruit_SPIFlash library by
+           its mere inclusion. The syntaxes can therefore be a bit
+           bizarre (passing display object as an argument), see examples
+           for use.
 */
 class Adafruit_ImageReader {
   public:
-    Adafruit_ImageReader(void);
+    Adafruit_ImageReader(FatFileSystem &fs);
    ~Adafruit_ImageReader(void);
     ImageReturnCode drawBMP(char *filename, Adafruit_SPITFT &tft,
                       int16_t x, int16_t y, boolean transact = true);
@@ -93,6 +95,7 @@ class Adafruit_ImageReader {
     ImageReturnCode bmpDimensions(char *filename, int32_t *w, int32_t *h);
     void            printStatus(ImageReturnCode stat, Stream &stream=Serial);
   private:
+    FatFileSystem  *filesys;
     File            file;
     ImageReturnCode coreBMP(char *filename, Adafruit_SPITFT *tft,
       uint16_t *dest, int16_t x, int16_t y, Adafruit_Image *img,

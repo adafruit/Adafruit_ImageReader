@@ -16,11 +16,16 @@
  *
  * @section dependencies Dependencies
  *
- * This library depends on <a href="https://github.com/adafruit/Adafruit_GFX">
- * Adafruit_GFX</a> plus a display device-specific library such as
- * <a href="https://github.com/adafruit/Adafruit_ILI9341"> Adafruit_ILI9341</a>
- * or other subclasses of SPITFT. Please make sure you have installed the
- * latest versions before using this library.
+ * This library depends on
+ * <a href="https://github.com/adafruit/Adafruit_GFX">Adafruit_GFX</a>
+ * plus a display device-specific library such as
+ * <a href="https://github.com/adafruit/Adafruit_ILI9341">Adafruit_ILI9341</a>
+ * or other subclasses of SPITFT. Filesystem reading is handled through the
+ * <a href="https://github.com/adafruit/Adafruit_SPIFlash">Adafruit_SPIFlash</a>
+ * library, which in turn relies on
+ * <a href="https://github.com/adafruit/SdFat">SdFat</a>.
+ * Please make sure you have installed the latest versions before
+ * using this library.
  *
  * @section author Author
  *
@@ -31,7 +36,6 @@
  * BSD license, all text here must be included in any redistribution.
  */
 
-#include <SD.h>
 #include "Adafruit_ImageReader.h"
 
 // Buffers in BMP draw function (to screen) require 5 bytes/pixel: 3 bytes
@@ -189,8 +193,17 @@ void Adafruit_Image::draw(Adafruit_SPITFT &tft, int16_t x, int16_t y) {
 /*!
     @brief   Constructor.
     @return  Adafruit_ImageReader object.
+    @param   fs
+             FAT filesystem associated with this Adafruit_ImageReader
+             instance. Any images to load will come from this filesystem;
+             if multiple filesystems are required, each will require its
+             own Adafruit_ImageReader object. The filesystem does NOT need
+             to be initialized yet when passed in here (since this will
+             often be in pre-setup() declaration, but DOES need initializing
+             before any of the image loading or size functions are called!
 */
-Adafruit_ImageReader::Adafruit_ImageReader(void) {
+Adafruit_ImageReader::Adafruit_ImageReader(FatFileSystem &fs) {
+  filesys = &fs;
 }
 
 /*!
@@ -199,6 +212,7 @@ Adafruit_ImageReader::Adafruit_ImageReader(void) {
 */
 Adafruit_ImageReader::~Adafruit_ImageReader(void) {
   if(file) file.close();
+  // filesystem is left as-is
 }
 
 /*!
@@ -327,7 +341,9 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
     return IMAGE_SUCCESS;
 
   // Open requested file on SD card
-  if(!(file = SD.open(filename))) return IMAGE_ERR_FILE_NOT_FOUND;
+  if(!(file = filesys->open(filename, FILE_READ))) {
+    return IMAGE_ERR_FILE_NOT_FOUND;
+  }
 
   // Parse BMP header. 0x4D42 (ASCII 'BM') is the Windows BMP signature.
   // There are other values possible in a .BMP file but these are super
@@ -553,7 +569,7 @@ ImageReturnCode Adafruit_ImageReader::bmpDimensions(
 
   ImageReturnCode status = IMAGE_ERR_FILE_NOT_FOUND; // Guilty until innocent
 
-  if((file = SD.open(filename))) { // Open requested file on SD card
+  if((file = filesys->open(filename, FILE_READ))) { // Open requested file
     status = IMAGE_ERR_FORMAT;     // File's there, might not be BMP tho
     if(readLE16() == 0x4D42) {     // BMP signature?
       (void)readLE32();            // Read & ignore file size
