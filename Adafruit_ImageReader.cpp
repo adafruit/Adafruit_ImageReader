@@ -177,9 +177,17 @@ void *Adafruit_Image::getCanvas(void) const {
 */
 void Adafruit_Image::draw(Adafruit_SPITFT &tft, int16_t x, int16_t y) {
   if(format == IMAGE_1 ) {
+    uint16_t foreground, background;
+    if(palette) {
+      foreground = palette[1];
+      background = palette[0];
+    } else {
+      foreground = 0xFFFF;
+      background = 0x0000;
+    }
     tft.drawBitmap(x, y, canvas.canvas1->getBuffer(),
       canvas.canvas1->width(), canvas.canvas1->height(),
-      palette[1], palette[0]);
+      foreground, background);
   } else if(format == IMAGE_8 ) {
   } else if(format == IMAGE_16) {
     tft.drawRGBBitmap(x, y, canvas.canvas16->getBuffer(),

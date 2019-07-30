@@ -51,8 +51,14 @@ class Adafruit_Image {
                  a GFXcanvas8, IMAGE_16 for a GFXcanvas16, IMAGE_NONE if no
                  canvas currently allocated.
     */
-    ImageFormat    getFormat(void) const { return (ImageFormat)format; }
-    void          *getCanvas(void) const;
+    ImageFormat    getFormat(void)  const { return (ImageFormat)format; }
+    void          *getCanvas(void)  const;
+    /*!
+        @brief   Return pointer to color palette.
+        @return  Pointer to an array of 16-bit color values, or NULL if no
+                 palette associated with image.
+    */
+    uint16_t      *getPalette(void) const { return palette; }
     /*!
         @brief   Return pointer to 1bpp image mask canvas.
         @return  GFXcanvas1* pointer (1-bit RAM-resident image) if present,
