@@ -1,27 +1,51 @@
 // Adafruit_ImageReader test for Mini TFT FeatherWing. Demonstrates loading
-// images to the screen, to RAM, and how to query image file dimensions.
-// OPEN THE ARDUINO SERIAL MONITOR WINDOW TO START PROGRAM.
-// Requires three BMP files in root directory of SD card:
-// minibot.bmp, rgbwheel.bmp and wales.bmp.
+// images from SD card or flash memory to the screen, to RAM, and how to
+// query image file dimensions. OPEN THE ARDUINO SERIAL MONITOR WINDOW TO
+// START PROGRAM. Requires three BMP files in root directory of SD card or
+// flash: minibot.bmp, rgbwheel.bmp and wales.bmp.
 // This ONLY demonstrates BMP loading. Other features of the FeatherWing
 // (stick, buttons, backlight control) are NOT demonstrated here,
 // see other ST7735 library examples for that.
 // MINI TFT FEATHERWING REQUIRES Adafruit_Seesaw LIBRARY.
 
-#include <SPI.h>
-#include <SD.h>
 #include <Adafruit_GFX.h>         // Core graphics library
 #include <Adafruit_ST7735.h>      // Hardware-specific library
+#include <SdFat.h>                // SD card & FAT filesystem library
+#include <Adafruit_SPIFlash.h>    // SPI / QSPI flash library
 #include <Adafruit_ImageReader.h> // Image-reading functions
 #include <Adafruit_miniTFTWing.h> // Part of Seesaw library
+
+// Comment out the next line to load from SPI/QSPI flash instead of SD card:
+#define USE_SD_CARD
 
 #define TFT_CS   5 // TFT chip select (FeatherWing)
 #define TFT_DC   6 // TFT data/command select (FeatherWing)
 #define TFT_RST -1 // FeatherWing uses Seesaw for TFT reset
-#define SD_CS    4 // SD card chip select (Feather AdaLogger 32u4 or M0)
+
+#define SD_CS    4 // SD card chip select (Feather AdaLogger 32u4 or M0) OR use 10
+                   // for Adalogger FeatherWing
+
+#if defined(USE_SD_CARD)
+  SdFat                SD;         // SD card filesystem
+  Adafruit_ImageReader reader(SD); // Image-reader object, pass in SD filesys
+#else
+  // SPI or QSPI flash filesystem (i.e. CIRCUITPY drive)
+  #if defined(__SAMD51__) || defined(NRF52840_XXAA)
+    Adafruit_FlashTransport_QSPI flashTransport(PIN_QSPI_SCK, PIN_QSPI_CS,
+      PIN_QSPI_IO0, PIN_QSPI_IO1, PIN_QSPI_IO2, PIN_QSPI_IO3);
+  #else
+    #if (SPI_INTERFACES_COUNT == 1)
+      Adafruit_FlashTransport_SPI flashTransport(SS, &SPI);
+    #else
+      Adafruit_FlashTransport_SPI flashTransport(SS1, &SPI1);
+    #endif
+  #endif
+  Adafruit_SPIFlash    flash(&flashTransport);
+  FatFileSystem        filesys;
+  Adafruit_ImageReader reader(filesys); // Image-reader, pass in flash filesys
+#endif
 
 Adafruit_ST7735      tft    = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
-Adafruit_ImageReader reader;     // Class w/image-reading functions
 Adafruit_Image       img;        // An image loaded into RAM
 int32_t              width  = 0, // BMP image dimensions
                      height = 0;
@@ -46,11 +70,28 @@ void setup(void) {
   tft.initR(INITR_MINI160x80);               // Initialize screen
   Serial.println(F("TFT initialized."));
 
-  Serial.print(F("Initializing SD card..."));
-  if(!SD.begin(SD_CS)) {
-    Serial.println(F("failed!"));
-    for(;;); // Loop here forever
+  // The Adafruit_ImageReader constructor call (above, before setup())
+  // accepts an uninitialized SdFat or FatFileSystem object. This MUST
+  // BE INITIALIZED before using any of the image reader functions!
+  Serial.print(F("Initializing filesystem..."));
+#if defined(USE_SD_CARD)
+  // SD card is pretty straightforward, a single call...
+  if(!SD.begin(SD_CS, SD_SCK_MHZ(25))) { // ESP32 requires 25 MHz limit
+    Serial.println(F("SD begin() failed"));
+    for(;;); // Fatal error, do not continue
   }
+#else
+  // SPI or QSPI flash requires two steps, one to access the bare flash
+  // memory itself, then the second to access the filesystem within...
+  if(!flash.begin()) {
+    Serial.println(F("flash begin() failed"));
+    for(;;);
+  }
+  if(!filesys.begin(&flash)) {
+    Serial.println(F("filesys begin() failed"));
+    for(;;);
+  }
+#endif
   Serial.println(F("OK!"));
 
   // Fill screen blue. Not a required step, this just shows that we're
