@@ -66,16 +66,16 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>An optional adjunct to Adafruit_SPITFT that reads RGB BMP images (maybe others in the future) from an SD card. It's purposefully been made an entirely separate class (rather than part of SPITFT or GFX classes) so that Arduino code that uses GFX or SPITFT <em>without</em> image loading does not need to incur the significant RAM overhead of the SD library by its mere inclusion. The syntaxes can therefore be a bit bizarre (passing display object as an argument), see examples for use.  
+<p>An optional adjunct to Adafruit_SPITFT that reads RGB BMP images (maybe others in the future) from a flash filesystem (SD card or SPI/QSPI flash). It's purposefully been made an entirely separate class (rather than part of SPITFT or GFX classes) so that Arduino code that uses GFX or SPITFT <em>without</em> image loading does not need to incur the RAM overhead and additional dependencies of the Adafruit_SPIFlash library by its mere inclusion. The syntaxes can therefore be a bit bizarre (passing display object as an argument), see examples for use.  
  <a href="class_adafruit___image_reader.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_adafruit___image_reader_8h_source.html">Adafruit_ImageReader.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:ad14ff315f29a6151840d114f9e7d22fe"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#ad14ff315f29a6151840d114f9e7d22fe">Adafruit_ImageReader</a> (void)</td></tr>
-<tr class="memdesc:ad14ff315f29a6151840d114f9e7d22fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#ad14ff315f29a6151840d114f9e7d22fe">More...</a><br /></td></tr>
-<tr class="separator:ad14ff315f29a6151840d114f9e7d22fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7d2c512f063ba2d430b01c26dbc181c6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a7d2c512f063ba2d430b01c26dbc181c6">Adafruit_ImageReader</a> (FatFileSystem &amp;fs)</td></tr>
+<tr class="memdesc:a7d2c512f063ba2d430b01c26dbc181c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a7d2c512f063ba2d430b01c26dbc181c6">More...</a><br /></td></tr>
+<tr class="separator:a7d2c512f063ba2d430b01c26dbc181c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3da727d1ab406b637110743e40866ac7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a3da727d1ab406b637110743e40866ac7">~Adafruit_ImageReader</a> (void)</td></tr>
 <tr class="memdesc:a3da727d1ab406b637110743e40866ac7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="#a3da727d1ab406b637110743e40866ac7">More...</a><br /></td></tr>
 <tr class="separator:a3da727d1ab406b637110743e40866ac7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -93,10 +93,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:af805ca644e8cf5100bb1638dff014c36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>An optional adjunct to Adafruit_SPITFT that reads RGB BMP images (maybe others in the future) from an SD card. It's purposefully been made an entirely separate class (rather than part of SPITFT or GFX classes) so that Arduino code that uses GFX or SPITFT <em>without</em> image loading does not need to incur the significant RAM overhead of the SD library by its mere inclusion. The syntaxes can therefore be a bit bizarre (passing display object as an argument), see examples for use. </p>
+<div class="textblock"><p>An optional adjunct to Adafruit_SPITFT that reads RGB BMP images (maybe others in the future) from a flash filesystem (SD card or SPI/QSPI flash). It's purposefully been made an entirely separate class (rather than part of SPITFT or GFX classes) so that Arduino code that uses GFX or SPITFT <em>without</em> image loading does not need to incur the RAM overhead and additional dependencies of the Adafruit_SPIFlash library by its mere inclusion. The syntaxes can therefore be a bit bizarre (passing display object as an argument), see examples for use. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="ad14ff315f29a6151840d114f9e7d22fe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad14ff315f29a6151840d114f9e7d22fe">&#9670;&nbsp;</a></span>Adafruit_ImageReader()</h2>
+<a id="a7d2c512f063ba2d430b01c26dbc181c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7d2c512f063ba2d430b01c26dbc181c6">&#9670;&nbsp;</a></span>Adafruit_ImageReader()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -104,15 +104,21 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">Adafruit_ImageReader::Adafruit_ImageReader </td>
           <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">FatFileSystem &amp;&#160;</td>
+          <td class="paramname"><em>fs</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Constructor. </p>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_adafruit___image_reader.html" title="An optional adjunct to Adafruit_SPITFT that reads RGB BMP images (maybe others in the future) from an...">Adafruit_ImageReader</a> object. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_adafruit___image_reader.html" title="An optional adjunct to Adafruit_SPITFT that reads RGB BMP images (maybe others in the future) from a ...">Adafruit_ImageReader</a> object. </dd></dl>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">fs</td><td>FAT filesystem associated with this <a class="el" href="class_adafruit___image_reader.html" title="An optional adjunct to Adafruit_SPITFT that reads RGB BMP images (maybe others in the future) from a ...">Adafruit_ImageReader</a> instance. Any images to load will come from this filesystem; if multiple filesystems are required, each will require its own <a class="el" href="class_adafruit___image_reader.html" title="An optional adjunct to Adafruit_SPITFT that reads RGB BMP images (maybe others in the future) from a ...">Adafruit_ImageReader</a> object. The filesystem does NOT need to be initialized yet when passed in here (since this will often be in pre-setup() declaration, but DOES need initializing before any of the image loading or size functions are called! </td></tr>
+  </table>
+  </dd>
+</dl>
 
 </div>
 </div>

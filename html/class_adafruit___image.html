@@ -97,6 +97,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:afe83af3e18c81c583c7a88a395fdbe85"><td class="memItemLeft" align="right" valign="top">void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image.html#afe83af3e18c81c583c7a88a395fdbe85">getCanvas</a> (void) const</td></tr>
 <tr class="memdesc:afe83af3e18c81c583c7a88a395fdbe85"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return pointer to image's GFX canvas object.  <a href="#afe83af3e18c81c583c7a88a395fdbe85">More...</a><br /></td></tr>
 <tr class="separator:afe83af3e18c81c583c7a88a395fdbe85"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abf50c5b45823ae7717027532df7e9345"><td class="memItemLeft" align="right" valign="top">uint16_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image.html#abf50c5b45823ae7717027532df7e9345">getPalette</a> (void) const</td></tr>
+<tr class="memdesc:abf50c5b45823ae7717027532df7e9345"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return pointer to color palette.  <a href="#abf50c5b45823ae7717027532df7e9345">More...</a><br /></td></tr>
+<tr class="separator:abf50c5b45823ae7717027532df7e9345"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4edc497bd644efbdc1caa39abbd672a2"><td class="memItemLeft" align="right" valign="top">GFXcanvas1 *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image.html#a4edc497bd644efbdc1caa39abbd672a2">getMask</a> (void) const</td></tr>
 <tr class="memdesc:a4edc497bd644efbdc1caa39abbd672a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return pointer to 1bpp image mask canvas.  <a href="#a4edc497bd644efbdc1caa39abbd672a2">More...</a><br /></td></tr>
 <tr class="separator:a4edc497bd644efbdc1caa39abbd672a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -327,6 +330,35 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <p>Return pointer to image's GFX canvas object. </p>
 <dl class="section return"><dt>Returns</dt><dd>void* pointer, must be type-converted to a GFX canvas type consistent with the image's format (e.g. GFXcanvas16* if image format is IMAGE_16 &ndash; use image.format() to determine the image format). Returns NULL if no canvas allocated. </dd></dl>
 <dl class="section note"><dt>Note</dt><dd>Calling function must type-convert the result to one of the supported canvas object types, and must act accordingly with regard to calling functions on this object (e.g. doing the right thing with an 8- or 16-bit canvas, each has distinct drawing functions, things like that). This is here mostly to allow more advanced applications to get directly into an image's canvas object (and, in turn, its raw graphics buffer via canvas-&gt;getBuffer()) to move data in or out. Potential for a lot of mayhem here if used wrong. </dd></dl>
+
+</div>
+</div>
+<a id="abf50c5b45823ae7717027532df7e9345"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abf50c5b45823ae7717027532df7e9345">&#9670;&nbsp;</a></span>getPalette()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t* Adafruit_Image::getPalette </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Return pointer to color palette. </p>
+<dl class="section return"><dt>Returns</dt><dd>Pointer to an array of 16-bit color values, or NULL if no palette associated with image. </dd></dl>
 
 </div>
 </div>

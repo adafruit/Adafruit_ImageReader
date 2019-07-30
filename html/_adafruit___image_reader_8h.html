@@ -65,8 +65,8 @@ $(function() {
 <div class="title">Adafruit_ImageReader.h File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &lt;SD.h&gt;</code><br />
-<code>#include &quot;Adafruit_SPITFT.h&quot;</code><br />
+<div class="textblock"><code>#include &quot;Adafruit_SPITFT.h&quot;</code><br />
+<code>#include &quot;Adafruit_SPIFlash.h&quot;</code><br />
 </div>
 <p><a href="_adafruit___image_reader_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
@@ -76,7 +76,7 @@ Classes</h2></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data bundle returned with an image loaded to RAM. Used by ImageReader.loadBMP() and Image.draw(), not ImageReader.drawBMP().  <a href="class_adafruit___image.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html">Adafruit_ImageReader</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An optional adjunct to Adafruit_SPITFT that reads RGB BMP images (maybe others in the future) from an SD card. It's purposefully been made an entirely separate class (rather than part of SPITFT or GFX classes) so that Arduino code that uses GFX or SPITFT <em>without</em> image loading does not need to incur the significant RAM overhead of the SD library by its mere inclusion. The syntaxes can therefore be a bit bizarre (passing display object as an argument), see examples for use.  <a href="class_adafruit___image_reader.html#details">More...</a><br /></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An optional adjunct to Adafruit_SPITFT that reads RGB BMP images (maybe others in the future) from a flash filesystem (SD card or SPI/QSPI flash). It's purposefully been made an entirely separate class (rather than part of SPITFT or GFX classes) so that Arduino code that uses GFX or SPITFT <em>without</em> image loading does not need to incur the RAM overhead and additional dependencies of the Adafruit_SPIFlash library by its mere inclusion. The syntaxes can therefore be a bit bizarre (passing display object as an argument), see examples for use.  <a href="class_adafruit___image_reader.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
