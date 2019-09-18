@@ -497,7 +497,12 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
                       file.read(sdbuf, sizeof sdbuf); // Load from SD
                       if(transact) tft->startWrite(); // Start TFT SPI transact
                       if(destidx) {                   // If buffered TFT data
-                        tft->writePixels(dest, destidx, false); // Write it
+                        // Non-blocking writes (DMA) have been temporarily
+                        // disabled until this can be rewritten with two
+                        // alternating 'dest' buffers (else the nonblocking
+                        // data out is overwritten in the dest[] write below).
+                        //tft->writePixels(dest, destidx, false); // Write it
+                        tft->writePixels(dest, destidx, true); // Write it
                         destidx = 0;                  // and reset dest index
                       }
                     } else {                          // Canvas is simpler,
