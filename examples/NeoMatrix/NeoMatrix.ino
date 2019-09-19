@@ -81,17 +81,117 @@ void loop() {
     reader.printStatus(stat);
     img.draw(matrix,0,0);
     matrix.show();
-    delay(60000);
+    delay(20000);
     
     stat = reader.loadBMP("/bild_2.bmp", img);
     reader.printStatus(stat);
     img.draw(matrix,0,0);
     matrix.show();
-    delay(60000);
+    delay(20000);
 
-    stat = reader.loadBMP("/bild_2.bmp", img);
+    stat = reader.loadBMP("/bild_3.bmp", img);
     reader.printStatus(stat);
     img.draw(matrix,0,0);
     matrix.show();
-    delay(60000);
+    delay(20000);
+    
+    stat = reader.loadBMP("/bild_4.bmp", img);
+    reader.printStatus(stat);
+    img.draw(matrix,0,0);
+    matrix.show();
+    delay(20000);
+    
+    stat = reader.loadBMP("/bild_5.bmp", img);
+    reader.printStatus(stat);
+    img.draw(matrix,0,0);
+    matrix.show();
+    delay(20000);
+
+    stat = reader.loadBMP("/bild_6.bmp", img);
+    reader.printStatus(stat);
+    img.draw(matrix,0,0);
+    matrix.show();
+    delay(20000);
+    stat = reader.loadBMP("/bild_7.bmp", img);
+    reader.printStatus(stat);
+    img.draw(matrix,0,0);
+    matrix.show();
+    delay(20000);
+    
+    stat = reader.loadBMP("/bild_8.bmp", img);
+    reader.printStatus(stat);
+    img.draw(matrix,0,0);
+    matrix.show();
+    delay(20000);
+
+    stat = reader.loadBMP("/bild_9.bmp", img);
+    reader.printStatus(stat);
+    img.draw(matrix,0,0);
+    matrix.show();
+    delay(20000);
+    stat = reader.loadBMP("/bild_10.bmp", img);
+    reader.printStatus(stat);
+    img.draw(matrix,0,0);
+    matrix.show();
+    delay(20000);
+    
+    stat = reader.loadBMP("/bild_11.bmp", img);
+    reader.printStatus(stat);
+    img.draw(matrix,0,0);
+    matrix.show();
+    delay(20000);
+
+    stat = reader.loadBMP("/bild_12.bmp", img);
+    reader.printStatus(stat);
+    img.draw(matrix,0,0);
+    matrix.show();
+    delay(20000);
+    
+    stat = reader.loadBMP("/bild_13.bmp", img);
+    reader.printStatus(stat);
+    img.draw(matrix,0,0);
+    matrix.show();
+    delay(20000);
+    
+    stat = reader.loadBMP("/bild_14.bmp", img);
+    reader.printStatus(stat);
+    img.draw(matrix,0,0);
+    matrix.show();
+    delay(20000);
+
+    stat = reader.loadBMP("/bild_15.bmp", img);
+    reader.printStatus(stat);
+    img.draw(matrix,0,0);
+    matrix.show();
+    delay(20000);
+    
+    stat = reader.loadBMP("/bild_16.bmp", img);
+    reader.printStatus(stat);
+    img.draw(matrix,0,0);
+    matrix.show();
+    delay(20000);
+    
+    stat = reader.loadBMP("/bild_17.bmp", img);
+    reader.printStatus(stat);
+    img.draw(matrix,0,0);
+    matrix.show();
+    delay(20000);
+
+    stat = reader.loadBMP("/bild_18.bmp", img);
+    reader.printStatus(stat);
+    img.draw(matrix,0,0);
+    matrix.show();
+    delay(20000);
+    
+    stat = reader.loadBMP("/bild_19.bmp", img);
+    reader.printStatus(stat);
+    img.draw(matrix,0,0);
+    matrix.show();
+    delay(20000);
+
+    stat = reader.loadBMP("/bild_20.bmp", img);
+    reader.printStatus(stat);
+    img.draw(matrix,0,0);
+    matrix.show();
+    delay(20000);
 }
