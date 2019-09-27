@@ -7,7 +7,7 @@ var indexSectionsWithContent =
   4: "cfmp",
   5: "i",
   6: "a",
-  7: "dl",
+  7: "b",
   8: "c"
 };
 
