@@ -31,11 +31,19 @@
     Adafruit_FlashTransport_SPI flashTransport(SS1, &SPI1);
   #endif
 #endif
+
+// TFT SPI interface selection
+#if (SPI_INTERFACES_COUNT == 1)
+  SPIClass* spi = &SPI;
+#else
+  SPIClass* spi = &SPI1;
+#endif
+
 Adafruit_SPIFlash    flash(&flashTransport);
 FatFileSystem        filesys;
 Adafruit_ImageReader reader(filesys); // Image-reader, pass in flash filesys
 
-Adafruit_ST7789      tft    = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
+Adafruit_ST7789      tft    = Adafruit_ST7789(spi, TFT_CS, TFT_DC, TFT_RST);
 Adafruit_Image       img;        // An image loaded into RAM
 int32_t              width  = 0, // BMP image dimensions
                      height = 0;
