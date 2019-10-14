@@ -492,7 +492,7 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
                         tft->dmaWait();
                         tft->endWrite();              // End TFT SPI transact
                       }
-#if defined(ARDUINO_CIRCUITPLAY_NRF52840)
+#if defined(ARDUINO_NRF52_ADAFRUIT)
                       // NRF52840 seems to have trouble reading more than 512
                       // bytes across certain boundaries. Workaround for now
                       // is to break the read into smaller chunks...
