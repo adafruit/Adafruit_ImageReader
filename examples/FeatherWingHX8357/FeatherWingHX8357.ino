@@ -31,7 +31,7 @@
   #define TFT_DC   PB4
   #define TFT_CS   PA15
   #define SD_CS    PC5
-#elif defined(ARDUINO_NRF52_FEATHER) // BSP 0.6.5 and higher!
+#elif defined(ARDUINO_NRF52832_FEATHER) // BSP 0.6.5 and higher!
   #define TFT_DC   11
   #define TFT_CS   31
   #define SD_CS    27
