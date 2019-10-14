@@ -1,13 +1,21 @@
 language: c
 sudo: false
-dist: "trusty"
 cache:
   directories:
     - ~/arduino_ide
     - ~/.arduino15/packages/
+
 git:
   depth: false
   quiet: true
+
+addons:
+  apt:
+    packages:
+      - python3
+      - python3-pip
+      - python3-setuptools
+
 env:
   global:
      - PRETTYNAME="Adafruit ImageLoader Arduino Library"
@@ -19,8 +27,8 @@ install:
    - arduino --install-library "Adafruit ST7735 and ST7789 Library","Adafruit HX8357 Library","Adafruit ILI9341","Adafruit GFX Library","Adafruit seesaw Library","Adafruit SSD1351 library","Adafruit SSD1331 OLED Driver Library for Arduino","Adafruit SPIFlash","SdFat - Adafruit Fork"
 
 script:
-   - build_main_platforms
    - build_cplay_platforms
+   - build_main_platforms
 
 # Generate and deploy documentation
 after_success:
