@@ -17,6 +17,7 @@
 
 #include "Adafruit_SPITFT.h"
 #include "Adafruit_SPIFlash.h"
+#include "Adafruit_EPD.h"
 
 /** Status codes returned by drawBMP() and loadBMP() */
 enum ImageReturnCode {
@@ -45,6 +46,7 @@ class Adafruit_Image {
     int16_t        width(void) const;  // Return image width in pixels
     int16_t        height(void) const; // Return image height in pixels
     void           draw(Adafruit_SPITFT &tft, int16_t x, int16_t y);
+    void           draw(Adafruit_EPD &epd, int16_t x, int16_t y);
     /*!
         @brief   Return canvas image format.
         @return  An ImageFormat type: IMAGE_1 for a GFXcanvas1, IMAGE_8 for
