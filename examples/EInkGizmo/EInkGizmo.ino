@@ -70,20 +70,14 @@ void setup(void) {
 
   Serial.println(F("OK!"));
 
-  // Fill screen white. Not a required step, this just shows that we're
-  // successfully communicating with the screen.
-  display.clearBuffer();
-  display.fillScreen(EPD_WHITE);
-  display.display();
-
-  delay(15 * 1000); // Pause 15 seconds
-
   // Load full-screen BMP file 'blinka.bmp' at position (0,0) (top left).
   // Notice the 'reader' object performs this, with 'epd' as an argument.
   Serial.print(F("Loading blinka.bmp to canvas..."));
-  stat = reader.loadBMP("/blinka.bmp", img);
+  stat = reader.loadBMP("/tricolor-blinka.bmp", img);
   reader.printStatus(stat); // How'd we do?
+
   Serial.print(F("Drawing canvas to EPD..."));
+  display.clearBuffer();
   img.draw(display, 0, 0);
   display.display();
 
