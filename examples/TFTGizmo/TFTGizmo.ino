@@ -1,14 +1,11 @@
-// Adafruit_ImageReader test for Adafruit ST7789 320x240 TFT Breakout for Arduino.
+// Adafruit_ImageReader test for Adafruit TFT Gizmo for CircuitPlayground.
 // Demonstrates loading images to the screen, to RAM, and how to query
 // image file dimensions.
 // Requires three BMP files in root directory of SD card:
 // parrot.bmp, miniwoof.bmp and wales.bmp.
-// As written, this uses the microcontroller's SPI interface for the screen
-// (not 'bitbang') and must be wired to specific pins (e.g. for Arduino Uno,
-// MOSI = pin 11, MISO = 12, SCK = 13). Other pins are configurable below.
 
 #include <Adafruit_GFX.h>         // Core graphics library
-#include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
+#include <Adafruit_ST7789.h>      // Hardware-specific library for ST7789
 #include <Adafruit_SPIFlash.h>    // SPI / QSPI flash library
 #include <Adafruit_ImageReader.h> // Image-reading functions
 
@@ -81,7 +78,7 @@ void setup(void) {
   // successfully communicating with the screen.
   tft.fillScreen(ST77XX_BLUE);
 
-  // Load full-screen BMP file 'purple.bmp' at position (0,0) (top left).
+  // Load full-screen BMP file 'adabot240.bmp' at position (0,0) (top left).
   // Notice the 'reader' object performs this, with 'tft' as an argument.
   Serial.print(F("Loading adabot240.bmp to screen..."));
   stat = reader.drawBMP("/adabot240.bmp", tft, 0, 0);
@@ -98,10 +95,7 @@ void setup(void) {
     Serial.println(height);
   }
 
-  // Load small BMP 'wales.bmp' into a GFX canvas in RAM. This should fail
-  // gracefully on Arduino Uno and other small devices, meaning the image
-  // will not load, but this won't make the program stop or crash, it just
-  // continues on without it. Should work on Arduino Mega, Zero, etc.
+  // Load small BMP 'wales.bmp' into a GFX canvas in RAM.
   Serial.print(F("Loading wales.bmp to canvas..."));
   stat = reader.loadBMP("/wales.bmp", img);
   reader.printStatus(stat); // How'd we do?
