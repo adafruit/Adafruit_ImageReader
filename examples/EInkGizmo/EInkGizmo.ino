@@ -70,9 +70,9 @@ void setup(void) {
 
   Serial.println(F("OK!"));
 
-  // Load full-screen BMP file 'blinka.bmp' at position (0,0) (top left).
+  // Load full-screen BMP file 'tricolor-blinka.bmp' at position (0,0) (top left).
   // Notice the 'reader' object performs this, with 'epd' as an argument.
-  Serial.print(F("Loading blinka.bmp to canvas..."));
+  Serial.print(F("Loading tricolor-blinka.bmp to canvas..."));
   stat = reader.loadBMP("/tricolor-blinka.bmp", img);
   reader.printStatus(stat); // How'd we do?
 

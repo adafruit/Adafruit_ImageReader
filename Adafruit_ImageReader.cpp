@@ -210,7 +210,7 @@ void Adafruit_Image::draw(Adafruit_EPD &epd, int16_t x, int16_t y) {
   if(format == IMAGE_1 ) {
     uint8_t *buffer = canvas.canvas1->getBuffer();
     uint8_t i, c;
-    while(row <= y + canvas.canvas1->height()) {
+    while(row < y + canvas.canvas1->height()) {
         for (i = 0; i < 8; i++) {
             if ((*buffer & (0x80 >> i)) > 0) {
                c = EPD_BLACK; // try to infer black
@@ -230,7 +230,7 @@ void Adafruit_Image::draw(Adafruit_EPD &epd, int16_t x, int16_t y) {
   } else if(format == IMAGE_8 ) {
   } else if(format == IMAGE_16) {
     uint16_t *buffer = canvas.canvas16->getBuffer();
-    while(row <= y + canvas.canvas16->height()) {
+    while(row < y + canvas.canvas16->height()) {
         // RGB in 565 format
         uint8_t r = (*buffer & 0xf800) >> 8;
         uint8_t g = (*buffer & 0x07e0) >> 3;
