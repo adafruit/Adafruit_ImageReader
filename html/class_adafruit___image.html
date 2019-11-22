@@ -91,6 +91,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a96f77402b729e22bf375ec07116d91cd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image.html#a96f77402b729e22bf375ec07116d91cd">draw</a> (Adafruit_SPITFT &amp;tft, int16_t x, int16_t y)</td></tr>
 <tr class="memdesc:a96f77402b729e22bf375ec07116d91cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw image to an Adafruit_SPITFT-type display.  <a href="#a96f77402b729e22bf375ec07116d91cd">More...</a><br /></td></tr>
 <tr class="separator:a96f77402b729e22bf375ec07116d91cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aacd7e026e3e8092c6f59dcb0d715950a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image.html#aacd7e026e3e8092c6f59dcb0d715950a">draw</a> (Adafruit_EPD &amp;epd, int16_t x, int16_t y)</td></tr>
+<tr class="memdesc:aacd7e026e3e8092c6f59dcb0d715950a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Draw image to an Adafruit ePaper-type display.  <a href="#aacd7e026e3e8092c6f59dcb0d715950a">More...</a><br /></td></tr>
+<tr class="separator:aacd7e026e3e8092c6f59dcb0d715950a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7148217b19c3f9d13b02bbf09b5bbd9d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_adafruit___image_reader_8h.html#a22f6b18e781e3c412e7d243f7de6aa5c">ImageFormat</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image.html#a7148217b19c3f9d13b02bbf09b5bbd9d">getFormat</a> (void) const</td></tr>
 <tr class="memdesc:a7148217b19c3f9d13b02bbf09b5bbd9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return canvas image format.  <a href="#a7148217b19c3f9d13b02bbf09b5bbd9d">More...</a><br /></td></tr>
 <tr class="separator:a7148217b19c3f9d13b02bbf09b5bbd9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -238,7 +241,7 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 </div>
 </div>
 <a id="a96f77402b729e22bf375ec07116d91cd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a96f77402b729e22bf375ec07116d91cd">&#9670;&nbsp;</a></span>draw()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a96f77402b729e22bf375ec07116d91cd">&#9670;&nbsp;</a></span>draw() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -273,6 +276,51 @@ class&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cla
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">tft</td><td>Screen to draw to (any Adafruit_SPITFT-derived class). </td></tr>
+    <tr><td class="paramname">x</td><td>Horizontal offset in pixels; left edge = 0, positive = right. Value is signed, image will be clipped if all or part is off the screen edges. Screen rotation setting is observed. </td></tr>
+    <tr><td class="paramname">y</td><td>Vertical offset in pixels; top edge = 0, positive = down. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>None (void). </dd></dl>
+
+</div>
+</div>
+<a id="aacd7e026e3e8092c6f59dcb0d715950a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aacd7e026e3e8092c6f59dcb0d715950a">&#9670;&nbsp;</a></span>draw() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Adafruit_Image::draw </td>
+          <td>(</td>
+          <td class="paramtype">Adafruit_EPD &amp;&#160;</td>
+          <td class="paramname"><em>epd</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Draw image to an Adafruit ePaper-type display. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">epd</td><td>Screen to draw to (any Adafruit_EPD-derived class). </td></tr>
     <tr><td class="paramname">x</td><td>Horizontal offset in pixels; left edge = 0, positive = right. Value is signed, image will be clipped if all or part is off the screen edges. Screen rotation setting is observed. </td></tr>
     <tr><td class="paramname">y</td><td>Vertical offset in pixels; top edge = 0, positive = down. </td></tr>
   </table>
