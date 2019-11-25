@@ -7,7 +7,7 @@
 #include <Adafruit_GFX.h>         // Core graphics library
 #include "Adafruit_EPD.h"         // Hardware-specific library for EPD
 #include <Adafruit_SPIFlash.h>    // SPI / QSPI flash library
-#include <Adafruit_ImageReader.h> // Image-reading functions
+#include <Adafruit_ImageReader_EPD.h> // Image-reading functions
 
 #define EPD_CS      0
 #define EPD_DC      1
@@ -39,7 +39,7 @@ FatFileSystem        filesys;
 Adafruit_ImageReader reader(filesys); // Image-reader, pass in flash filesys
 
 Adafruit_IL0373      display(152, 152, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
-Adafruit_Image       img;        // An image loaded into RAM
+Adafruit_Image_EPD   img;        // An image loaded into RAM
 int32_t              width  = 0, // BMP image dimensions
                      height = 0;
 
