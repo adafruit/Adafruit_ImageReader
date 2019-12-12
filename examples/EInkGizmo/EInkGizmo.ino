@@ -15,6 +15,8 @@
 #define EPD_RESET   PIN_A3
 #define EPD_BUSY    -1
 
+Adafruit_IL0373      display(152, 152, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+
 // SPI or QSPI flash filesystem (i.e. CIRCUITPY drive)
 #if defined(__SAMD51__) || defined(NRF52840_XXAA)
   Adafruit_FlashTransport_QSPI flashTransport(PIN_QSPI_SCK, PIN_QSPI_CS,
@@ -27,18 +29,10 @@
   #endif
 #endif
 
-// TFT SPI interface selection
-#if (SPI_INTERFACES_COUNT == 1)
-  SPIClass* spi = &SPI;
-#else
-  SPIClass* spi = &SPI1;
-#endif
-
 Adafruit_SPIFlash    flash(&flashTransport);
 FatFileSystem        filesys;
 Adafruit_ImageReader reader(filesys); // Image-reader, pass in flash filesys
 
-Adafruit_IL0373      display(152, 152, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 Adafruit_Image_EPD   img;        // An image loaded into RAM
 int32_t              width  = 0, // BMP image dimensions
                      height = 0;
