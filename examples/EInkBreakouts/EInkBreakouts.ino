@@ -18,7 +18,7 @@
 #define SRAM_CS     8
 #define EPD_RESET   5 // can set to -1 and share with microcontroller Reset!
 #define EPD_BUSY    3 // can set to -1 to not use a pin (will wait a fixed delay)
-#define SD_CS       7 // SD card select pin
+#define SD_CS       4 // SD card chip select
 
 /* Uncomment the following line if you are using 1.54" tricolor EPD */
 Adafruit_IL0373 display(152, 152, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
