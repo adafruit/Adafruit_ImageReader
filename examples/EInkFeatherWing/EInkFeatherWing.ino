@@ -13,7 +13,7 @@
 // Comment out the next line to load from SPI/QSPI flash instead of SD card:
 #define USE_SD_CARD
 
-#if defefined(ESP8266)
+#if defined(ESP8266)
    #define SD_CS    2
    #define SRAM_CS 16
    #define EPD_CS   0
