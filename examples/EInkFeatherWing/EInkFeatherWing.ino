@@ -13,35 +13,51 @@
 // Comment out the next line to load from SPI/QSPI flash instead of SD card:
 #define USE_SD_CARD
 
-#define EPD_CS     10
-#define EPD_DC      9
-#define SRAM_CS     8
-#define EPD_RESET   5 // can set to -1 and share with microcontroller Reset!
-#define EPD_BUSY    3 // can set to -1 to not use a pin (will wait a fixed delay)
-#define SD_CS       4 // SD card chip select
+#if defined(ESP8266)
+   #define SD_CS    2
+   #define SRAM_CS 16
+   #define EPD_CS   0
+   #define EPD_DC   15
+#elif defined(ESP32)
+  #define SD_CS       14
+  #define SRAM_CS     32
+  #define EPD_CS      15
+  #define EPD_DC      33  
+#elif defined(TEENSYDUINO)
+  #define SD_CS       8
+  #define SRAM_CS     3
+  #define EPD_CS      4
+  #define EPD_DC      10  
+#elif defined(ARDUINO_STM32_FEATHER)
+   #define TFT_DC   PB4
+   #define TFT_CS   PA15
+   #define STMPE_CS PC7
+   #define SD_CS    PC5
+#elif defined(ARDUINO_NRF52832_FEATHER) // BSP 0.6.5 and higher!
+  #define SD_CS       27
+  #define SRAM_CS     30
+  #define EPD_CS      31
+  #define EPD_DC      11
+#else // Anything else!
+  #define SD_CS       5
+  #define SRAM_CS     6
+  #define EPD_CS      9
+  #define EPD_DC      10  
+#endif
 
-/* Uncomment the following line if you are using 1.54" tricolor EPD */
-Adafruit_IL0373 display(152, 152, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
-
-/* Uncomment the following line if you are using 1.54" monochrome EPD */
-//Adafruit_SSD1608 display(200, 200, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+#define EPD_RESET   -1 // can set to -1 and share with microcontroller Reset!
+#define EPD_BUSY    -1 // can set to -1 to not use a pin (will wait a fixed delay)
 
 /* Uncomment the following line if you are using 2.13" tricolor EPD */
-//Adafruit_IL0373 display(212, 104, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+Adafruit_IL0373 display(212, 104, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //#define FLEXIBLE_213
 
 /* Uncomment the following line if you are using 2.13" monochrome 250*122 EPD */
 //Adafruit_SSD1675 display(250, 122, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
-/* Uncomment the following line if you are using 2.7" tricolor or grayscale EPD */
-//Adafruit_IL91874 display(264, 176, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS);
-
-/* Uncomment the following line if you are using 2.9" EPD */
+/* Uncomment the following line if you are using 2.9" EPD with E-Ink Feather Friend */
 //Adafruit_IL0373 display(296, 128, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //#define FLEXIBLE_290
-
-/* Uncomment the following line if you are using 4.2" tricolor EPD */
-//Adafruit_IL0398 display(300, 400, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 #if defined(USE_SD_CARD)
   SdFat                SD;         // SD card filesystem

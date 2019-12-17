@@ -67,7 +67,7 @@ void setup(void) {
   // Load full-screen BMP file 'tricolor-blinka.bmp' at position (0,0) (top left).
   // Notice the 'reader' object performs this, with 'epd' as an argument.
   Serial.print(F("Loading tricolor-blinka.bmp to canvas..."));
-  stat = reader.loadBMP("/tricolor-blinka.bmp", img);
+  stat = reader.loadBMP((char *)"/tricolor-blinka.bmp", img);
   reader.printStatus(stat); // How'd we do?
 
   Serial.print(F("Drawing canvas to EPD..."));
