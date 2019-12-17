@@ -13,41 +13,36 @@
 // Comment out the next line to load from SPI/QSPI flash instead of SD card:
 #define USE_SD_CARD
 
-#ifdef ESP8266
+#if defefined(ESP8266)
    #define SD_CS    2
    #define SRAM_CS 16
    #define EPD_CS   0
    #define EPD_DC   15
-#endif
-#ifdef ESP32
+#elif defined(ESP32)
   #define SD_CS       14
   #define SRAM_CS     32
   #define EPD_CS      15
   #define EPD_DC      33  
-#endif
-#if defined (__AVR_ATmega32U4__) || defined(ARDUINO_SAMD_FEATHER_M0) || defined(ARDUINO_FEATHER_M4) || defined (__AVR_ATmega328P__) || defined(ARDUINO_NRF52840_FEATHER)
-  #define SD_CS       5
-  #define SRAM_CS     6
-  #define EPD_CS      9
-  #define EPD_DC      10  
-#endif
-#ifdef TEENSYDUINO
+#elif defined(TEENSYDUINO)
   #define SD_CS       8
   #define SRAM_CS     3
   #define EPD_CS      4
   #define EPD_DC      10  
-#endif
-#ifdef ARDUINO_STM32_FEATHER
+#elif defined(ARDUINO_STM32_FEATHER)
    #define TFT_DC   PB4
    #define TFT_CS   PA15
    #define STMPE_CS PC7
    #define SD_CS    PC5
-#endif
-#ifdef ARDUINO_NRF52832_FEATHER
+#elif defined(ARDUINO_NRF52832_FEATHER) // BSP 0.6.5 and higher!
   #define SD_CS       27
   #define SRAM_CS     30
   #define EPD_CS      31
-  #define EPD_DC      11  
+  #define EPD_DC      11
+#else // Anything else!
+  #define SD_CS       5
+  #define SRAM_CS     6
+  #define EPD_CS      9
+  #define EPD_DC      10  
 #endif
 
 #define EPD_RESET   -1 // can set to -1 and share with microcontroller Reset!
@@ -133,7 +128,7 @@ void setup(void) {
   // Load full-screen BMP file 'tricolor-blinka.bmp' at position (0,0) (top left).
   // Notice the 'reader' object performs this, with 'epd' as an argument.
   Serial.print(F("Loading tricolor-blinka.bmp to canvas..."));
-  stat = reader.loadBMP("/tricolor-blinka.bmp", img);
+  stat = reader.loadBMP((char *)"/tricolor-blinka.bmp", img);
   reader.printStatus(stat); // How'd we do?
 
   Serial.print(F("Drawing canvas to EPD..."));
