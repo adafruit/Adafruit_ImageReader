@@ -1,4 +1,4 @@
-# Adafruit_ImageReader [![Build Status](https://travis-ci.com/adafruit/Adafruit_ImageReader.svg?branch=master)](https://travis-ci.com/adafruit/Adafruit_ImageReader)
+# Adafruit_ImageReader ![Build Status](https://github.com/adafruit/Adafruit_ImageReader/workflows/Arduino%20Library%20CI/badge.svg)
 
 Companion library for Adafruit_GFX to load images from SD card.
 
