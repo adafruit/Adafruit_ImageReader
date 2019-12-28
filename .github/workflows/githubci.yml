@@ -6,7 +6,9 @@ jobs:
   build:
     strategy:
       matrix:
-        arduino-platform: ["uno", "leonardo"]
+        arduino-platform: ["uno", "leonardo", "mega2560", "esp8266", "esp32",
+                           "zero", "m4", "nrf52840", "pybadge", "hallowing_m4",
+                           "cpb", "cpx_ada", "pyportal"]
 
     runs-on: ubuntu-latest
     
