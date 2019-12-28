@@ -1,6 +1,6 @@
 # Adafruit_ImageReader ![Build Status](https://github.com/adafruit/Adafruit_ImageReader/workflows/Arduino%20Library%20CI/badge.svg)
 
-Companion library for Adafruit_GFX to load images from SD card.
+Companion library for Adafruit_GFX to load images from SD card or SPI Flash
 
 Requires Adafruit_GFX library and one of the SPI color graphic display libraries, e.g. Adafruit_ILI9341.
 
