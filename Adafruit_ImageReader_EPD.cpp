@@ -27,10 +27,10 @@ void Adafruit_Image_EPD::draw(Adafruit_EPD &epd, int16_t x, int16_t y) {
         epd.writePixel(col, row, c);
 
         col++;
-        if (col == x + canvas.canvas1->width()) {
-          col = x;
-          row++;
-        }
+      }
+      if (col >= x + canvas.canvas1->width()) {
+        col = x;
+        row++;
       }
       buffer++;
     };
