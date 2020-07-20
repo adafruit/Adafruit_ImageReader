@@ -103,8 +103,8 @@ public:
   void printStatus(ImageReturnCode stat, Stream &stream = Serial);
 
 protected:
-  FatFileSystem *filesys;
-  File file;
+  FatFileSystem *filesys; ///< FAT FileSystem Object
+  File file;              ///< Current Open file
   ImageReturnCode coreBMP(char *filename, Adafruit_SPITFT *tft, uint16_t *dest,
                           int16_t x, int16_t y, Adafruit_Image *img,
                           boolean transact);
