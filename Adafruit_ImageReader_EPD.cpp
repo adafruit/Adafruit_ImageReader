@@ -84,7 +84,8 @@ void Adafruit_Image_EPD::draw(Adafruit_EPD &epd, int16_t x, int16_t y) {
              often be in pre-setup() declaration, but DOES need initializing
              before any of the image loading or size functions are called!
 */
-Adafruit_ImageReader_EPD::Adafruit_ImageReader_EPD(FatFileSystem &fs) : Adafruit_ImageReader(fs) {}
+Adafruit_ImageReader_EPD::Adafruit_ImageReader_EPD(FatFileSystem &fs)
+    : Adafruit_ImageReader(fs) {}
 
 /*!
     @brief   Loads BMP image file from SD card directly to Adafruit_EPD screen.
@@ -106,8 +107,8 @@ Adafruit_ImageReader_EPD::Adafruit_ImageReader_EPD(FatFileSystem &fs) : Adafruit
              completion, other values on failure).
 */
 ImageReturnCode Adafruit_ImageReader_EPD::drawBMP(char *filename,
-                                              Adafruit_EPD &epd, int16_t x,
-                                              int16_t y, boolean transact) {
+                                                  Adafruit_EPD &epd, int16_t x,
+                                                  int16_t y, boolean transact) {
   uint16_t epdbuf[BUFPIXELS]; // Temp space for buffering EPD data
   // Call core BMP-reading function, passing address to EPD object,
   // EPD working buffer, and X & Y position of top-left corner (image
