@@ -117,7 +117,6 @@ ImageReturnCode Adafruit_ImageReader_EPD::drawBMP(char *filename,
   return coreBMP(filename, &epd, epdbuf, x, y, NULL, transact);
 }
 
-
 /*!
     @brief   BMP-reading function common both to the draw function (to EPD)
              and load function (to canvas object in RAM). BMP code has been
@@ -147,13 +146,13 @@ ImageReturnCode Adafruit_ImageReader_EPD::drawBMP(char *filename,
              completion, other values on failure).
 */
 ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
-    char *filename,       // SD file to load
-    Adafruit_EPD *epd,    // Pointer to TFT object, or NULL if to image
-    uint16_t *dest,       // EPD working buffer, or NULL if to canvas
-    int16_t x,            // Position if loading to EPD (else ignored)
+    char *filename,    // SD file to load
+    Adafruit_EPD *epd, // Pointer to TFT object, or NULL if to image
+    uint16_t *dest,    // EPD working buffer, or NULL if to canvas
+    int16_t x,         // Position if loading to EPD (else ignored)
     int16_t y,
     Adafruit_Image_EPD *img, // NULL if load-to-screen
-    boolean transact) {  // SD & EPD sharing bus, use transactions
+    boolean transact) {      // SD & EPD sharing bus, use transactions
 
   ImageReturnCode status = IMAGE_ERR_FORMAT; // IMAGE_SUCCESS on valid file
   uint32_t offset;                           // Start of image data in file
@@ -179,7 +178,7 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
   int loadWidth, loadHeight, // Region being loaded (clipped)
       loadX, loadY;          // "
   int row, col;              // Current pixel pos.
-  uint8_t r, g, b, color;           // Current pixel color
+  uint8_t r, g, b, color;    // Current pixel color
   uint8_t bitIn = 0;         // Bit number for 1-bit data in
   uint8_t bitOut = 0;        // Column mask for 1-bit data out
 
@@ -392,7 +391,7 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
                     b = sdbuf[srcidx++];
                     g = sdbuf[srcidx++];
                     r = sdbuf[srcidx++];
-                    
+
                     color = 0;
                     if ((r < 0x80) && (g < 0x80) && (b < 0x80)) {
                       color = EPD_BLACK; // try to infer black
