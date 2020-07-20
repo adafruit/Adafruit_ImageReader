@@ -102,7 +102,7 @@ public:
   ImageReturnCode bmpDimensions(char *filename, int32_t *w, int32_t *h);
   void printStatus(ImageReturnCode stat, Stream &stream = Serial);
 
-private:
+protected:
   FatFileSystem *filesys;
   File file;
   ImageReturnCode coreBMP(char *filename, Adafruit_SPITFT *tft, uint16_t *dest,
