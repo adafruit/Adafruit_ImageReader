@@ -60,8 +60,8 @@ Adafruit_IL0373 display(212, 104, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //#define FLEXIBLE_290
 
 #if defined(USE_SD_CARD)
-  SdFat                SD;         // SD card filesystem
-  Adafruit_ImageReader reader(SD); // Image-reader object, pass in SD filesys
+  SdFat                    SD;         // SD card filesystem
+  Adafruit_ImageReader_EPD reader(SD); // Image-reader object, pass in SD filesys
 #else
 
 // SPI or QSPI flash filesystem (i.e. CIRCUITPY drive)
@@ -75,9 +75,9 @@ Adafruit_IL0373 display(212, 104, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
       Adafruit_FlashTransport_SPI flashTransport(SS1, &SPI1);
     #endif
   #endif
-  Adafruit_SPIFlash    flash(&flashTransport);
-  FatFileSystem        filesys;
-  Adafruit_ImageReader reader(filesys); // Image-reader, pass in flash filesys
+  Adafruit_SPIFlash         flash(&flashTransport);
+  FatFileSystem             filesys;
+  Adafruit_ImageReader_EPD  reader(filesys); // Image-reader, pass in flash filesys
 #endif
 
 Adafruit_Image_EPD   img;        // An image loaded into RAM
@@ -127,16 +127,30 @@ void setup(void) {
 
   // Load full-screen BMP file 'tricolor-blinka.bmp' at position (0,0) (top left).
   // Notice the 'reader' object performs this, with 'epd' as an argument.
-  Serial.print(F("Loading tricolor-blinka.bmp to canvas..."));
-  stat = reader.loadBMP((char *)"/tricolor-blinka.bmp", img);
+  Serial.print(F("Loading tricolor-blinka-213.bmp to canvas..."));
+  stat = reader.drawBMP((char *)"/tricolor-blinka-213.bmp", display, 0, 0);
   reader.printStatus(stat); // How'd we do?
+  display.display();
+
+  // Query the dimensions of image 'miniwoof.bmp' WITHOUT loading to screen:
+  Serial.print(F("Querying tricolor-blinka-213.bmp image size..."));
+  stat = reader.bmpDimensions("tricolor-blinka-213.bmp", &width, &height);
+  reader.printStatus(stat);   // How'd we do?
+  if(stat == IMAGE_SUCCESS) { // If it worked, print image size...
+    Serial.print(F("Image dimensions: "));
+    Serial.print(width);
+    Serial.write('x');
+    Serial.println(height);
+  }
+
+  delay(30 * 1000); // Pause 30 seconds before continuing because it's eInk
 
   Serial.print(F("Drawing canvas to EPD..."));
   display.clearBuffer();
-  img.draw(display, 0, 0);
-  display.display();
 
-  delay(15 * 1000); // Pause 15 seconds before moving on to loop()
+  // Load the bitmap into img
+  stat = reader.loadBMP("/blinka-1bit-213.bmp", img);
+  reader.printStatus(stat); // How'd we do?
 }
 
 void loop() {
@@ -146,6 +160,6 @@ void loop() {
     display.clearBuffer();
     img.draw(display, 0, 0);
     display.display();
-    delay(15 * 1000); // Pause 15 sec.
+    delay(30 * 1000); // Pause 30 sec.
   }
 }

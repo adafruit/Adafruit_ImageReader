@@ -29,16 +29,15 @@ Adafruit_IL0373      display(152, 152, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_B
   #endif
 #endif
 
-Adafruit_SPIFlash    flash(&flashTransport);
-FatFileSystem        filesys;
-Adafruit_ImageReader reader(filesys); // Image-reader, pass in flash filesys
+Adafruit_SPIFlash         flash(&flashTransport);
+FatFileSystem             filesys;
+Adafruit_ImageReader_EPD  reader(filesys); // Image-reader, pass in flash filesys
 
 Adafruit_Image_EPD   img;        // An image loaded into RAM
 int32_t              width  = 0, // BMP image dimensions
                      height = 0;
 
 void setup(void) {
-
   ImageReturnCode stat; // Status from image-reading functions
 
   Serial.begin(9600);
@@ -67,15 +66,29 @@ void setup(void) {
   // Load full-screen BMP file 'tricolor-blinka.bmp' at position (0,0) (top left).
   // Notice the 'reader' object performs this, with 'epd' as an argument.
   Serial.print(F("Loading tricolor-blinka.bmp to canvas..."));
-  stat = reader.loadBMP((char *)"/tricolor-blinka.bmp", img);
+  stat = reader.drawBMP((char *)"/tricolor-blinka.bmp", display, 0, 0);
   reader.printStatus(stat); // How'd we do?
+  display.display();
+
+  // Query the dimensions of image 'miniwoof.bmp' WITHOUT loading to screen:
+  Serial.print(F("Querying tricolor-blinka.bmp image size..."));
+  stat = reader.bmpDimensions("tricolor-blinka.bmp", &width, &height);
+  reader.printStatus(stat);   // How'd we do?
+  if(stat == IMAGE_SUCCESS) { // If it worked, print image size...
+    Serial.print(F("Image dimensions: "));
+    Serial.print(width);
+    Serial.write('x');
+    Serial.println(height);
+  }
+
+  delay(30 * 1000); // Pause 30 seconds before continuing because it's eInk
 
   Serial.print(F("Drawing canvas to EPD..."));
   display.clearBuffer();
-  img.draw(display, 0, 0);
-  display.display();
 
-  delay(15 * 1000); // Pause 15 seconds before moving on to loop()
+  // Load the bitmap into img
+  stat = reader.loadBMP("/blinka-1bit.bmp", img);
+  reader.printStatus(stat); // How'd we do?
 }
 
 void loop() {
@@ -85,6 +98,6 @@ void loop() {
     display.clearBuffer();
     img.draw(display, 0, 0);
     display.display();
-    delay(15 * 1000); // Pause 15 sec.
+    delay(30 * 1000); // Pause 30 sec.
   }
 }
