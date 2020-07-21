@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['getcanvas',['getCanvas',['../class_adafruit___image.html#afe83af3e18c81c583c7a88a395fdbe85',1,'Adafruit_Image']]],
-  ['getformat',['getFormat',['../class_adafruit___image.html#a7148217b19c3f9d13b02bbf09b5bbd9d',1,'Adafruit_Image']]],
-  ['getmask',['getMask',['../class_adafruit___image.html#a4edc497bd644efbdc1caa39abbd672a2',1,'Adafruit_Image']]],
-  ['getpalette',['getPalette',['../class_adafruit___image.html#abf50c5b45823ae7717027532df7e9345',1,'Adafruit_Image']]]
+  ['dealloc',['dealloc',['../class_adafruit___image.html#a775ca41829f41398bea9e719d0297e34',1,'Adafruit_Image']]],
+  ['draw',['draw',['../class_adafruit___image.html#a96f77402b729e22bf375ec07116d91cd',1,'Adafruit_Image::draw()'],['../class_adafruit___image___e_p_d.html#ae6a3ae73c5ae47d9e26483a1e5cdf723',1,'Adafruit_Image_EPD::draw()']]],
+  ['drawbmp',['drawBMP',['../class_adafruit___image_reader.html#a4a033f474148e90a7a5e755f3531e401',1,'Adafruit_ImageReader::drawBMP()'],['../class_adafruit___image_reader___e_p_d.html#a7292a8972f6d0e7a239971b4999002b9',1,'Adafruit_ImageReader_EPD::drawBMP()']]]
 ];

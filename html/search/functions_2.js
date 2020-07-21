@@ -1,6 +1,4 @@
 var searchData=
 [
-  ['dealloc',['dealloc',['../class_adafruit___image.html#a775ca41829f41398bea9e719d0297e34',1,'Adafruit_Image']]],
-  ['draw',['draw',['../class_adafruit___image.html#a96f77402b729e22bf375ec07116d91cd',1,'Adafruit_Image::draw()'],['../class_adafruit___image___e_p_d.html#ae6a3ae73c5ae47d9e26483a1e5cdf723',1,'Adafruit_Image_EPD::draw()']]],
-  ['drawbmp',['drawBMP',['../class_adafruit___image_reader.html#a4a033f474148e90a7a5e755f3531e401',1,'Adafruit_ImageReader']]]
+  ['corebmp',['coreBMP',['../class_adafruit___image_reader.html#a6488aad8dcb06739b37b88f991b6b2a0',1,'Adafruit_ImageReader']]]
 ];

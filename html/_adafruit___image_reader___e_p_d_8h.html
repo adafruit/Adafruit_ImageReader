@@ -74,6 +74,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image___e_p_d.html">Adafruit_Image_EPD</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Data bundle returned with an image loaded to RAM. Used by ImageReader.loadBMP() and Image.draw(), not ImageReader.drawBMP().  <a href="class_adafruit___image___e_p_d.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader___e_p_d.html">Adafruit_ImageReader_EPD</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An optional adjunct to Adafruit_EPD that reads RGB BMP images (maybe others in the future) from a flash filesystem (SD card or SPI/QSPI flash). It's purposefully been made an entirely separate class (rather than part of SPITFT or GFX classes) so that Arduino code that uses GFX or SPITFT <em>without</em> image loading does not need to incur the RAM overhead and additional dependencies of the Adafruit_SPIFlash library by its mere inclusion. The syntaxes can therefore be a bit bizarre (passing display object as an argument), see examples for use.  <a href="class_adafruit___image_reader___e_p_d.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This is part of Adafruit's ImageReader library for Arduino, designed to work with Adafruit_GFX plus a display device-specific library.</p>

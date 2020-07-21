@@ -60,6 +60,8 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pro-methods">Protected Member Functions</a> &#124;
+<a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="class_adafruit___image_reader-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Adafruit_ImageReader Class Reference</div>  </div>
@@ -70,6 +72,15 @@ $(function() {
  <a href="class_adafruit___image_reader.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="_adafruit___image_reader_8h_source.html">Adafruit_ImageReader.h</a>&gt;</code></p>
+<div class="dynheader">
+Inheritance diagram for Adafruit_ImageReader:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="class_adafruit___image_reader.png" usemap="#Adafruit_5FImageReader_map" alt=""/>
+  <map id="Adafruit_5FImageReader_map" name="Adafruit_5FImageReader_map">
+<area href="class_adafruit___image_reader___e_p_d.html" title="An optional adjunct to Adafruit_EPD that reads RGB BMP images (maybe others in the future) from a fla..." alt="Adafruit_ImageReader_EPD" shape="rect" coords="0,56,170,80"/>
+</map>
+ </div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -91,6 +102,29 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af805ca644e8cf5100bb1638dff014c36"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#af805ca644e8cf5100bb1638dff014c36">printStatus</a> (<a class="el" href="_adafruit___image_reader_8h.html#acb79d38140fda8bba70a1282ecfaff51">ImageReturnCode</a> stat, Stream &amp;stream=Serial)</td></tr>
 <tr class="memdesc:af805ca644e8cf5100bb1638dff014c36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print human-readable status message corresponding to an ImageReturnCode type.  <a href="#af805ca644e8cf5100bb1638dff014c36">More...</a><br /></td></tr>
 <tr class="separator:af805ca644e8cf5100bb1638dff014c36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
+Protected Member Functions</h2></td></tr>
+<tr class="memitem:a6488aad8dcb06739b37b88f991b6b2a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_adafruit___image_reader_8h.html#acb79d38140fda8bba70a1282ecfaff51">ImageReturnCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a6488aad8dcb06739b37b88f991b6b2a0">coreBMP</a> (char *filename, Adafruit_SPITFT *tft, uint16_t *dest, int16_t x, int16_t y, <a class="el" href="class_adafruit___image.html">Adafruit_Image</a> *img, boolean transact)</td></tr>
+<tr class="memdesc:a6488aad8dcb06739b37b88f991b6b2a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">BMP-reading function common both to the draw function (to TFT) and load function (to canvas object in RAM). BMP code has been centralized here so if/when more BMP format variants are added in the future, it doesn't need to be implemented, debugged and kept in sync in two places.  <a href="#a6488aad8dcb06739b37b88f991b6b2a0">More...</a><br /></td></tr>
+<tr class="separator:a6488aad8dcb06739b37b88f991b6b2a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6dbce0de3e941a87b00acf433213757"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#aa6dbce0de3e941a87b00acf433213757">readLE16</a> (void)</td></tr>
+<tr class="memdesc:aa6dbce0de3e941a87b00acf433213757"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a little-endian 16-bit unsigned value from currently- open File, converting if necessary to the microcontroller's native endianism. (BMP files use little-endian values.)  <a href="#aa6dbce0de3e941a87b00acf433213757">More...</a><br /></td></tr>
+<tr class="separator:aa6dbce0de3e941a87b00acf433213757"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c219992b34ef3a626f94da7ce3bd649"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a5c219992b34ef3a626f94da7ce3bd649">readLE32</a> (void)</td></tr>
+<tr class="memdesc:a5c219992b34ef3a626f94da7ce3bd649"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a little-endian 32-bit unsigned value from currently- open File, converting if necessary to the microcontroller's native endianism. (BMP files use little-endian values.)  <a href="#a5c219992b34ef3a626f94da7ce3bd649">More...</a><br /></td></tr>
+<tr class="separator:a5c219992b34ef3a626f94da7ce3bd649"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
+Protected Attributes</h2></td></tr>
+<tr class="memitem:a1e451360b3c4ee88b5df198870501cce"><td class="memItemLeft" align="right" valign="top"><a id="a1e451360b3c4ee88b5df198870501cce"></a>
+FatFileSystem *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a1e451360b3c4ee88b5df198870501cce">filesys</a></td></tr>
+<tr class="memdesc:a1e451360b3c4ee88b5df198870501cce"><td class="mdescLeft">&#160;</td><td class="mdescRight">FAT FileSystem Object. <br /></td></tr>
+<tr class="separator:a1e451360b3c4ee88b5df198870501cce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3301772c1827bb170dccb691c02e8092"><td class="memItemLeft" align="right" valign="top"><a id="a3301772c1827bb170dccb691c02e8092"></a>
+File&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a3301772c1827bb170dccb691c02e8092">file</a></td></tr>
+<tr class="memdesc:a3301772c1827bb170dccb691c02e8092"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current Open file. <br /></td></tr>
+<tr class="separator:a3301772c1827bb170dccb691c02e8092"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An optional adjunct to Adafruit_SPITFT that reads RGB BMP images (maybe others in the future) from a flash filesystem (SD card or SPI/QSPI flash). It's purposefully been made an entirely separate class (rather than part of SPITFT or GFX classes) so that Arduino code that uses GFX or SPITFT <em>without</em> image loading does not need to incur the RAM overhead and additional dependencies of the Adafruit_SPIFlash library by its mere inclusion. The syntaxes can therefore be a bit bizarre (passing display object as an argument), see examples for use. </p>
@@ -321,6 +355,145 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>None (void). </dd></dl>
+
+</div>
+</div>
+<a id="a6488aad8dcb06739b37b88f991b6b2a0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6488aad8dcb06739b37b88f991b6b2a0">&#9670;&nbsp;</a></span>coreBMP()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_adafruit___image_reader_8h.html#acb79d38140fda8bba70a1282ecfaff51">ImageReturnCode</a> Adafruit_ImageReader::coreBMP </td>
+          <td>(</td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>filename</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Adafruit_SPITFT *&#160;</td>
+          <td class="paramname"><em>tft</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint16_t *&#160;</td>
+          <td class="paramname"><em>dest</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="class_adafruit___image.html">Adafruit_Image</a> *&#160;</td>
+          <td class="paramname"><em>img</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">boolean&#160;</td>
+          <td class="paramname"><em>transact</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>BMP-reading function common both to the draw function (to TFT) and load function (to canvas object in RAM). BMP code has been centralized here so if/when more BMP format variants are added in the future, it doesn't need to be implemented, debugged and kept in sync in two places. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">filename</td><td>Name of BMP image file to load. </td></tr>
+    <tr><td class="paramname">tft</td><td>Pointer to TFT object, if loading to screen, else NULL. </td></tr>
+    <tr><td class="paramname">dest</td><td>Working buffer for loading 16-bit TFT pixel data, if loading to screen, else NULL. </td></tr>
+    <tr><td class="paramname">x</td><td>Horizontal offset in pixels (if loading to screen). </td></tr>
+    <tr><td class="paramname">y</td><td>Vertical offset in pixels (if loading to screen). </td></tr>
+    <tr><td class="paramname">img</td><td>Pointer to <a class="el" href="class_adafruit___image.html" title="Data bundle returned with an image loaded to RAM. Used by ImageReader.loadBMP() and Image...">Adafruit_Image</a> object, if loading to RAM (or NULL if loading to screen). </td></tr>
+    <tr><td class="paramname">transact</td><td>Use SPI transactions; 'true' is needed only if loading to screen and it's on the same SPI bus as the SD card. Other situations can use 'false'. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>One of the ImageReturnCode values (IMAGE_SUCCESS on successful completion, other values on failure). </dd></dl>
+
+</div>
+</div>
+<a id="aa6dbce0de3e941a87b00acf433213757"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6dbce0de3e941a87b00acf433213757">&#9670;&nbsp;</a></span>readLE16()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t Adafruit_ImageReader::readLE16 </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reads a little-endian 16-bit unsigned value from currently- open File, converting if necessary to the microcontroller's native endianism. (BMP files use little-endian values.) </p>
+<dl class="section return"><dt>Returns</dt><dd>Unsigned 16-bit value, native endianism. </dd></dl>
+
+</div>
+</div>
+<a id="a5c219992b34ef3a626f94da7ce3bd649"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c219992b34ef3a626f94da7ce3bd649">&#9670;&nbsp;</a></span>readLE32()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t Adafruit_ImageReader::readLE32 </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reads a little-endian 32-bit unsigned value from currently- open File, converting if necessary to the microcontroller's native endianism. (BMP files use little-endian values.) </p>
+<dl class="section return"><dt>Returns</dt><dd>Unsigned 32-bit value, native endianism. </dd></dl>
 
 </div>
 </div>
