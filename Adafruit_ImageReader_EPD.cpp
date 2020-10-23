@@ -299,8 +299,12 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
                   r = file.read();
                   (void)file.read(); // Ignore 4th byte
                   color = 0;
-                  if ((r < 0x80) && (g < 0x80) && (b < 0x80)) {
+                  if ((r < 0x60) && (g < 0x60) && (b < 0x60)) {
                     color = EPD_BLACK; // try to infer black
+                  } else if ((r < 0x80) && (g < 0x80) && (b < 0x80)) {
+                    color = EPD_DARK; // try to infer dark gray
+                  } else if ((r < 0xD0) && (g < 0xD0) && (b < 0xD0)) {
+                    color = EPD_LIGHT; // try to infer light gray
                   } else if ((r >= 0x80) && (g >= 0x80) && (b >= 0x80)) {
                     color = EPD_WHITE;
                   } else if (r >= 0x80) {
