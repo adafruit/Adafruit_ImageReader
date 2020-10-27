@@ -63,16 +63,16 @@ void setup(void) {
 
   Serial.println(F("OK!"));
 
-  // Load full-screen BMP file 'tricolor-blinka.bmp' at position (0,0) (top left).
+  // Load full-screen BMP file 'blinka.bmp' at position (0,0) (top left).
   // Notice the 'reader' object performs this, with 'epd' as an argument.
-  Serial.print(F("Loading tricolor-blinka.bmp to canvas..."));
-  stat = reader.drawBMP((char *)"/tricolor-blinka.bmp", display, 0, 0);
+  Serial.print(F("Loading blinka.bmp to canvas..."));
+  stat = reader.drawBMP((char *)"/blinka.bmp", display, 0, 0);
   reader.printStatus(stat); // How'd we do?
   display.display();
 
-  // Query the dimensions of image 'miniwoof.bmp' WITHOUT loading to screen:
-  Serial.print(F("Querying tricolor-blinka.bmp image size..."));
-  stat = reader.bmpDimensions("tricolor-blinka.bmp", &width, &height);
+  // Query the dimensions of image 'blinka.bmp' WITHOUT loading to screen:
+  Serial.print(F("Querying blinka.bmp image size..."));
+  stat = reader.bmpDimensions("blinka.bmp", &width, &height);
   reader.printStatus(stat);   // How'd we do?
   if(stat == IMAGE_SUCCESS) { // If it worked, print image size...
     Serial.print(F("Image dimensions: "));
@@ -86,8 +86,11 @@ void setup(void) {
   Serial.print(F("Drawing canvas to EPD..."));
   display.clearBuffer();
 
-  // Load the bitmap into img
-  stat = reader.loadBMP("/blinka-1bit.bmp", img);
+  // Load small BMP 'blinka.bmp' into a GFX canvas in RAM. This should fail
+  // gracefully on Arduino Uno and other small devices, meaning the image
+  // will not load, but this won't make the program stop or crash, it just
+  // continues on without it. Should work on larger ram boards like M4, etc.
+  stat = reader.loadBMP("/blinka.bmp", img);
   reader.printStatus(stat); // How'd we do?
 }
 
