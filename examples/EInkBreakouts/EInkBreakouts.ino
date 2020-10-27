@@ -13,12 +13,12 @@
 // Comment out the next line to load from SPI/QSPI flash instead of SD card:
 #define USE_SD_CARD
 
-#define EPD_CS     10
-#define EPD_DC      9
-#define SRAM_CS     8
-#define EPD_RESET   5 // can set to -1 and share with microcontroller Reset!
-#define EPD_BUSY    3 // can set to -1 to not use a pin (will wait a fixed delay)
-#define SD_CS       4 // SD card chip select
+#define EPD_CS      9
+#define EPD_DC      10
+#define SRAM_CS     6
+#define EPD_RESET   8 // can set to -1 and share with microcontroller Reset!
+#define EPD_BUSY    7 // can set to -1 to not use a pin (will wait a fixed delay)
+#define SD_CS       5 // SD card chip select
 
 /* Uncomment the following line if you are using 1.54" tricolor EPD */
 Adafruit_IL0373 display(152, 152, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
@@ -73,7 +73,7 @@ void setup(void) {
   ImageReturnCode stat; // Status from image-reading functions
 
   Serial.begin(9600);
-  //while(!Serial);           // Wait for Serial Monitor before continuing
+  while(!Serial);           // Wait for Serial Monitor before continuing
 
   display.begin();
 
@@ -109,16 +109,16 @@ void setup(void) {
 #endif
   Serial.println(F("OK!"));
 
-  // Load full-screen BMP file 'tricolor-blinka.bmp' at position (0,0) (top left).
+  // Load full-screen BMP file 'blinka.bmp' at position (0,0) (top left).
   // Notice the 'reader' object performs this, with 'epd' as an argument.
-  Serial.print(F("Loading tricolor-blinka.bmp to canvas..."));
-  stat = reader.drawBMP((char *)"/tricolor-blinka.bmp", display, 0, 0);
+  Serial.print(F("Loading blinka.bmp to canvas..."));
+  stat = reader.drawBMP((char *)"/blinka.bmp", display, 0, 0);
   reader.printStatus(stat); // How'd we do?
   display.display();
 
-  // Query the dimensions of image 'miniwoof.bmp' WITHOUT loading to screen:
-  Serial.print(F("Querying tricolor-blinka.bmp image size..."));
-  stat = reader.bmpDimensions("tricolor-blinka.bmp", &width, &height);
+  // Query the dimensions of image 'blinka.bmp' WITHOUT loading to screen:
+  Serial.print(F("Querying blinka.bmp image size..."));
+  stat = reader.bmpDimensions("blinka.bmp", &width, &height);
   reader.printStatus(stat);   // How'd we do?
   if(stat == IMAGE_SUCCESS) { // If it worked, print image size...
     Serial.print(F("Image dimensions: "));
@@ -132,13 +132,16 @@ void setup(void) {
   Serial.print(F("Drawing canvas to EPD..."));
   display.clearBuffer();
 
-  // Load the bitmap into img
-  stat = reader.loadBMP("/blinka-1bit.bmp", img);
+  // Load small BMP 'blinka.bmp' into a GFX canvas in RAM. This should fail
+  // gracefully on Arduino Uno and other small devices, meaning the image
+  // will not load, but this won't make the program stop or crash, it just
+  // continues on without it. Should work on larger ram boards like M4, etc.
+  stat = reader.loadBMP("/blinka.bmp", img);
   reader.printStatus(stat); // How'd we do?
 }
 
 void loop() {
-  for(int r=0; r<4; r++) { // For each of 4 rotations...
+  for(int r=0; r<4; r++) {     // For each of 4 rotations...
     display.setRotation(r);    // Set rotation
     display.fillScreen(0);     // and clear screen
     display.clearBuffer();
