@@ -73,7 +73,7 @@ void setup(void) {
   ImageReturnCode stat; // Status from image-reading functions
 
   Serial.begin(9600);
-  while(!Serial);           // Wait for Serial Monitor before continuing
+  //while(!Serial);           // Wait for Serial Monitor before continuing
 
   display.begin();
 
