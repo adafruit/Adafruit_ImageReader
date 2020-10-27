@@ -13,12 +13,12 @@
 // Comment out the next line to load from SPI/QSPI flash instead of SD card:
 #define USE_SD_CARD
 
-#define EPD_CS      9
-#define EPD_DC      10
-#define SRAM_CS     6
-#define EPD_RESET   8 // can set to -1 and share with microcontroller Reset!
-#define EPD_BUSY    7 // can set to -1 to not use a pin (will wait a fixed delay)
-#define SD_CS       5 // SD card chip select
+#define EPD_CS     10
+#define EPD_DC      9
+#define SRAM_CS     8
+#define EPD_RESET   5 // can set to -1 and share with microcontroller Reset!
+#define EPD_BUSY    3 // can set to -1 to not use a pin (will wait a fixed delay)
+#define SD_CS       4 // SD card chip select
 
 /* Uncomment the following line if you are using 1.54" tricolor EPD */
 Adafruit_IL0373 display(152, 152, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
