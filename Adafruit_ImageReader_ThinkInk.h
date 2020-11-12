@@ -18,21 +18,28 @@
 #include "Adafruit_ThinkInk.h"
 #include "Adafruit_ImageReader.h"
 
+typedef enum {
+  DITHER_NONE,
+  DITHER_PATTERN,
+  DITHER_DIFFUSION,
+} dither_t;
+
 /*!
    @brief  Data bundle returned with an image loaded to RAM. Used by
            ImageReader.loadBMP() and Image.draw(), not ImageReader.drawBMP().
 */
 class Adafruit_Image_ThinkInk : public Adafruit_Image {
 public:
-  void draw(Adafruit_EPD &epd, int16_t x, int16_t y, thinkinkmode_t mode);
+  void draw(Adafruit_EPD &epd, int16_t x, int16_t y, thinkinkmode_t mode,
+            dither_t dither = DITHER_NONE);
 
 protected:
   friend class Adafruit_ImageReader_ThinkInk; ///< Loading occurs here
 };
 
 /*!
-   @brief  An optional adjunct to Adafruit_EPD that reads RGB BMP
-           images (maybe others in the future) from a flash filesystem
+   @brief  An optional adjunct to Adafruit_EPD that reads bitmap or RGB
+           BMP images (maybe others in the future) from a flash filesystem
            (SD card or SPI/QSPI flash). It's purposefully been made an
            entirely separate class (rather than part of SPITFT or GFX
            classes) so that Arduino code that uses GFX or SPITFT *without*
@@ -47,12 +54,14 @@ public:
   Adafruit_ImageReader_ThinkInk(FatFileSystem &fs);
   ImageReturnCode drawBMP(char *filename, Adafruit_EPD &epd, int16_t x,
                           int16_t y, thinkinkmode_t mode,
+                          dither_t dither = DITHER_NONE,
                           boolean transact = true);
 
 private:
   ImageReturnCode coreBMP(char *filename, Adafruit_EPD *epd, uint16_t *dest,
                           int16_t x, int16_t y, Adafruit_Image_ThinkInk *img,
-                          thinkinkmode_t mode, boolean transact);
+                          thinkinkmode_t mode, dither_t dither,
+                          boolean transact);
 };
 
 #endif // __ADAFRUIT_IMAGE_READER_THINKINK_H__

@@ -6,76 +6,190 @@
 #define BUFPIXELS 200 ///< 200 * 5 = 1000 bytes
 #endif
 
-/*!
-    @brief   Draw an image in RAM to an Adafruit ePaper-type display.
-    @param   epd   Screen to draw to (any Adafruit_EPD-derived class).
-    @param   x     Horizontal offset in pixels; left edge = 0,
-                   positive = right. Value is signed, image will be clipped
-                   if all or part is off the screen edges. Screen rotation
-                   setting is observed.
-    @param   y     Vertical offset in pixels; top edge = 0, positive = down.
-    @param   mode  One of the thinkinkmode_t types enumerated in
-                   Adafruit_EPD library (e.g. THINKINK_MONO).
-    @return  None (void).
-*/
-void Adafruit_Image_ThinkInk::draw(Adafruit_EPD &epd, int16_t x, int16_t y,
-  thinkinkmode_t mode) {
-  int16_t col = x, row = y;
-  if (format == IMAGE_1) {
-    uint8_t *buffer = canvas.canvas1->getBuffer();
-    uint8_t i, c;
-    while (row < y + canvas.canvas1->height()) {
-// To do - don't assume canvas width is multiple of 8!
-      for (i = 0; i < 8; i++) {
-        if ((*buffer & (0x80 >> i)) > 0) {
-          c = EPD_BLACK; // try to infer black
-        } else {
-          c = EPD_WHITE;
-        }
-        epd.writePixel(col, row, c);
+// Palettes are weird but will be needed for error diffusion dithering later.
+// Also, the quantize function references the tricolor palette.
+static const uint8_t palette_mono[][4] =
+  { {  47 >> 3,  36 >> 2,  41 >> 3, EPD_BLACK },
+    { 242 >> 3, 244 >> 2, 239 >> 3, EPD_WHITE } },
+  palette_tricolor[][4] =
+  { {  47 >> 3,  36 >> 2,  41 >> 3, EPD_BLACK },
+    { 242 >> 3, 244 >> 2, 239 >> 3, EPD_WHITE },
+    { 215 >> 3,  38 >> 2,  39 >> 3, EPD_RED } },
+  palette_grayscale4[][4] =
+  { {  47 >> 3,  36 >> 2,  41 >> 3, EPD_BLACK },
+    { 112 >> 3, 105 >> 2, 107 >> 3, EPD_DARK },
+    { 177 >> 3, 175 >> 2, 173 >> 3, EPD_LIGHT },
+    { 242 >> 3, 244 >> 2, 239 >> 3, EPD_WHITE } };
 
-        col++;
-      }
-      if (col >= x + canvas.canvas1->width()) {
-        col = x;
-        row++;
-      }
-      buffer++;
-    };
-  } else if (format == IMAGE_8) {
-  } else if (format == IMAGE_16) {
-    uint16_t *buffer = canvas.canvas16->getBuffer();
-    while (row < y + canvas.canvas16->height()) {
-      // RGB in 565 format
-      uint8_t r = (*buffer & 0xf800) >> 8;
-      uint8_t g = (*buffer & 0x07e0) >> 3;
-      uint8_t b = (*buffer & 0x001f) << 3;
+// Convert RGB565 color to closest match for EPD display type
 
-      uint8_t c = 0;
-      if ((r < 0x60) && (g < 0x60) && (b < 0x60)) {
-        c = EPD_BLACK; // try to infer black
-      } else if ((r < 0x80) && (g < 0x80) && (b < 0x80)) {
-        c = EPD_DARK; // try to infer dark gray
-      } else if ((r < 0xD0) && (g < 0xD0) && (b < 0xD0)) {
-        c = EPD_LIGHT; // try to infer light gray
-      } else if ((r >= 0x80) && (g >= 0x80) && (b >= 0x80)) {
-        c = EPD_WHITE;
-      } else if (r >= 0x80) {
-        c = EPD_RED; // try to infer red color
-      }
+// Should probably return the palette index but not the EPD color.
+// That way the calling function can look up the RGB color for
+// error diffusion.
+static uint8_t quantize(uint16_t rgb, thinkinkmode_t mode) {
+  uint8_t r = rgb >> 11;
+  uint8_t g = (rgb >> 5) & 0x3F;
+  uint8_t b = rgb & 0x1F;
+  if (mode == THINKINK_MONO) {
+    return (uint8_t)((r * 631 + g * 611 + b * 241) >> 15);
 
-      epd.writePixel(col, row, c);
-      col++;
-      if (col == x + canvas.canvas16->width()) {
-        col = x;
-        row++;
+  } else if (mode == THINKINK_GRAYSCALE4) {
+    return (uint8_t)((r * 631 + g * 611 + b * 241) >> 14);
+  } else { // THINKINK_TRICOLOR
+    // For the moment, doing a brute-force compare against each color
+    // in the tricolor palette, returning the index of the closest match
+    // (using distance in linear RGB space for comparison).
+    uint8_t i, closest_index = 0;
+    uint32_t closest_dist = 0xFFFFFFFF;
+    for (i=0; i< sizeof palette_tricolor / sizeof palette_tricolor[0]; i++) {
+      int8_t dr = r - palette_tricolor[i][0]; // Red dist
+      int8_t dg = g - palette_tricolor[i][1]; // Green dist
+      int8_t db = b - palette_tricolor[i][2]; // Blue dist
+      uint32_t dist = dr * dr + dg * dg + db * db; // Dist^2
+      if (dist < closest_dist) { // No sqrt needed, because relative compare
+        closest_dist = dist;
+        closest_index = i;
       }
-      buffer++;
-    };
+    }
+    return closest_index;
   }
 }
 
-// ADAFRUIT_IMAGEREADER_EPD CLASS **********************************************
+// Draw span of pixels from source buffer to EPD display, handling
+// quantization and dithering as requested. Clipping is already handled in
+// calling function; coordinates can safely be assumed fully in-image at
+// this point. This ONLY does a horizontal span, not a 2D rect. Input data
+// will ALWAYS be 16-bit RGB565 at this point (bitmaps have been expandex).
+
+static void span(uint16_t *src, Adafruit_EPD *epd, int16_t x, int16_t y,
+  int16_t width, thinkinkmode_t mode, dither_t dither) {
+
+  epd->startWrite();
+  uint8_t *palette;
+  if (mode == THINKINK_MONO) {
+    palette = (uint8_t *)palette_mono;
+  } else if (mode == THINKINK_GRAYSCALE4) {
+    palette = (uint8_t *)palette_grayscale4;
+  } else {
+    palette = (uint8_t *)palette_tricolor;
+  }
+  if (dither == DITHER_NONE) {
+    for (; width--; x++) {
+      epd->writePixel(x, y, palette[quantize(*src++, mode) * 4 + 3]);
+    }
+  } else if (dither == DITHER_PATTERN) {
+  } else {
+  }
+  epd->endWrite();
+}
+
+/*!
+    @brief   Draw an image in RAM to an Adafruit ThinkInk display.
+    @param   epd     Screen to draw to (any Adafruit_EPD-derived class).
+    @param   x       Horizontal offset in pixels; left edge = 0,
+                     positive = right. Value is signed, image will be clipped
+                     if all or part is off the screen edges. Screen rotation
+                     setting is observed.
+    @param   y       Vertical offset in pixels; top edge = 0, positive = down.
+    @param   mode    One of the thinkinkmode_t types enumerated in
+                     Adafruit_EPD library (e.g. THINKINK_MONO).
+    @param   dither  One of the dither_t values enumerated in header -
+                     DITHER_NONE, DITHER_ORDERED or DITHER_DIFFUSION.
+    @return  None (void).
+*/
+void Adafruit_Image_ThinkInk::draw(Adafruit_EPD &epd, int16_t x, int16_t y,
+  thinkinkmode_t mode, dither_t dither) {
+  if ((x >= epd.width()) || (y >= epd.height())) {
+    return; // Reject off right/bottom
+  }
+
+  if (format == IMAGE_1) {
+    int x2 = x + canvas.canvas1->width() - 1;
+    int y2 = y + canvas.canvas1->height() - 1;
+    if ((x2 < 0) || (y2 < 0)) {
+      return; // Reject off left/top
+    }
+    // Vertical clipping is achieved with an offset into the canvas buffer.
+    uint8_t *buffer = canvas.canvas1->getBuffer();
+    if (y < 0) { // Top clip
+      buffer -= y * ((canvas.canvas1->width() + 7) / 8);
+      y = 0;
+    }
+    if (y2 >= epd.height()) { // Bottom clip
+      y2 = epd.height() - 1;
+    }
+    // Horizontal clipping is peculiar by comparison...because source data
+    // is bit packed, need to keep track of the initial byte offset (at the
+    // start of each row) and bit index of the first pixel...
+    uint16_t initial_offset;
+    uint8_t  initial_bit;
+    if (x < 0) { // Left clip
+      initial_offset = -x / 8;
+      initial_bit = 7 - (-x & 7); // 7 to 0
+      x = 0;
+    } else {
+      initial_offset = initial_bit = 0;
+    }
+    if (x2 >= epd.width()) { // Right clip
+      x2 = epd.width() - 1;
+    }
+
+    uint16_t epdbuf[BUFPIXELS]; // Temp space for buffering EPD data
+    uint16_t destidx = 0;
+    for (; y <= y2; y++) { // For each row...
+      uint16_t offset = initial_offset;
+      uint8_t bit = initial_bit;
+      for (int16_t col = x; col <= x2; col++ ) {
+        epdbuf[destidx++] = palette[(buffer[offset] >> bit) & 1];
+        if (bit) {
+          bit--;
+        } else {
+          bit = 7;
+          offset++;
+        }
+        // If last pixel of row, or if epdbuf is full...
+        if ((col >= x2) || (destidx >= BUFPIXELS)) {
+          // Pass epdbuf data to span-drawing function...
+          span(epdbuf, &epd, col, y, destidx, mode, dither);
+          destidx = 0; // Reset epdbuf
+        }
+      }
+      buffer += (canvas.canvas1->width() + 7) / 8; // Offset to next row
+    }
+  } else if (format == IMAGE_8) {
+    // BMP reader doesn't currently handle palettized images
+  } else if (format == IMAGE_16) {
+    int x2 = x + canvas.canvas16->width() - 1;
+    int y2 = y + canvas.canvas16->height() - 1;
+    if ((x2 < 0) || (y2 < 0)) {
+      return; // Reject off left/top
+    }
+    uint16_t *buffer = canvas.canvas16->getBuffer();
+    if (y < 0) { // Top clip
+      buffer -= y * canvas.canvas16->width(); // Offset to first scanline
+      y = 0;
+    }
+    if (y2 >= epd.height()) { // Bottom clip
+      y2 = epd.height() - 1;
+    }
+    if (x < 0) { // Left clip
+      buffer += x; // Offset to first column
+      x = 0;
+    }
+    if (x2 >= epd.width()) { // Right clip
+      x2 = epd.width() - 1;
+    }
+
+    int16_t width = x2 - x + 1;
+    for (; y <= y2; y++) { // For each row...
+      // Call span function, passing pointer into RGB565 image
+      span(buffer, &epd, x, y, width, mode, dither);
+      buffer += canvas.canvas16->width(); // Offset to next scanline
+    }
+  } // end IMAGE_16
+}
+
+// ADAFRUIT_IMAGEREADER_THINKINK CLASS *************************************
 // Loads images from SD card to screen or RAM.
 
 /*!
@@ -106,6 +220,8 @@ Adafruit_ImageReader_ThinkInk::Adafruit_ImageReader_ThinkInk(FatFileSystem &fs)
                        positive = down.
     @param   mode      One of the thinkinkmode_t types enumerated in
                        Adafruit_EPD library (e.g. THINKINK_MONO).
+    @param   dither    One of the dither_t values enumerated in header -
+                       DITHER_NONE, DITHER_ORDERED or DITHER_DIFFUSION.
     @param   transact  Pass 'true' if TFT and SD are on the same SPI bus,
                        in which case SPI transactions are necessary. If
                        separate peripherals, can pass 'false'.
@@ -116,13 +232,14 @@ ImageReturnCode Adafruit_ImageReader_ThinkInk::drawBMP(char *filename,
                                                   Adafruit_EPD &epd, int16_t x,
                                                   int16_t y,
                                                   thinkinkmode_t mode,
+                                                  dither_t dither,
                                                   boolean transact) {
   uint16_t epdbuf[BUFPIXELS]; // Temp space for buffering EPD data
   // Call core BMP-reading function, passing address to EPD object,
   // EPD working buffer, and X & Y position of top-left corner (image
   // will be cropped on load if necessary). Image pointer is NULL when
   // reading to EPD, and transact argument is passed through.
-  return coreBMP(filename, &epd, epdbuf, x, y, NULL, mode, transact);
+  return coreBMP(filename, &epd, epdbuf, x, y, NULL, mode, dither, transact);
 }
 
 /*!
@@ -142,6 +259,9 @@ ImageReturnCode Adafruit_ImageReader_ThinkInk::drawBMP(char *filename,
                        loading to RAM (or NULL if loading to screen).
     @param   mode      One of the thinkinkmode_t types enumerated in
                        Adafruit_EPD library (e.g. THINKINK_MONO).
+    @param   dither    One of the dither_t values enumerated in header -
+                       DITHER_NONE, DITHER_ORDERED or DITHER_DIFFUSION
+                       (IGNORED if loading image to canvas).
     @param   transact  Use SPI transactions; 'true' is needed only if
                        loading to screen and it's on the same SPI bus as
                        the SD card. Other situations can use 'false'.
@@ -156,6 +276,7 @@ ImageReturnCode Adafruit_ImageReader_ThinkInk::coreBMP(
     int16_t y,
     Adafruit_Image_ThinkInk *img, // NULL if load-to-screen
     thinkinkmode_t mode,
+    dither_t dither,
     boolean transact) {  // SD & EPD sharing bus, use transactions
 
   ImageReturnCode status = IMAGE_ERR_FORMAT; // IMAGE_SUCCESS on valid file
@@ -260,11 +381,15 @@ ImageReturnCode Adafruit_ImageReader_ThinkInk::coreBMP(
       // BMP rows are padded (if needed) to 4-byte boundary
       rowSize = ((depth * bmpWidth + 31) / 32) * 4;
 
-      if ((depth == 24) || (depth == 1)) { // BGR or 1-bit bitmap format
+      // CURRENTLY ONLY 24-BIT BGR AND 1-BIT BMPS ARE SUPPORTED.
+      // 8-bit grayscale, 8- or 4-bit paletted, etc. are NOT HANDLED.
+
+      if ((depth == 24) || (depth == 1)) {
 
         if (img) {
           // Loading to RAM -- allocate GFX canvas
           status = IMAGE_ERR_MALLOC; // Assume won't fit to start
+          // Future: handle other depths.
           if (depth == 24) {
             if ((img->canvas.canvas16 = new GFXcanvas16(bmpWidth, bmpHeight))) {
               dest = img->canvas.canvas16->getBuffer();
@@ -274,18 +399,18 @@ ImageReturnCode Adafruit_ImageReader_ThinkInk::coreBMP(
               dest1 = img->canvas.canvas1->getBuffer();
             }
           }
-          // Future: handle other depths.
-        }
+        } // else loading to screen -- 'dest' pointer was passed in
 
         if (dest || dest1) { // Supported format, alloc OK, etc.
           status = IMAGE_SUCCESS;
 
           if ((loadWidth > 0) && (loadHeight > 0)) { // Clip top/left
-            if (epd) {
+            if (epd) {           // If loading to display...
               epd->startWrite(); // Start SPI (regardless of transact)
               epd_col = x;
               epd_row = y;
             } else {
+              // Future: handle other depths.
               if (depth == 1) {
                 img->format = IMAGE_1; // Is a GFX 1-bit canvas type
               } else {
@@ -296,29 +421,23 @@ ImageReturnCode Adafruit_ImageReader_ThinkInk::coreBMP(
             if ((depth >= 16) ||
                 (quantized = (uint16_t *)malloc(colors * sizeof(uint16_t)))) {
               if (depth < 16) {
-                // Load and quantize color table
+                // Load color table, quantied to RGB565. This is NOT
+                // converted to EPD color indices yet -- that's done
+                // during draw operation, as there may yet be
+                // dithering operations to perform.
                 for (uint16_t c = 0; c < colors; c++) {
                   b = file.read();
                   g = file.read();
                   r = file.read();
                   (void)file.read(); // Ignore 4th byte
-                  color = 0;
-                  if ((r < 0x60) && (g < 0x60) && (b < 0x60)) {
-                    color = EPD_BLACK; // try to infer black
-                  } else if ((r < 0x80) && (g < 0x80) && (b < 0x80)) {
-                    color = EPD_DARK; // try to infer dark gray
-                  } else if ((r < 0xD0) && (g < 0xD0) && (b < 0xD0)) {
-                    color = EPD_LIGHT; // try to infer light gray
-                  } else if ((r >= 0x80) && (g >= 0x80) && (b >= 0x80)) {
-                    color = EPD_WHITE;
-                  } else if (r >= 0x80) {
-                    color = EPD_RED; // try to infer red color
-                  }
-                  quantized[c] = color;
+                  quantized[c] =
+                      ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3);
                 }
               }
 
-              for (row = 0; row < loadHeight; row++) { // For each scanline...
+              for (row = 0; row < loadHeight; row++) {
+
+                // EACH SCANLINE -------------------------------------------
 
                 yield(); // Keep ESP8266 happy
 
@@ -338,7 +457,7 @@ ImageReturnCode Adafruit_ImageReader_ThinkInk::coreBMP(
                   bmpPos += loadX / 8;
                   bitIn = 7 - (loadX & 7);
                   bitOut = 0x80;
-                  if (img) {
+                  if (img) { // If loading 1-bit image to RAM
                     destidx = ((bmpWidth + 7) / 8) * row;
                   }
                 }
@@ -349,72 +468,46 @@ ImageReturnCode Adafruit_ImageReader_ThinkInk::coreBMP(
                   file.seek(bmpPos);     // Seek = SD transaction
                   srcidx = sizeof sdbuf; // Force buffer reload
                 }
-                for (col = 0; col < loadWidth; col++) { // For each pixel...
-                  if (srcidx >= sizeof sdbuf) {         // Time to load more?
-                    if (epd) {                          // Drawing to TFT?
-                      if (transact) {
-                        epd->endWrite(); // End EPD SPI transact
-                      }
+
+                for (col = 0; col < loadWidth; col++) {
+
+                  // EACH PIXEL ON SCANLINE --------------------------------
+
+                  if (srcidx >= sizeof sdbuf) { // Time to load more data?
+                    if (epd && transact) {
+                      epd->endWrite(); // End display SPI transaction
+                    }
 #if defined(ARDUINO_NRF52_ADAFRUIT)
-                      // NRF52840 seems to have trouble reading more than 512
-                      // bytes across certain boundaries. Workaround for now
-                      // is to break the read into smaller chunks...
-                      int32_t bytesToGo = sizeof sdbuf, bytesRead = 0,
-                              bytesThisPass;
-                      while (bytesToGo > 0) {
-                        bytesThisPass = min(bytesToGo, 512);
-                        file.read(&sdbuf[bytesRead], bytesThisPass);
-                        bytesRead += bytesThisPass;
-                        bytesToGo -= bytesThisPass;
-                      }
+                    // NRF52840 seems to have trouble reading more than 512
+                    // bytes across certain boundaries. Workaround for now
+                    // is to break the read into smaller chunks...
+                    int32_t bytesToGo = sizeof sdbuf, bytesRead = 0,
+                            bytesThisPass;
+                    while (bytesToGo > 0) {
+                      bytesThisPass = min(bytesToGo, 512);
+                      file.read(&sdbuf[bytesRead], bytesThisPass);
+                      bytesRead += bytesThisPass;
+                      bytesToGo -= bytesThisPass;
+                    }
 #else
-                      file.read(sdbuf, sizeof sdbuf); // Load from SD
+                    file.read(sdbuf, sizeof sdbuf); // Load from SD
 #endif
-                      if (transact)
-                        epd->startWrite(); // Start EPD SPI transact
-                      if (destidx) {       // If buffered EPD data
-                        // Non-blocking writes (DMA) have been temporarily
-                        // disabled until this can be rewritten with two
-                        // alternating 'dest' buffers (else the nonblocking
-                        // data out is overwritten in the dest[] write below).
-                        uint16_t index = 0;
-                        while (index < destidx && epd_row < y + loadHeight) {
-                          epd->writePixel(epd_col, epd_row, dest[index]);
-                          epd_col++;
-                          if (epd_col == x + loadWidth) {
-                            epd_col = x;
-                            epd_row++;
-                          }
-                          index++;
-                        };
-                        destidx = 0; // and reset dest index
-                      }
-                    } else {                          // Canvas is simpler,
-                      file.read(sdbuf, sizeof sdbuf); // just load sdbuf
-                    }                                 // (destidx never resets)
-                    srcidx = 0;                       // Reset bmp buf index
+                    if (epd && transact) {
+                      epd->startWrite(); // Start next display SPI transact
+                    }
+                    srcidx = 0; // Reset bmp buf index
                   }
+
                   if (depth == 24) {
-                    // Convert each pixel from BMP to 565 format, save in dest
+                    // Convert RGB pixel to 565 format, save in dest.
+                    // Makes no difference if going to screen or canvas.
                     b = sdbuf[srcidx++];
                     g = sdbuf[srcidx++];
                     r = sdbuf[srcidx++];
-
-                    color = 0;
-                    if ((r < 0x60) && (g < 0x60) && (b < 0x60)) {
-                      color = EPD_BLACK; // try to infer black
-                    } else if ((r < 0x80) && (g < 0x80) && (b < 0x80)) {
-                      color = EPD_DARK; // try to infer dark gray
-                    } else if ((r < 0xD0) && (g < 0xD0) && (b < 0xD0)) {
-                      color = EPD_LIGHT; // try to infer light gray
-                    } else if ((r >= 0x80) && (g >= 0x80) && (b >= 0x80)) {
-                      color = EPD_WHITE;
-                    } else if (r >= 0x80) {
-                      color = EPD_RED; // try to infer red color
-                    }
-                    dest[destidx++] = color;
-                  } else {
-                    // Extract 1-bit color index
+                    dest[destidx++] =
+                      ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3);
+                  } else { // 1-bit
+                    // Extract bit (color index) from BMP...
                     uint8_t n = (sdbuf[srcidx] >> bitIn) & 1;
                     if (!bitIn) {
                       srcidx++;
@@ -422,11 +515,22 @@ ImageReturnCode Adafruit_ImageReader_ThinkInk::coreBMP(
                     } else {
                       bitIn--;
                     }
-                    if (epd) {
-                      // Look up in palette, store in epd dest buf
+                    if (epd) { // Loading 1-bit image to display...
+                      // RGB565 color from palette goes in EPD dest buffer...
                       dest[destidx++] = quantized[n];
-                    } else {
-                      // Store bit in canvas1 buffer (ignore palette)
+                      // Even though source image is 1-bit, and display might
+                      // be 1-bit, it's not always the case that the source
+                      // image is black & white (could be any two RGB colors).
+                      // Hence the expansion to RGB565. The span-rendering
+                      // function then quantizes and/or dithers this to what
+                      // the display can best handle. In some cases that's
+                      // fantastically bloaty (converting 1-bit to 16-bit RGB
+                      // and then back to 1-bit later in the span function),
+                      // but the alternative is a TON of special case code.
+                      // Since the EPD is slow to update anyway, we'll just
+                      // accept it, the code isn't really the bottleneck.
+                    } else { // Loading 1-bit image to RAM...
+                      // Store bit in canvas1 buffer
                       if (n)
                         dest1[destidx] |= bitOut;
                       else
@@ -438,28 +542,22 @@ ImageReturnCode Adafruit_ImageReader_ThinkInk::coreBMP(
                       }
                     }
                   }
-                }                // end pixel loop
-                if (epd) {       // Drawing to TFT?
-                  if (destidx) { // Any remainders?
-                    uint16_t index = 0;
-                    while (index < destidx && epd_row < y + loadHeight) {
-                      epd->writePixel(epd_col, epd_row, dest[index]);
-                      epd_col++;
-                      if (epd_col == x + loadWidth) {
-                        epd_col = x;
-                        epd_row++;
-                      }
-                      index++;
-                    };
-                    destidx = 0; // and reset dest index
-                  }
-                  epd->endWrite(); // End TFT (regardless of transact)
-                }
-              } // end scanline loop
 
-              if (quantized) {
-                if (epd)
-                  free(quantized); // Palette no longer needed
+                  // If loading to display, and either we're on the last pixel
+                  // of the current row, OR if the dest buffer is full...
+                  if (epd && ((col == (loadWidth - 1)) ||
+                              (destidx >= BUFPIXELS))) {
+                    // Issue a span of pixels to the display...
+                    span(dest, epd, epd_col + col, epd_row + row, destidx,
+                      mode, dither);
+                    destidx = 0; // Reset dest buffer counter
+                  }
+                } // end pixel (column) loop -------------------------------
+              }   // end scanline (row) loop -------------------------------
+
+              if (quantized) {     // Was an RGB565 palette allocated?
+                if (epd)           // If image was loaded to display,
+                  free(quantized); // palette is no longer needed
                 else
                   img->palette = quantized; // Keep palette with img
               }
@@ -478,6 +576,40 @@ ImageReturnCode Adafruit_ImageReader_ThinkInk::coreBMP(
 Approximate RGB equivalent colors for display types & levels.
 This will be relevant when doing quantization from color RGB
 images to an EPD-ready format, especially with dithering.
+
+Convert these to 565 equivalents
+Since they'll be in a table, is OK to just add shifts here
+
+static struct {
+  uint8_t r;
+  uint8_t g;
+  uint8_t b;
+} mono[] = {
+  {  47 >> 3,  36 >> 2,  41 >> 3 }, // EPD_BLACK
+  { 242 >> 3, 244 >> 2, 239 >> 3 }  // EPD_WHITE
+},
+tricolor[] = {
+  {  47 >> 3,  36 >> 2,  41 >> 3 }, // EPD_BLACK
+  { 242 >> 3, 244 >> 2, 239 >> 3 }, // EPD_WHITE
+  { 215 >> 3,  38 >> 2,  39 >> 3 }  // EPD_RED
+},
+gray4[] = {
+  {  47 >> 3,  36 >> 2,  41 >> 3 }, // EPD_BLACK
+  { 112 >> 3, 105 >> 2, 107 >> 3 }, // EPD_DARK
+  { 177 >> 3, 175 >> 2, 173 >> 3 }, // EPD_LIGHT
+  { 242 >> 3, 244 >> 2, 239 >> 3 }  // EPD_WHITE
+};
+
+uint8_t **poop =
+  { {  47 >> 3,  36 >> 2,  41 >> 3 },   // EPD_BLACK
+    { 242 >> 3, 244 >> 2, 239 >> 3 } }, // EPD_WHITE
+  { {  47 >> 3,  36 >> 2,  41 >> 3 },   // EPD_BLACK
+    { 242 >> 3, 244 >> 2, 239 >> 3 },   // EPD_WHITE
+    { 215 >> 3,  38 >> 2,  39 >> 3 } }, // EPD_RED
+  { {  47 >> 3,  36 >> 2,  41 >> 3 },   // EPD_BLACK
+    { 112 >> 3, 105 >> 2, 107 >> 3 },   // EPD_DARK
+    { 177 >> 3, 175 >> 2, 173 >> 3 },   // EPD_LIGHT
+    { 242 >> 3, 244 >> 2, 239 >> 3 } }; // EPD_WHITE
 
 THINKINK_MONO
    47  36  41  EPD_BLACK
