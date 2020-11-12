@@ -30,7 +30,6 @@ static uint8_t quantize(uint16_t rgb, thinkinkmode_t mode) {
   uint8_t b = rgb & 0x1F;
   if (mode == THINKINK_MONO) {
     return (uint8_t)((r * 631 + g * 611 + b * 241) >> 15);
-
   } else if (mode == THINKINK_GRAYSCALE4) {
     return (uint8_t)((r * 631 + g * 611 + b * 241) >> 14);
   } else { // THINKINK_TRICOLOR
@@ -62,7 +61,7 @@ static uint8_t quantize(uint16_t rgb, thinkinkmode_t mode) {
 static void span(uint16_t *src, Adafruit_EPD *epd, int16_t x, int16_t y,
                  int16_t width, thinkinkmode_t mode, dither_t dither) {
 
-  epd->startWrite();
+//  epd->startWrite();
   uint8_t *palette;
   if (mode == THINKINK_MONO) {
     palette = (uint8_t *)palette_mono;
@@ -72,13 +71,13 @@ static void span(uint16_t *src, Adafruit_EPD *epd, int16_t x, int16_t y,
     palette = (uint8_t *)palette_tricolor;
   }
   if (dither == DITHER_NONE) {
-    for (; width--; x++) {
-      epd->writePixel(x, y, palette[quantize(*src++, mode) * 4 + 3]);
+    while (width--) {
+      epd->writePixel(x++, y, palette[quantize(*src++, mode) * 4 + 3]);
     }
   } else if (dither == DITHER_PATTERN) {
   } else {
   }
-  epd->endWrite();
+//  epd->endWrite();
 }
 
 /*!
@@ -132,6 +131,8 @@ void Adafruit_Image_ThinkInk::draw(Adafruit_EPD &epd, int16_t x, int16_t y,
       x2 = epd.width() - 1;
     }
 
+    epd.startWrite();
+
     uint16_t epdbuf[BUFPIXELS]; // Temp space for buffering EPD data
     uint16_t destidx = 0;
     for (; y <= y2; y++) { // For each row...
@@ -180,6 +181,8 @@ void Adafruit_Image_ThinkInk::draw(Adafruit_EPD &epd, int16_t x, int16_t y,
       x2 = epd.width() - 1;
     }
 
+    epd.startWrite();
+
     int16_t width = x2 - x + 1;
     for (; y <= y2; y++) { // For each row...
       // Call span function, passing pointer into RGB565 image
@@ -187,6 +190,7 @@ void Adafruit_Image_ThinkInk::draw(Adafruit_EPD &epd, int16_t x, int16_t y,
       buffer += canvas.canvas16->width(); // Offset to next scanline
     }
   } // end IMAGE_16
+  epd.endWrite();
 }
 
 // ADAFRUIT_IMAGEREADER_THINKINK CLASS *************************************
