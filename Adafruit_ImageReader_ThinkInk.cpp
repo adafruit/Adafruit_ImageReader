@@ -6,8 +6,17 @@
 #define BUFPIXELS 200 ///< 200 * 5 = 1000 bytes
 #endif
 
-// Palettes are weird but will be needed for error diffusion dithering later.
-// Also, the quantize function references the tricolor palette.
+// KEEP THIS VALUE CURRENT WITH THE LARGEST MAJOR AXIS AMONG ALL PANELS IN
+// Adafruit_EPD (currently 400 px from the ThinkInk_420_* panels).
+#define EPD_AXIS_MAX 400
+// These are error accumulation buffers used for diffusion dithering:
+static int8_t vRed[EPD_AXIS_MAX], vGreen[EPD_AXIS_MAX], vBlue[EPD_AXIS_MAX];
+static int8_t hRed, hGreen, hBlue;
+
+// Palettes are weird but are needed for error diffusion dithering, and the
+// tricolor palette is used in the quantize() function. Values here are the
+// perceived RGB565 values corresponding to each ink color (derived from
+// the Photoshop palettes used in dither guide).
 static const uint8_t
     palette_mono[][4] = {{47 >> 3, 36 >> 2, 41 >> 3, EPD_BLACK},
                          {242 >> 3, 244 >> 2, 239 >> 3, EPD_WHITE}},
@@ -19,18 +28,28 @@ static const uint8_t
                                {177 >> 3, 175 >> 2, 173 >> 3, EPD_LIGHT},
                                {242 >> 3, 244 >> 2, 239 >> 3, EPD_WHITE}};
 
-// Convert RGB565 color to closest match for EPD display type
-
-// Should probably return the palette index but not the EPD color.
-// That way the calling function can look up the RGB color for
-// error diffusion.
+/*!
+    @brief   Quantize RGB565 color to one of the fixed EPD colod indices,
+             whatever's a closest match for the EPD display type.
+    @param   rgb     RGB565 input color.
+    @param   mode    One of the thinkinkmode_t types enumerated in
+                     Adafruit_EPD library (e.g. THINKINK_MONO).
+    @return  Color index into palette appropriate for mode. This is the
+             palette index, NOT the RGB value. The calling function may
+             or may not want to look up the RGB color on its own (e.g.
+             when doing error diffusion).
+*/
 static uint8_t quantize(uint16_t rgb, thinkinkmode_t mode) {
   uint8_t r = rgb >> 11;
   uint8_t g = (rgb >> 5) & 0x3F;
   uint8_t b = rgb & 0x1F;
   if (mode == THINKINK_MONO) {
+    // RGB-to-gray weightings here are fixed-point equivalents to
+    // R=0.2989, G=0.587, B=0.114, factoring in that green is a 6-bit
+    // value covering a larger range compared to red and blue's 5 bits.
     return (uint8_t)((r * 631 + g * 611 + b * 241) >> 15); // 0 or 1
   } else if (mode == THINKINK_GRAYSCALE4) {
+    // Same deal re: RGB-to-gray weightings
     return (uint8_t)((r * 631 + g * 611 + b * 241) >> 14); // 0 to 3
   } else { // THINKINK_TRICOLOR
     // For the moment, doing a brute-force compare against each color
@@ -52,15 +71,44 @@ static uint8_t quantize(uint16_t rgb, thinkinkmode_t mode) {
   }
 }
 
-// Draw span of pixels from source buffer to EPD display, handling
-// quantization and dithering as requested. Clipping is already handled in
-// calling function; coordinates can safely be assumed fully in-image at
-// this point. This ONLY does a horizontal span, not a 2D rect. Input data
-// will ALWAYS be 16-bit RGB565 at this point (bitmaps have been expandex).
+/*!
+    @brief   Reset error accumulation buffers prior to diffusion dithering
+             (before reading BMP or rendering via draw()).
+    @param   rgb  If true, display has some colors (not mono or gray).
+    @return  None (void).
+*/
+static void dither_reset(bool rgb) {
+  memset(vRed, 0, sizeof vRed);
+  hRed = 0;
+  if (rgb) {
+    memset(vGreen, 0, sizeof vGreen);
+    memset(vBlue, 0, sizeof vBlue);
+    hGreen = hBlue = 0;
+  }
+}
 
+/*!
+    @brief   Draw span of pixels from source buffer to EPD display, applying
+             quantization and dithering as requested. Clipping is already
+             handled in calling function; coordinates can safely be assumed
+             fully in-image at this point. This ONLY does a horizontal span,
+             not a 2D rect. Input data will ALWAYS be 16-bit RGB565 at this
+             point (bitmaps have been expanded).
+    @param   src     Source data; array of pixels in 16-bit RGB565 format.
+    @param   epd     Screen to draw to (any Adafruit_EPD-derived class).
+
+    @param   x       Horizontal offset in pixels; left edge = 0,
+                     positive = right. Screen rotation setting is observed.
+    @param   y       Vertical offset in pixels; top edge = 0, positive = down.
+    @param   width   Width of span to draw, in pixels.
+    @param   mode    One of the thinkinkmode_t types enumerated in
+                     Adafruit_EPD library (e.g. THINKINK_MONO).
+    @param   dither  One of the dither_t values enumerated in header -
+                     DITHER_NONE, DITHER_ORDERED or DITHER_DIFFUSION.
+    @return  None (void).
+*/
 static void span(uint16_t *src, Adafruit_EPD *epd, int16_t x, int16_t y,
                  int16_t width, thinkinkmode_t mode, dither_t dither) {
-
   uint8_t *palette;
   if (mode == THINKINK_MONO) {
     palette = (uint8_t *)palette_mono;
@@ -74,7 +122,19 @@ static void span(uint16_t *src, Adafruit_EPD *epd, int16_t x, int16_t y,
       epd->drawPixel(x++, y, palette[quantize(*src++, mode) * 4 + 3]);
     }
   } else if (dither == DITHER_PATTERN) {
-  } else {
+    // 4x4 ordered dither goes here
+  } else { // DITHER_DIFFUSION
+    while (width--) {
+      uint16_t rgb = *src++;
+      uint8_t r = rgb >> 11;
+      uint8_t g = (rgb >> 5) & 0x3F;
+      uint8_t b = rgb & 0x1F;
+      if (mode == THINKINK_TRICOLOR) {
+      } else {
+        // See notes in quantize() about the math here
+        uint16_t gray = r * 631 + g * 611 + b * 241; // 0-65535ish
+      }
+    }
   }
 }
 
@@ -130,6 +190,9 @@ void Adafruit_Image_ThinkInk::draw(Adafruit_EPD &epd, int16_t x, int16_t y,
     }
 
     epd.startWrite();
+    if (dither == DITHER_DIFFUSION) {
+      dither_reset((mode == THINKINK_TRICOLOR));
+    }
 
     uint16_t epdbuf[BUFPIXELS]; // Temp space for buffering EPD data
     uint16_t destidx = 0;
@@ -180,6 +243,9 @@ void Adafruit_Image_ThinkInk::draw(Adafruit_EPD &epd, int16_t x, int16_t y,
     }
 
     epd.startWrite();
+    if (dither == DITHER_DIFFUSION) {
+      dither_reset((mode == THINKINK_TRICOLOR));
+    }
 
     int16_t width = x2 - x + 1;
     for (; y <= y2; y++) { // For each row...
@@ -431,6 +497,10 @@ ImageReturnCode Adafruit_ImageReader_ThinkInk::coreBMP(
                   quantized[c] =
                       ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3);
                 }
+              }
+
+              if (dither == DITHER_DIFFUSION) {
+                dither_reset((mode == THINKINK_TRICOLOR));
               }
 
               for (row = 0; row < loadHeight; row++) {
