@@ -29,9 +29,9 @@ static uint8_t quantize(uint16_t rgb, thinkinkmode_t mode) {
   uint8_t g = (rgb >> 5) & 0x3F;
   uint8_t b = rgb & 0x1F;
   if (mode == THINKINK_MONO) {
-    return (uint8_t)((r * 631 + g * 611 + b * 241) >> 15);
+    return (uint8_t)((r * 631 + g * 611 + b * 241) >> 15); // 0 or 1
   } else if (mode == THINKINK_GRAYSCALE4) {
-    return (uint8_t)((r * 631 + g * 611 + b * 241) >> 14);
+    return (uint8_t)((r * 631 + g * 611 + b * 241) >> 14); // 0 to 3
   } else { // THINKINK_TRICOLOR
     // For the moment, doing a brute-force compare against each color
     // in the tricolor palette, returning the index of the closest match
@@ -61,7 +61,6 @@ static uint8_t quantize(uint16_t rgb, thinkinkmode_t mode) {
 static void span(uint16_t *src, Adafruit_EPD *epd, int16_t x, int16_t y,
                  int16_t width, thinkinkmode_t mode, dither_t dither) {
 
-//  epd->startWrite();
   uint8_t *palette;
   if (mode == THINKINK_MONO) {
     palette = (uint8_t *)palette_mono;
@@ -72,12 +71,11 @@ static void span(uint16_t *src, Adafruit_EPD *epd, int16_t x, int16_t y,
   }
   if (dither == DITHER_NONE) {
     while (width--) {
-      epd->writePixel(x++, y, palette[quantize(*src++, mode) * 4 + 3]);
+      epd->drawPixel(x++, y, palette[quantize(*src++, mode) * 4 + 3]);
     }
   } else if (dither == DITHER_PATTERN) {
   } else {
   }
-//  epd->endWrite();
 }
 
 /*!
