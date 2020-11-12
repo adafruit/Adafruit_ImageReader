@@ -8,18 +8,16 @@
 
 // Palettes are weird but will be needed for error diffusion dithering later.
 // Also, the quantize function references the tricolor palette.
-static const uint8_t palette_mono[][4] =
-  { {  47 >> 3,  36 >> 2,  41 >> 3, EPD_BLACK },
-    { 242 >> 3, 244 >> 2, 239 >> 3, EPD_WHITE } },
-  palette_tricolor[][4] =
-  { {  47 >> 3,  36 >> 2,  41 >> 3, EPD_BLACK },
-    { 242 >> 3, 244 >> 2, 239 >> 3, EPD_WHITE },
-    { 215 >> 3,  38 >> 2,  39 >> 3, EPD_RED } },
-  palette_grayscale4[][4] =
-  { {  47 >> 3,  36 >> 2,  41 >> 3, EPD_BLACK },
-    { 112 >> 3, 105 >> 2, 107 >> 3, EPD_DARK },
-    { 177 >> 3, 175 >> 2, 173 >> 3, EPD_LIGHT },
-    { 242 >> 3, 244 >> 2, 239 >> 3, EPD_WHITE } };
+static const uint8_t
+    palette_mono[][4] = {{47 >> 3, 36 >> 2, 41 >> 3, EPD_BLACK},
+                         {242 >> 3, 244 >> 2, 239 >> 3, EPD_WHITE}},
+    palette_tricolor[][4] = {{47 >> 3, 36 >> 2, 41 >> 3, EPD_BLACK},
+                             {242 >> 3, 244 >> 2, 239 >> 3, EPD_WHITE},
+                             {215 >> 3, 38 >> 2, 39 >> 3, EPD_RED}},
+    palette_grayscale4[][4] = {{47 >> 3, 36 >> 2, 41 >> 3, EPD_BLACK},
+                               {112 >> 3, 105 >> 2, 107 >> 3, EPD_DARK},
+                               {177 >> 3, 175 >> 2, 173 >> 3, EPD_LIGHT},
+                               {242 >> 3, 244 >> 2, 239 >> 3, EPD_WHITE}};
 
 // Convert RGB565 color to closest match for EPD display type
 
@@ -41,11 +39,11 @@ static uint8_t quantize(uint16_t rgb, thinkinkmode_t mode) {
     // (using distance in linear RGB space for comparison).
     uint8_t i, closest_index = 0;
     uint32_t closest_dist = 0xFFFFFFFF;
-    for (i=0; i< sizeof palette_tricolor / sizeof palette_tricolor[0]; i++) {
-      int8_t dr = r - palette_tricolor[i][0]; // Red dist
-      int8_t dg = g - palette_tricolor[i][1]; // Green dist
-      int8_t db = b - palette_tricolor[i][2]; // Blue dist
-      uint32_t dist = dr * dr + dg * dg + db * db; // Dist^2
+    for (i = 0; i < sizeof palette_tricolor / sizeof palette_tricolor[0]; i++) {
+      int8_t dr = (r - palette_tricolor[i][0]) * 2; // Red dist
+      int8_t dg = g - palette_tricolor[i][1];       // Green dist
+      int8_t db = (b - palette_tricolor[i][2]) * 2; // Blue dist
+      uint32_t dist = dr * dr + dg * dg + db * db;  // Dist^2
       if (dist < closest_dist) { // No sqrt needed, because relative compare
         closest_dist = dist;
         closest_index = i;
@@ -62,7 +60,7 @@ static uint8_t quantize(uint16_t rgb, thinkinkmode_t mode) {
 // will ALWAYS be 16-bit RGB565 at this point (bitmaps have been expandex).
 
 static void span(uint16_t *src, Adafruit_EPD *epd, int16_t x, int16_t y,
-  int16_t width, thinkinkmode_t mode, dither_t dither) {
+                 int16_t width, thinkinkmode_t mode, dither_t dither) {
 
   epd->startWrite();
   uint8_t *palette;
@@ -98,7 +96,7 @@ static void span(uint16_t *src, Adafruit_EPD *epd, int16_t x, int16_t y,
     @return  None (void).
 */
 void Adafruit_Image_ThinkInk::draw(Adafruit_EPD &epd, int16_t x, int16_t y,
-  thinkinkmode_t mode, dither_t dither) {
+                                   thinkinkmode_t mode, dither_t dither) {
   if ((x >= epd.width()) || (y >= epd.height())) {
     return; // Reject off right/bottom
   }
@@ -122,7 +120,7 @@ void Adafruit_Image_ThinkInk::draw(Adafruit_EPD &epd, int16_t x, int16_t y,
     // is bit packed, need to keep track of the initial byte offset (at the
     // start of each row) and bit index of the first pixel...
     uint16_t initial_offset;
-    uint8_t  initial_bit;
+    uint8_t initial_bit;
     if (x < 0) { // Left clip
       initial_offset = -x / 8;
       initial_bit = 7 - (-x & 7); // 7 to 0
@@ -139,7 +137,8 @@ void Adafruit_Image_ThinkInk::draw(Adafruit_EPD &epd, int16_t x, int16_t y,
     for (; y <= y2; y++) { // For each row...
       uint16_t offset = initial_offset;
       uint8_t bit = initial_bit;
-      for (int16_t col = x; col <= x2; col++ ) {
+      int span_x = x;
+      for (int16_t col = x; col <= x2; col++) {
         epdbuf[destidx++] = palette[(buffer[offset] >> bit) & 1];
         if (bit) {
           bit--;
@@ -150,8 +149,9 @@ void Adafruit_Image_ThinkInk::draw(Adafruit_EPD &epd, int16_t x, int16_t y,
         // If last pixel of row, or if epdbuf is full...
         if ((col >= x2) || (destidx >= BUFPIXELS)) {
           // Pass epdbuf data to span-drawing function...
-          span(epdbuf, &epd, col, y, destidx, mode, dither);
-          destidx = 0; // Reset epdbuf
+          span(epdbuf, &epd, span_x, y, destidx, mode, dither);
+          span_x += destidx; // Next span starts here
+          destidx = 0;       // Reset epdbuf
         }
       }
       buffer += (canvas.canvas1->width() + 7) / 8; // Offset to next row
@@ -165,14 +165,14 @@ void Adafruit_Image_ThinkInk::draw(Adafruit_EPD &epd, int16_t x, int16_t y,
       return; // Reject off left/top
     }
     uint16_t *buffer = canvas.canvas16->getBuffer();
-    if (y < 0) { // Top clip
+    if (y < 0) {                              // Top clip
       buffer -= y * canvas.canvas16->width(); // Offset to first scanline
       y = 0;
     }
     if (y2 >= epd.height()) { // Bottom clip
       y2 = epd.height() - 1;
     }
-    if (x < 0) { // Left clip
+    if (x < 0) {   // Left clip
       buffer += x; // Offset to first column
       x = 0;
     }
@@ -228,12 +228,9 @@ Adafruit_ImageReader_ThinkInk::Adafruit_ImageReader_ThinkInk(FatFileSystem &fs)
     @return  One of the ImageReturnCode values (IMAGE_SUCCESS on successful
              completion, other values on failure).
 */
-ImageReturnCode Adafruit_ImageReader_ThinkInk::drawBMP(char *filename,
-                                                  Adafruit_EPD &epd, int16_t x,
-                                                  int16_t y,
-                                                  thinkinkmode_t mode,
-                                                  dither_t dither,
-                                                  boolean transact) {
+ImageReturnCode Adafruit_ImageReader_ThinkInk::drawBMP(
+    char *filename, Adafruit_EPD &epd, int16_t x, int16_t y,
+    thinkinkmode_t mode, dither_t dither, boolean transact) {
   uint16_t epdbuf[BUFPIXELS]; // Temp space for buffering EPD data
   // Call core BMP-reading function, passing address to EPD object,
   // EPD working buffer, and X & Y position of top-left corner (image
@@ -275,9 +272,8 @@ ImageReturnCode Adafruit_ImageReader_ThinkInk::coreBMP(
     int16_t x,         // Position if loading to EPD (else ignored)
     int16_t y,
     Adafruit_Image_ThinkInk *img, // NULL if load-to-screen
-    thinkinkmode_t mode,
-    dither_t dither,
-    boolean transact) {  // SD & EPD sharing bus, use transactions
+    thinkinkmode_t mode, dither_t dither,
+    boolean transact) { // SD & EPD sharing bus, use transactions
 
   ImageReturnCode status = IMAGE_ERR_FORMAT; // IMAGE_SUCCESS on valid file
   uint32_t offset;                           // Start of image data in file
@@ -405,7 +401,7 @@ ImageReturnCode Adafruit_ImageReader_ThinkInk::coreBMP(
           status = IMAGE_SUCCESS;
 
           if ((loadWidth > 0) && (loadHeight > 0)) { // Clip top/left
-            if (epd) {           // If loading to display...
+            if (epd) {                               // If loading to display...
               epd->startWrite(); // Start SPI (regardless of transact)
               epd_col = x;
               epd_row = y;
@@ -469,6 +465,8 @@ ImageReturnCode Adafruit_ImageReader_ThinkInk::coreBMP(
                   srcidx = sizeof sdbuf; // Force buffer reload
                 }
 
+                int span_x = epd_col;
+
                 for (col = 0; col < loadWidth; col++) {
 
                   // EACH PIXEL ON SCANLINE --------------------------------
@@ -505,7 +503,7 @@ ImageReturnCode Adafruit_ImageReader_ThinkInk::coreBMP(
                     g = sdbuf[srcidx++];
                     r = sdbuf[srcidx++];
                     dest[destidx++] =
-                      ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3);
+                        ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3);
                   } else { // 1-bit
                     // Extract bit (color index) from BMP...
                     uint8_t n = (sdbuf[srcidx] >> bitIn) & 1;
@@ -545,12 +543,13 @@ ImageReturnCode Adafruit_ImageReader_ThinkInk::coreBMP(
 
                   // If loading to display, and either we're on the last pixel
                   // of the current row, OR if the dest buffer is full...
-                  if (epd && ((col == (loadWidth - 1)) ||
-                              (destidx >= BUFPIXELS))) {
+                  if (epd &&
+                      ((col == (loadWidth - 1)) || (destidx >= BUFPIXELS))) {
                     // Issue a span of pixels to the display...
-                    span(dest, epd, epd_col + col, epd_row + row, destidx,
-                      mode, dither);
-                    destidx = 0; // Reset dest buffer counter
+                    span(dest, epd, span_x, epd_row + row, destidx, mode,
+                         dither);
+                    span_x += destidx; // Next span will start here
+                    destidx = 0;       // Reset dest buffer counter
                   }
                 } // end pixel (column) loop -------------------------------
               }   // end scanline (row) loop -------------------------------
@@ -571,56 +570,3 @@ ImageReturnCode Adafruit_ImageReader_ThinkInk::coreBMP(
   file.close();
   return status;
 }
-
-/*
-Approximate RGB equivalent colors for display types & levels.
-This will be relevant when doing quantization from color RGB
-images to an EPD-ready format, especially with dithering.
-
-Convert these to 565 equivalents
-Since they'll be in a table, is OK to just add shifts here
-
-static struct {
-  uint8_t r;
-  uint8_t g;
-  uint8_t b;
-} mono[] = {
-  {  47 >> 3,  36 >> 2,  41 >> 3 }, // EPD_BLACK
-  { 242 >> 3, 244 >> 2, 239 >> 3 }  // EPD_WHITE
-},
-tricolor[] = {
-  {  47 >> 3,  36 >> 2,  41 >> 3 }, // EPD_BLACK
-  { 242 >> 3, 244 >> 2, 239 >> 3 }, // EPD_WHITE
-  { 215 >> 3,  38 >> 2,  39 >> 3 }  // EPD_RED
-},
-gray4[] = {
-  {  47 >> 3,  36 >> 2,  41 >> 3 }, // EPD_BLACK
-  { 112 >> 3, 105 >> 2, 107 >> 3 }, // EPD_DARK
-  { 177 >> 3, 175 >> 2, 173 >> 3 }, // EPD_LIGHT
-  { 242 >> 3, 244 >> 2, 239 >> 3 }  // EPD_WHITE
-};
-
-uint8_t **poop =
-  { {  47 >> 3,  36 >> 2,  41 >> 3 },   // EPD_BLACK
-    { 242 >> 3, 244 >> 2, 239 >> 3 } }, // EPD_WHITE
-  { {  47 >> 3,  36 >> 2,  41 >> 3 },   // EPD_BLACK
-    { 242 >> 3, 244 >> 2, 239 >> 3 },   // EPD_WHITE
-    { 215 >> 3,  38 >> 2,  39 >> 3 } }, // EPD_RED
-  { {  47 >> 3,  36 >> 2,  41 >> 3 },   // EPD_BLACK
-    { 112 >> 3, 105 >> 2, 107 >> 3 },   // EPD_DARK
-    { 177 >> 3, 175 >> 2, 173 >> 3 },   // EPD_LIGHT
-    { 242 >> 3, 244 >> 2, 239 >> 3 } }; // EPD_WHITE
-
-THINKINK_MONO
-   47  36  41  EPD_BLACK
-  242 244 239  EPD_WHITE
-THINKINK_TRICOLOR
-   47  36  41  EPD_BLACK
-  242 244 239  EPD_WHITE
-  215  38  39  EPD_RED
-THINKINK_GRAYSCALE4
-   47  36  41  EPD_BLACK
-  112 105 107  EPD_DARK
-  177 175 173  EPD_LIGHT
-  242 244 239  EPD_WHITE
-*/

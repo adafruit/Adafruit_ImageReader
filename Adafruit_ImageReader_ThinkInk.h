@@ -15,8 +15,8 @@
 #ifndef __ADAFRUIT_IMAGE_READER_THINKINK_H__
 #define __ADAFRUIT_IMAGE_READER_THINKINK_H__
 
-#include "Adafruit_ThinkInk.h"
 #include "Adafruit_ImageReader.h"
+#include "Adafruit_ThinkInk.h"
 
 typedef enum {
   DITHER_NONE,
