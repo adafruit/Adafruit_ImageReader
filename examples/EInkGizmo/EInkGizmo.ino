@@ -4,8 +4,7 @@
 // Requires BMP file in root directory of QSPI Flash:
 // blinka.bmp.
 
-#include <Adafruit_GFX.h>         // Core graphics library
-#include "Adafruit_EPD.h"         // Hardware-specific library for EPD
+#include "Adafruit_ThinkInk.h"    // Hardware-specific library for EPD
 #include <Adafruit_SPIFlash.h>    // SPI / QSPI flash library
 #include <Adafruit_ImageReader_EPD.h> // Image-reading functions
 
@@ -15,7 +14,10 @@
 #define EPD_RESET   PIN_A3
 #define EPD_BUSY    -1
 
-Adafruit_IL0373      display(152, 152, EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+// 1.54" 152x152 Tricolor EPD with ILI0373 chipset
+//ThinkInk_154_Tricolor_Z17 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+// 1.54" 200x200 Tricolor EPD with SSD1681 chipset
+ThinkInk_154_Tricolor_Z90 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 // SPI or QSPI flash filesystem (i.e. CIRCUITPY drive)
 #if defined(__SAMD51__) || defined(NRF52840_XXAA)
@@ -40,10 +42,10 @@ int32_t              width  = 0, // BMP image dimensions
 void setup(void) {
   ImageReturnCode stat; // Status from image-reading functions
 
-  Serial.begin(9600);
-  //while(!Serial);           // Wait for Serial Monitor before continuing
+  Serial.begin(115200);
+  //while(!Serial) delay(10);           // Wait for Serial Monitor before continuing
 
-  display.begin();
+  display.begin(THINKINK_TRICOLOR);
   display.setRotation(3);  
 
   // The Adafruit_ImageReader constructor call (above, before setup())
@@ -53,12 +55,10 @@ void setup(void) {
   // SPI or QSPI flash requires two steps, one to access the bare flash
   // memory itself, then the second to access the filesystem within...
   if(!flash.begin()) {
-    Serial.println(F("flash begin() failed"));
-    for(;;);
+    errorEPD("Flash begin() failed");
   }
   if(!filesys.begin(&flash)) {
-    Serial.println(F("filesys begin() failed"));
-    for(;;);
+    errorEPD("filesys begin() failed");
   }
 
   Serial.println(F("OK!"));
@@ -68,6 +68,9 @@ void setup(void) {
   Serial.print(F("Loading blinka.bmp to canvas..."));
   stat = reader.drawBMP((char *)"/blinka.bmp", display, 0, 0);
   reader.printStatus(stat); // How'd we do?
+  if (stat != IMAGE_SUCCESS) {
+    errorEPD("Unable to draw image");
+  }
   display.display();
 
   // Query the dimensions of image 'blinka.bmp' WITHOUT loading to screen:
@@ -102,5 +105,19 @@ void loop() {
     img.draw(display, 0, 0);
     display.display();
     delay(30 * 1000); // Pause 30 sec.
+  }
+}
+
+void errorEPD(const char *errormsg) {
+  display.fillScreen(0);     // clear screen
+  display.clearBuffer();
+  display.setTextSize(2);
+  display.setCursor(10, 10);
+  display.setTextColor(EPD_BLACK);
+  display.print(errormsg); 
+  display.display();
+
+  while (1) {
+    delay(10);
   }
 }
