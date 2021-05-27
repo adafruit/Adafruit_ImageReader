@@ -246,7 +246,7 @@ Adafruit_ImageReader::~Adafruit_ImageReader(void) {
     @return  One of the ImageReturnCode values (IMAGE_SUCCESS on successful
              completion, other values on failure).
 */
-ImageReturnCode Adafruit_ImageReader::drawBMP(char *filename,
+ImageReturnCode Adafruit_ImageReader::drawBMP(const char *filename,
                                               Adafruit_SPITFT &tft, int16_t x,
                                               int16_t y, boolean transact) {
   uint16_t tftbuf[BUFPIXELS]; // Temp space for buffering TFT data
@@ -270,7 +270,7 @@ ImageReturnCode Adafruit_ImageReader::drawBMP(char *filename,
     @return  One of the ImageReturnCode values (IMAGE_SUCCESS on successful
              completion, other values on failure).
 */
-ImageReturnCode Adafruit_ImageReader::loadBMP(char *filename,
+ImageReturnCode Adafruit_ImageReader::loadBMP(const char *filename,
                                               Adafruit_Image &img) {
   // Call core BMP-reading function. TFT and working buffer are NULL
   // (unused and allocated in function, respectively), X & Y position are
@@ -308,7 +308,7 @@ ImageReturnCode Adafruit_ImageReader::loadBMP(char *filename,
              completion, other values on failure).
 */
 ImageReturnCode Adafruit_ImageReader::coreBMP(
-    char *filename,       // SD file to load
+    const char *filename,       // SD file to load
     Adafruit_SPITFT *tft, // Pointer to TFT object, or NULL if to image
     uint16_t *dest,       // TFT working buffer, or NULL if to canvas
     int16_t x,            // Position if loading to TFT (else ignored)
@@ -605,7 +605,7 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
     @return  One of the ImageReturnCode values (IMAGE_SUCCESS on successful
              completion, other values on failure).
 */
-ImageReturnCode Adafruit_ImageReader::bmpDimensions(char *filename,
+ImageReturnCode Adafruit_ImageReader::bmpDimensions(const char *filename,
                                                     int32_t *width,
                                                     int32_t *height) {
 
