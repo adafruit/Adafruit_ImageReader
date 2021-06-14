@@ -308,7 +308,7 @@ ImageReturnCode Adafruit_ImageReader::loadBMP(const char *filename,
              completion, other values on failure).
 */
 ImageReturnCode Adafruit_ImageReader::coreBMP(
-    const char *filename,       // SD file to load
+    const char *filename, // SD file to load
     Adafruit_SPITFT *tft, // Pointer to TFT object, or NULL if to image
     uint16_t *dest,       // TFT working buffer, or NULL if to canvas
     int16_t x,            // Position if loading to TFT (else ignored)

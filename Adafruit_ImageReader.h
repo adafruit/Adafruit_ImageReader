@@ -105,9 +105,9 @@ public:
 protected:
   FatFileSystem *filesys; ///< FAT FileSystem Object
   File file;              ///< Current Open file
-  ImageReturnCode coreBMP(const char *filename, Adafruit_SPITFT *tft, uint16_t *dest,
-                          int16_t x, int16_t y, Adafruit_Image *img,
-                          boolean transact);
+  ImageReturnCode coreBMP(const char *filename, Adafruit_SPITFT *tft,
+                          uint16_t *dest, int16_t x, int16_t y,
+                          Adafruit_Image *img, boolean transact);
   uint16_t readLE16(void);
   uint32_t readLE32(void);
 };
