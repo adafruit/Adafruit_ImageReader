@@ -1,11 +1,14 @@
-// Adafruit_ImageReader test for 2.4" TFT FeatherWing. Demonstrates loading
-// images from SD card or flash memory to the screen, to RAM, and how to
-// query image file dimensions. OPEN THE ARDUINO SERIAL MONITOR WINDOW TO
-// START PROGRAM. Requires three BMP files in root directory of SD card or
-// flash: purple.bmp, parrot.bmp and wales.bmp.
+// Adafruit_ImageReader test for Adafruit ST7789 320x240 TFT Breakout for Arduino.
+// Demonstrates loading images to the screen, to RAM, and how to query
+// image file dimensions.
+// Requires three BMP files in root directory of SD card:
+// parrot.bmp, miniwoof.bmp and wales.bmp.
+// As written, this uses the microcontroller's SPI interface for the screen
+// (not 'bitbang') and must be wired to specific pins (e.g. for Arduino Uno,
+// MOSI = pin 11, MISO = 12, SCK = 13). Other pins are configurable below.
 
 #include <Adafruit_GFX.h>         // Core graphics library
-#include <Adafruit_ILI9341.h>     // Hardware-specific library
+#include <Adafruit_ST7789.h> // Hardware-specific library for ST7789
 #include <SdFat.h>                // SD card & FAT filesystem library
 #include <Adafruit_SPIFlash.h>    // SPI / QSPI flash library
 #include <Adafruit_ImageReader.h> // Image-reading functions
@@ -13,38 +16,13 @@
 // Comment out the next line to load from SPI/QSPI flash instead of SD card:
 #define USE_SD_CARD
 
-// Pin definitions for 2.4" TFT FeatherWing vary among boards...
+// TFT display and SD card share the hardware SPI interface, using
+// 'select' pins for each to identify the active device on the bus.
 
-#if defined(ESP8266)
-  #define TFT_CS   0
-  #define TFT_DC   15
-  #define SD_CS    2
-#elif defined(ESP32) && !defined(ARDUINO_ADAFRUIT_FEATHER_ESP32S2)
-  #define TFT_CS   15
-  #define TFT_DC   33
-  #define SD_CS    14
-#elif defined(TEENSYDUINO)
-  #define TFT_DC   10
-  #define TFT_CS   4
-  #define SD_CS    8
-#elif defined(ARDUINO_STM32_FEATHER)
-  #define TFT_DC   PB4
-  #define TFT_CS   PA15
-  #define SD_CS    PC5
-#elif defined(ARDUINO_NRF52832_FEATHER) // BSP 0.6.5 and higher!
-  #define TFT_DC   11
-  #define TFT_CS   31
-  #define SD_CS    27
-#elif defined(ARDUINO_MAX32620FTHR) || defined(ARDUINO_MAX32630FTHR)
-  #define TFT_DC   P5_4
-  #define TFT_CS   P5_3
-  #define STMPE_CS P3_3
-  #define SD_CS    P3_2
-#else // Anything else!
-  #define TFT_CS   9
-  #define TFT_DC   10
-  #define SD_CS    5
-#endif
+#define SD_CS    4 // SD card select pin
+#define TFT_CS  10 // TFT select pin
+#define TFT_DC   8 // TFT display/command pin
+#define TFT_RST  9 // Or set to -1 and connect to Arduino RESET pin
 
 #if defined(USE_SD_CARD)
   SdFat                SD;         // SD card filesystem
@@ -66,19 +44,21 @@
   Adafruit_ImageReader reader(filesys); // Image-reader, pass in flash filesys
 #endif
 
-Adafruit_ILI9341       tft    = Adafruit_ILI9341(TFT_CS, TFT_DC);
-Adafruit_Image         img;        // An image loaded into RAM
-int32_t                width  = 0, // BMP image dimensions
-                       height = 0;
+Adafruit_ST7789      tft    = Adafruit_ST7789(TFT_CS, TFT_DC, TFT_RST);
+Adafruit_Image       img;        // An image loaded into RAM
+int32_t              width  = 0, // BMP image dimensions
+                     height = 0;
 
 void setup(void) {
 
   ImageReturnCode stat; // Status from image-reading functions
 
   Serial.begin(9600);
-  while(!Serial)  delay(100);       // Wait for Serial Monitor before continuing
+#if !defined(ESP32)
+  while(!Serial);       // Wait for Serial Monitor before continuing
+#endif
 
-  tft.begin();          // Initialize screen
+  tft.init(174, 320);           // Init ST7789 174x320
 
   // The Adafruit_ImageReader constructor call (above, before setup())
   // accepts an uninitialized SdFat or FatFileSystem object. This MUST
@@ -86,7 +66,7 @@ void setup(void) {
   Serial.print(F("Initializing filesystem..."));
 #if defined(USE_SD_CARD)
   // SD card is pretty straightforward, a single call...
-  if(!SD.begin(SD_CS, SD_SCK_MHZ(25))) { // ESP32 requires 25 MHz limit
+  if(!SD.begin(SD_CS, SD_SCK_MHZ(10))) { // Breakouts require 10 MHz limit due to longer wires
     Serial.println(F("SD begin() failed"));
     for(;;); // Fatal error, do not continue
   }
@@ -106,19 +86,17 @@ void setup(void) {
 
   // Fill screen blue. Not a required step, this just shows that we're
   // successfully communicating with the screen.
-  tft.fillScreen(ILI9341_BLUE);
+  tft.fillScreen(ST77XX_BLUE);
 
   // Load full-screen BMP file 'purple.bmp' at position (0,0) (top left).
   // Notice the 'reader' object performs this, with 'tft' as an argument.
   Serial.print(F("Loading purple.bmp to screen..."));
   stat = reader.drawBMP("/purple.bmp", tft, 0, 0);
-  // (Absolute path isn't necessary on most devices, but something
-  // with the ESP32 SD library seems to require it.)
   reader.printStatus(stat);   // How'd we do?
 
-  // Query the dimensions of image 'parrot.bmp' WITHOUT loading to screen:
-  Serial.print(F("Querying parrot.bmp image size..."));
-  stat = reader.bmpDimensions("/parrot.bmp", &width, &height);
+  // Query the dimensions of image 'miniwoof.bmp' WITHOUT loading to screen:
+  Serial.print(F("Querying miniwoof.bmp image size..."));
+  stat = reader.bmpDimensions("/miniwoof.bmp", &width, &height);
   reader.printStatus(stat);   // How'd we do?
   if(stat == IMAGE_SUCCESS) { // If it worked, print image size...
     Serial.print(F("Image dimensions: "));
@@ -127,10 +105,10 @@ void setup(void) {
     Serial.println(height);
   }
 
-  // Load small BMP 'wales.bmp' into a GFX canvas in RAM. This should
-  // fail gracefully on AVR and other small devices, meaning the image
-  // will not load, but this won't make the program stop or crash, it
-  // just continues on without it.
+  // Load small BMP 'wales.bmp' into a GFX canvas in RAM. This should fail
+  // gracefully on Arduino Uno and other small devices, meaning the image
+  // will not load, but this won't make the program stop or crash, it just
+  // continues on without it. Should work on Arduino Mega, Zero, etc.
   Serial.print(F("Loading wales.bmp to canvas..."));
   stat = reader.loadBMP("/wales.bmp", img);
   reader.printStatus(stat); // How'd we do?
@@ -143,11 +121,11 @@ void loop() {
     tft.setRotation(r);    // Set rotation
     tft.fillScreen(0);     // and clear screen
 
-    // Load 4 copies of the 'parrot.bmp' image to the screen, some
+    // Load 4 copies of the 'miniwoof.bmp' image to the screen, some
     // partially off screen edges to demonstrate clipping. Globals
     // 'width' and 'height' were set by bmpDimensions() call in setup().
     for(int i=0; i<4; i++) {
-      reader.drawBMP("/parrot.bmp", tft,
+      reader.drawBMP("/miniwoof.bmp", tft,
         (tft.width()  * i / 3) - (width  / 2),
         (tft.height() * i / 3) - (height / 2));
     }
