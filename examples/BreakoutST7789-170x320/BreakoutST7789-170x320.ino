@@ -54,9 +54,7 @@ void setup(void) {
   ImageReturnCode stat; // Status from image-reading functions
 
   Serial.begin(9600);
-#if !defined(ESP32)
   while(!Serial);       // Wait for Serial Monitor before continuing
-#endif
 
   tft.init(170, 320);           // Init ST7789 170x320
 
