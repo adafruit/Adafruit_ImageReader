@@ -56,7 +56,7 @@ void setup(void) {
   Serial.begin(9600);
   while(!Serial);       // Wait for Serial Monitor before continuing
 
-  tft.init(172, 320);           // Init ST7789 172x320
+  tft.init(170, 320);           // Init ST7789 170x320
 
   // The Adafruit_ImageReader constructor call (above, before setup())
   // accepts an uninitialized SdFat or FatFileSystem object. This MUST
