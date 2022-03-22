@@ -56,7 +56,7 @@ void setup(void) {
   Serial.begin(9600);
   while(!Serial);       // Wait for Serial Monitor before continuing
 
-  tft.init(172, 320);           // Init ST7789 172x320
+  tft.init(240, 280);           // Init ST7789 172x320
 
   // The Adafruit_ImageReader constructor call (above, before setup())
   // accepts an uninitialized SdFat or FatFileSystem object. This MUST
@@ -86,7 +86,7 @@ void setup(void) {
   // successfully communicating with the screen.
   tft.fillScreen(ST77XX_BLUE);
 
-  // Load full-screen BMP file 'purple.bmp' at position (0,0) (top left).
+  // Load full-screen BMP file 'adabot.bmp' at position (0,0) (top left).
   // Notice the 'reader' object performs this, with 'tft' as an argument.
   Serial.print(F("Loading adabot.bmp to screen..."));
   stat = reader.drawBMP("/adabot.bmp", tft, 0, 0);

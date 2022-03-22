@@ -85,8 +85,9 @@ void setup(void) {
   // Fill screen blue. Not a required step, this just shows that we're
   // successfully communicating with the screen.
   tft.fillScreen(ST77XX_BLUE);
+  tft.setRotation(3);
 
-  // Load full-screen BMP file 'purple.bmp' at position (0,0) (top left).
+  // Load full-screen BMP file 'adabot.bmp' at position (0,0) (top left).
   // Notice the 'reader' object performs this, with 'tft' as an argument.
   Serial.print(F("Loading adabot.bmp to screen..."));
   stat = reader.drawBMP("/adabot.bmp", tft, 0, 0);
