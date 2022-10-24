@@ -628,9 +628,9 @@ ImageReturnCode Adafruit_ImageReader::bmpDimensions(const char *filename,
       }
       status = IMAGE_SUCCESS; // YAY.
     }
+    file.close();
   }
 
-  file.close();
   return status;
 }
 

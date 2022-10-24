@@ -169,7 +169,7 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
   uint16_t *quantized = NULL;                // EPD Color palette
   uint32_t rowSize;                          // >bmpWidth if scanline padding
   uint8_t sdbuf[3 * BUFPIXELS];              // BMP read buf (R+G+B/pixel)
-  int16_t epd_col, epd_row;
+  int16_t epd_col = 0, epd_row = 0;
 #if ((3 * BUFPIXELS) <= 255)
   uint8_t srcidx = sizeof sdbuf; // Current position in sdbuf
 #else
