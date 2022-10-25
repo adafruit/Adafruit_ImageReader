@@ -84,9 +84,9 @@ Inheritance diagram for Adafruit_ImageReader:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a7d2c512f063ba2d430b01c26dbc181c6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a7d2c512f063ba2d430b01c26dbc181c6">Adafruit_ImageReader</a> (FatFileSystem &amp;fs)</td></tr>
-<tr class="memdesc:a7d2c512f063ba2d430b01c26dbc181c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a7d2c512f063ba2d430b01c26dbc181c6">More...</a><br /></td></tr>
-<tr class="separator:a7d2c512f063ba2d430b01c26dbc181c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad67d5ff40333394dc03701566dfa5f52"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#ad67d5ff40333394dc03701566dfa5f52">Adafruit_ImageReader</a> (FatVolume &amp;fs)</td></tr>
+<tr class="memdesc:ad67d5ff40333394dc03701566dfa5f52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#ad67d5ff40333394dc03701566dfa5f52">More...</a><br /></td></tr>
+<tr class="separator:ad67d5ff40333394dc03701566dfa5f52"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3da727d1ab406b637110743e40866ac7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a3da727d1ab406b637110743e40866ac7">~Adafruit_ImageReader</a> (void)</td></tr>
 <tr class="memdesc:a3da727d1ab406b637110743e40866ac7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="#a3da727d1ab406b637110743e40866ac7">More...</a><br /></td></tr>
 <tr class="separator:a3da727d1ab406b637110743e40866ac7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -117,20 +117,20 @@ Protected Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
-<tr class="memitem:a1e451360b3c4ee88b5df198870501cce"><td class="memItemLeft" align="right" valign="top"><a id="a1e451360b3c4ee88b5df198870501cce"></a>
-FatFileSystem *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a1e451360b3c4ee88b5df198870501cce">filesys</a></td></tr>
-<tr class="memdesc:a1e451360b3c4ee88b5df198870501cce"><td class="mdescLeft">&#160;</td><td class="mdescRight">FAT FileSystem Object. <br /></td></tr>
-<tr class="separator:a1e451360b3c4ee88b5df198870501cce"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3301772c1827bb170dccb691c02e8092"><td class="memItemLeft" align="right" valign="top"><a id="a3301772c1827bb170dccb691c02e8092"></a>
-File&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a3301772c1827bb170dccb691c02e8092">file</a></td></tr>
-<tr class="memdesc:a3301772c1827bb170dccb691c02e8092"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current Open file. <br /></td></tr>
-<tr class="separator:a3301772c1827bb170dccb691c02e8092"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa4763ea50b0cf71d984b638db6bb792"><td class="memItemLeft" align="right" valign="top"><a id="aaa4763ea50b0cf71d984b638db6bb792"></a>
+FatVolume *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#aaa4763ea50b0cf71d984b638db6bb792">filesys</a></td></tr>
+<tr class="memdesc:aaa4763ea50b0cf71d984b638db6bb792"><td class="mdescLeft">&#160;</td><td class="mdescRight">FAT FileSystem Object. <br /></td></tr>
+<tr class="separator:aaa4763ea50b0cf71d984b638db6bb792"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9d40b5f6cbdf51247208e9407d7cebb4"><td class="memItemLeft" align="right" valign="top"><a id="a9d40b5f6cbdf51247208e9407d7cebb4"></a>
+File32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a9d40b5f6cbdf51247208e9407d7cebb4">file</a></td></tr>
+<tr class="memdesc:a9d40b5f6cbdf51247208e9407d7cebb4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current Open file. <br /></td></tr>
+<tr class="separator:a9d40b5f6cbdf51247208e9407d7cebb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>An optional adjunct to Adafruit_SPITFT that reads RGB BMP images (maybe others in the future) from a flash filesystem (SD card or SPI/QSPI flash). It's purposefully been made an entirely separate class (rather than part of SPITFT or GFX classes) so that Arduino code that uses GFX or SPITFT <em>without</em> image loading does not need to incur the RAM overhead and additional dependencies of the Adafruit_SPIFlash library by its mere inclusion. The syntaxes can therefore be a bit bizarre (passing display object as an argument), see examples for use. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a7d2c512f063ba2d430b01c26dbc181c6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7d2c512f063ba2d430b01c26dbc181c6">&#9670;&nbsp;</a></span>Adafruit_ImageReader()</h2>
+<a id="ad67d5ff40333394dc03701566dfa5f52"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad67d5ff40333394dc03701566dfa5f52">&#9670;&nbsp;</a></span>Adafruit_ImageReader()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -138,7 +138,7 @@ File&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
         <tr>
           <td class="memname">Adafruit_ImageReader::Adafruit_ImageReader </td>
           <td>(</td>
-          <td class="paramtype">FatFileSystem &amp;&#160;</td>
+          <td class="paramtype">FatVolume &amp;&#160;</td>
           <td class="paramname"><em>fs</em></td><td>)</td>
           <td></td>
         </tr>
