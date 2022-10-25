@@ -94,7 +94,7 @@ protected:
 */
 class Adafruit_ImageReader {
 public:
-  Adafruit_ImageReader(FatFileSystem &fs);
+  Adafruit_ImageReader(FatVolume &fs);
   ~Adafruit_ImageReader(void);
   ImageReturnCode drawBMP(const char *filename, Adafruit_SPITFT &tft, int16_t x,
                           int16_t y, boolean transact = true);
@@ -103,8 +103,8 @@ public:
   void printStatus(ImageReturnCode stat, Stream &stream = Serial);
 
 protected:
-  FatFileSystem *filesys; ///< FAT FileSystem Object
-  File file;              ///< Current Open file
+  FatVolume *filesys; ///< FAT FileSystem Object
+  File32 file;        ///< Current Open file
   ImageReturnCode coreBMP(const char *filename, Adafruit_SPITFT *tft,
                           uint16_t *dest, int16_t x, int16_t y,
                           Adafruit_Image *img, boolean transact);

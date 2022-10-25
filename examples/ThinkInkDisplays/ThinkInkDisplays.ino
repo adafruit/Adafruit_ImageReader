@@ -61,7 +61,7 @@ ThinkInk_290_Tricolor_Z10 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
     #endif
   #endif
   Adafruit_SPIFlash         flash(&flashTransport);
-  FatFileSystem             filesys;
+  FatVolume             filesys;
   Adafruit_ImageReader_EPD  reader(filesys); // Image-reader, pass in flash filesys
 #endif
 
@@ -85,7 +85,7 @@ void setup(void) {
 #endif
 
   // The Adafruit_ImageReader constructor call (above, before setup())
-  // accepts an uninitialized SdFat or FatFileSystem object. This MUST
+  // accepts an uninitialized SdFat or FatVolume object. This MUST
   // BE INITIALIZED before using any of the image reader functions!
   Serial.print(F("Initializing filesystem..."));
   // SPI or QSPI flash requires two steps, one to access the bare flash

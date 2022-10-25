@@ -88,7 +88,7 @@ void Adafruit_Image_EPD::draw(Adafruit_EPD &epd, int16_t x, int16_t y) {
              often be in pre-setup() declaration, but DOES need initializing
              before any of the image loading or size functions are called!
 */
-Adafruit_ImageReader_EPD::Adafruit_ImageReader_EPD(FatFileSystem &fs)
+Adafruit_ImageReader_EPD::Adafruit_ImageReader_EPD(FatVolume &fs)
     : Adafruit_ImageReader(fs) {}
 
 /*!

@@ -44,7 +44,7 @@ protected:
 */
 class Adafruit_ImageReader_EPD : public Adafruit_ImageReader {
 public:
-  Adafruit_ImageReader_EPD(FatFileSystem &fs);
+  Adafruit_ImageReader_EPD(FatVolume &fs);
   ImageReturnCode drawBMP(char *filename, Adafruit_EPD &epd, int16_t x,
                           int16_t y, boolean transact = true);
 
