@@ -8,8 +8,9 @@ jobs:
       fail-fast: false
       matrix:
         arduino-platform: ["uno", "leonardo", "mega2560", "esp8266", "esp32",
-                           "zero", "metro_m4", "nrf52840", "pybadge", "hallowing_m4",
-                           "cpb", "cpx_ada", "pyportal"]
+                           "zero", "metro_m4", "nrf52840", "pybadge",
+                           "hallowing_m4", "cpb", "cpx_ada", "pyportal",
+                           "feather_rp2040"]
 
     runs-on: ubuntu-latest
     
