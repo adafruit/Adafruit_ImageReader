@@ -464,9 +464,9 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
               }
 
               for (row = 0; row < loadHeight; row++) { // For each scanline...
-
-                yield(); // Keep ESP8266 happy
-
+#ifdef ESP8266
+                delay(1); // Keep ESP8266 happy
+#endif
                 // Seek to start of scan line.  It might seem labor-intensive
                 // to be doing this on every line, but this method covers a
                 // lot of gritty details like cropping, flip and scanline
