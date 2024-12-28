@@ -86,6 +86,7 @@ void setup(void) {
   Serial.print(F("Initializing filesystem..."));
 #if defined(USE_SD_CARD)
   // SD card is pretty straightforward, a single call...
+  // Use 12 MHz or less for Feather M0 based boards
   if(!SD.begin(SD_CS, SD_SCK_MHZ(25))) { // ESP32 requires 25 MHz limit
     Serial.println(F("SD begin() failed"));
     for(;;); // Fatal error, do not continue
