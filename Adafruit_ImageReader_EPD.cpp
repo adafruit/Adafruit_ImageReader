@@ -389,10 +389,10 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
                         };
                         destidx = 0; // and reset dest index
                       }
-                    } else {                          // Canvas is simpler,
+                    } else { // Canvas is simpler,
                       file.read(sdbuf, sizeof sdbuf); // just load sdbuf
-                    }                                 // (destidx never resets)
-                    srcidx = 0;                       // Reset bmp buf index
+                    } // (destidx never resets)
+                    srcidx = 0; // Reset bmp buf index
                   }
                   if (depth == 24) {
                     // Convert each pixel from BMP to 565 format, save in dest
@@ -438,8 +438,8 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
                       }
                     }
                   }
-                }                // end pixel loop
-                if (epd) {       // Drawing to TFT?
+                } // end pixel loop
+                if (epd) { // Drawing to TFT?
                   if (destidx) { // Any remainders?
                     uint16_t index = 0;
                     while (index < destidx && epd_row < y + loadHeight) {
@@ -464,11 +464,11 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
                   img->palette = quantized; // Keep palette with img
               }
             } // end depth>24 or quantized malloc OK
-          }   // end top/left clip
-        }     // end malloc check
-      }       // end depth check
-    }         // end planes/compression check
-  }           // end signature
+          } // end top/left clip
+        } // end malloc check
+      } // end depth check
+    } // end planes/compression check
+  } // end signature
 
   file.close();
   return status;
