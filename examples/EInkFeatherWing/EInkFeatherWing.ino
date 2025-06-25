@@ -6,7 +6,7 @@
 
 #include <Adafruit_GFX.h>         // Core graphics library
 #include "Adafruit_EPD.h"         // Hardware-specific library for EPD
-#include <SdFat.h>                // SD card & FAT filesystem library
+#include <SdFat_Adafruit_Fork.h>  // SD card & FAT filesystem library
 #include <Adafruit_SPIFlash.h>    // SPI / QSPI flash library
 #include <Adafruit_ImageReader_EPD.h> // Image-reading functions
 
