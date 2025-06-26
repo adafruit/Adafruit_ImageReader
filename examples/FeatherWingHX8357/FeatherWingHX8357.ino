@@ -88,7 +88,9 @@ void setup(void) {
   Serial.print(F("Initializing filesystem..."));
 #if defined(USE_SD_CARD)
   // SD card is pretty straightforward, a single call...
-  if(!SD.begin(SD_CS, SD_SCK_MHZ(25))) { // ESP32 requires 25 MHz limit
+  // M0 max SPI is 12 MHz
+  // ESP32 can handl 25 MHz
+  if(!SD.begin(SD_CS, SD_SCK_MHZ(12))) {
     Serial.println(F("SD begin() failed"));
     for(;;); // Fatal error, do not continue
   }
