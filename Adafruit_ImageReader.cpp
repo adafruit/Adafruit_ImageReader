@@ -529,8 +529,8 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
                       }
                     } else {                          // Canvas is simpler,
                       file.read(sdbuf, sizeof sdbuf); // just load sdbuf
-                    }                                 // (destidx never resets)
-                    srcidx = 0;                       // Reset bmp buf index
+                    } // (destidx never resets)
+                    srcidx = 0; // Reset bmp buf index
                   }
                   if (depth == 24) {
                     // Convert each pixel from BMP to 565 format, save in dest
@@ -564,7 +564,7 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
                       }
                     }
                   }
-                }                // end pixel loop
+                } // end pixel loop
                 if (tft) {       // Drawing to TFT?
                   if (destidx) { // Any remainders?
                     // See notes above re: DMA
@@ -584,11 +584,11 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
                   img->palette = quantized; // Keep palette with img
               }
             } // end depth>24 or quantized malloc OK
-          }   // end top/left clip
-        }     // end malloc check
-      }       // end depth check
-    }         // end planes/compression check
-  }           // end signature
+          } // end top/left clip
+        } // end malloc check
+      } // end depth check
+    } // end planes/compression check
+  } // end signature
 
   file.close();
   return status;

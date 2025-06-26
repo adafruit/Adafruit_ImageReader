@@ -1,6 +1,6 @@
 #include <Adafruit_GFX.h>         // Core graphics library
 #include "Adafruit_ThinkInk.h"
-#include <SdFat.h>                // SD card & FAT filesystem library
+#include <SdFat_Adafruit_Fork.h>  // SD card & FAT filesystem library
 #include <Adafruit_ImageReader_EPD.h> // Image-reading functions
 
 

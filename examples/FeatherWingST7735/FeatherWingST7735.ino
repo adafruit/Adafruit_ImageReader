@@ -10,7 +10,7 @@
 
 #include <Adafruit_GFX.h>         // Core graphics library
 #include <Adafruit_ST7735.h>      // Hardware-specific library
-#include <SdFat.h>                // SD card & FAT filesystem library
+#include <SdFat_Adafruit_Fork.h>  // SD card & FAT filesystem library
 #include <Adafruit_SPIFlash.h>    // SPI / QSPI flash library
 #include <Adafruit_ImageReader.h> // Image-reading functions
 #include <Adafruit_miniTFTWing.h> // Part of Seesaw library
