@@ -40,6 +40,10 @@
   #define TFT_CS   P5_3
   #define STMPE_CS P3_3
   #define SD_CS    P3_2
+#elif defined(ARDUINO_ADAFRUIT_FEATHER_RP2040)
+  #define TFT_CS   9
+  #define TFT_DC   10
+  #define SD_CS    7 // "pin 5" on original rp2040 feather ONLY
 #else // Anything else!
   #define TFT_CS   9
   #define TFT_DC   10
