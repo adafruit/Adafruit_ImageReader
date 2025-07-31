@@ -31,7 +31,6 @@
 uint8_t Adafruit_ImageReader_EPD::mapColorForDisplay(uint8_t r, uint8_t g,
                                                      uint8_t b,
                                                      thinkinkmode_t mode) {
-  uint8_t result;
   switch (mode) {
   case THINKINK_MONO:
   case THINKINK_MONO_PARTIAL:
