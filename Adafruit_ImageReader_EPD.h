@@ -23,10 +23,10 @@
            ImageReader.loadBMP() and Image.draw(), not ImageReader.drawBMP().
 */
 class Adafruit_Image_EPD : public Adafruit_Image {
- public:
-  void draw(Adafruit_EPD& epd, int16_t x, int16_t y);
+public:
+  void draw(Adafruit_EPD &epd, int16_t x, int16_t y);
 
- protected:
+protected:
   friend class Adafruit_ImageReader_EPD; ///< Loading occurs here
 };
 
@@ -43,17 +43,17 @@ class Adafruit_Image_EPD : public Adafruit_Image {
            for use.
 */
 class Adafruit_ImageReader_EPD : public Adafruit_ImageReader {
- public:
-  Adafruit_ImageReader_EPD(FatVolume& fs);
-  ImageReturnCode drawBMP(char* filename, Adafruit_EPD& epd, int16_t x,
+public:
+  Adafruit_ImageReader_EPD(FatVolume &fs);
+  ImageReturnCode drawBMP(char *filename, Adafruit_EPD &epd, int16_t x,
                           int16_t y, boolean transact = true);
 
   static uint8_t mapColorForDisplay(uint8_t r, uint8_t g, uint8_t b,
                                     thinkinkmode_t mode);
 
- private:
-  ImageReturnCode coreBMP(char* filename, Adafruit_EPD* epd, uint16_t* dest,
-                          int16_t x, int16_t y, Adafruit_Image_EPD* img,
+private:
+  ImageReturnCode coreBMP(char *filename, Adafruit_EPD *epd, uint16_t *dest,
+                          int16_t x, int16_t y, Adafruit_Image_EPD *img,
                           boolean transact);
 };
 
