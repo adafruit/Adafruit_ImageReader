@@ -32,57 +32,57 @@ uint8_t Adafruit_ImageReader_EPD::mapColorForDisplay(uint8_t r, uint8_t g,
                                                      uint8_t b,
                                                      thinkinkmode_t mode) {
   switch (mode) {
-  case THINKINK_MONO:
-  case THINKINK_MONO_PARTIAL:
-    if ((r + g + b) / 3 < 128) {
-      return EPD_BLACK;
-    } else {
-      return EPD_WHITE;
+    case THINKINK_MONO:
+    case THINKINK_MONO_PARTIAL:
+      if ((r + g + b) / 3 < 128) {
+        return EPD_BLACK;
+      } else {
+        return EPD_WHITE;
+      }
+
+    case THINKINK_TRICOLOR:
+      if ((r < 0x60) && (g < 0x60) && (b < 0x60)) {
+        return EPD_BLACK;
+      } else if ((r >= 0x80) && (g < 0x80) && (b < 0x80)) {
+        return EPD_RED;
+      } else {
+        return EPD_WHITE;
+      }
+
+    case THINKINK_GRAYSCALE4: {
+      uint8_t gray = (r + g + b) / 3;
+      if (gray < 0x40) {
+        return EPD_BLACK;
+      } else if (gray < 0x80) {
+        return EPD_DARK;
+      } else if (gray < 0xC0) {
+        return EPD_LIGHT;
+      } else {
+        return EPD_WHITE;
+      }
     }
 
-  case THINKINK_TRICOLOR:
-    if ((r < 0x60) && (g < 0x60) && (b < 0x60)) {
-      return EPD_BLACK;
-    } else if ((r >= 0x80) && (g < 0x80) && (b < 0x80)) {
-      return EPD_RED;
-    } else {
-      return EPD_WHITE;
-    }
+    case THINKINK_QUADCOLOR:
+      if ((r < 0x60) && (g < 0x60) && (b < 0x60)) {
+        return EPD_BLACK;
+      } else if ((r >= 0xE0) && (g >= 0xE0) && (b >= 0xE0)) {
+        return EPD_WHITE;
+      } else if ((r >= 0xC0) && (g >= 0x80) && (b < 0x40)) {
+        return EPD_YELLOW;
+      } else if ((r >= 0xC0) && (g < 0x80) && (b < 0x40)) {
+        return EPD_RED;
+      } else {
+        return EPD_WHITE;
+      }
 
-  case THINKINK_GRAYSCALE4: {
-    uint8_t gray = (r + g + b) / 3;
-    if (gray < 0x40) {
-      return EPD_BLACK;
-    } else if (gray < 0x80) {
-      return EPD_DARK;
-    } else if (gray < 0xC0) {
-      return EPD_LIGHT;
-    } else {
-      return EPD_WHITE;
-    }
-  }
-
-  case THINKINK_QUADCOLOR:
-    if ((r < 0x60) && (g < 0x60) && (b < 0x60)) {
-      return EPD_BLACK;
-    } else if ((r >= 0xE0) && (g >= 0xE0) && (b >= 0xE0)) {
-      return EPD_WHITE;
-    } else if ((r >= 0xC0) && (g >= 0x80) && (b < 0x40)) {
-      return EPD_YELLOW;
-    } else if ((r >= 0xC0) && (g < 0x80) && (b < 0x40)) {
-      return EPD_RED;
-    } else {
-      return EPD_WHITE;
-    }
-
-  default:
-    if ((r < 0x60) && (g < 0x60) && (b < 0x60)) {
-      return EPD_BLACK;
-    } else if ((r >= 0x80) && (g < 0x80) && (b < 0x80)) {
-      return EPD_RED;
-    } else {
-      return EPD_WHITE;
-    }
+    default:
+      if ((r < 0x60) && (g < 0x60) && (b < 0x60)) {
+        return EPD_BLACK;
+      } else if ((r >= 0x80) && (g < 0x80) && (b < 0x80)) {
+        return EPD_RED;
+      } else {
+        return EPD_WHITE;
+      }
   }
 }
 
@@ -98,10 +98,10 @@ uint8_t Adafruit_ImageReader_EPD::mapColorForDisplay(uint8_t r, uint8_t g,
              Vertical offset in pixels; top edge = 0, positive = down.
     @return  None (void).
 */
-void Adafruit_Image_EPD::draw(Adafruit_EPD &epd, int16_t x, int16_t y) {
+void Adafruit_Image_EPD::draw(Adafruit_EPD& epd, int16_t x, int16_t y) {
   int16_t col = x, row = y;
   if (format == IMAGE_1) {
-    uint8_t *buffer = canvas.canvas1->getBuffer();
+    uint8_t* buffer = canvas.canvas1->getBuffer();
     uint8_t i, c;
     while (row < y + canvas.canvas1->height()) {
       for (i = 0; i < 8; i++) {
@@ -122,7 +122,7 @@ void Adafruit_Image_EPD::draw(Adafruit_EPD &epd, int16_t x, int16_t y) {
     };
   } else if (format == IMAGE_8) {
   } else if (format == IMAGE_16) {
-    uint16_t *buffer = canvas.canvas16->getBuffer();
+    uint16_t* buffer = canvas.canvas16->getBuffer();
     thinkinkmode_t displayMode = epd.getMode();
 
     while (row < y + canvas.canvas16->height()) {
@@ -160,7 +160,7 @@ void Adafruit_Image_EPD::draw(Adafruit_EPD &epd, int16_t x, int16_t y) {
              often be in pre-setup() declaration, but DOES need initializing
              before any of the image loading or size functions are called!
 */
-Adafruit_ImageReader_EPD::Adafruit_ImageReader_EPD(FatVolume &fs)
+Adafruit_ImageReader_EPD::Adafruit_ImageReader_EPD(FatVolume& fs)
     : Adafruit_ImageReader(fs) {}
 
 /*!
@@ -182,8 +182,8 @@ Adafruit_ImageReader_EPD::Adafruit_ImageReader_EPD(FatVolume &fs)
     @return  One of the ImageReturnCode values (IMAGE_SUCCESS on successful
              completion, other values on failure).
 */
-ImageReturnCode Adafruit_ImageReader_EPD::drawBMP(char *filename,
-                                                  Adafruit_EPD &epd, int16_t x,
+ImageReturnCode Adafruit_ImageReader_EPD::drawBMP(char* filename,
+                                                  Adafruit_EPD& epd, int16_t x,
                                                   int16_t y, boolean transact) {
   uint16_t epdbuf[BUFPIXELS]; // Temp space for buffering EPD data
   // Call core BMP-reading function, passing address to EPD object,
@@ -222,12 +222,12 @@ ImageReturnCode Adafruit_ImageReader_EPD::drawBMP(char *filename,
              completion, other values on failure).
 */
 ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
-    char *filename,    // SD file to load
-    Adafruit_EPD *epd, // Pointer to TFT object, or NULL if to image
-    uint16_t *dest,    // EPD working buffer, or NULL if to canvas
+    char* filename,    // SD file to load
+    Adafruit_EPD* epd, // Pointer to TFT object, or NULL if to image
+    uint16_t* dest,    // EPD working buffer, or NULL if to canvas
     int16_t x,         // Position if loading to EPD (else ignored)
     int16_t y,
-    Adafruit_Image_EPD *img, // NULL if load-to-screen
+    Adafruit_Image_EPD* img, // NULL if load-to-screen
     boolean transact) {      // SD & EPD sharing bus, use transactions
   thinkinkmode_t displayMode = epd ? epd->getMode() : THINKINK_TRICOLOR;
   ImageReturnCode status = IMAGE_ERR_FORMAT; // IMAGE_SUCCESS on valid file
@@ -238,7 +238,7 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
   uint8_t depth;                             // BMP bit depth
   uint32_t compression = 0;                  // BMP compression mode
   uint32_t colors = 0;                       // Number of colors in palette
-  uint16_t *quantized = NULL;                // EPD Color palette
+  uint16_t* quantized = NULL;                // EPD Color palette
   uint32_t rowSize;                          // >bmpWidth if scanline padding
   uint8_t sdbuf[3 * BUFPIXELS];              // BMP read buf (R+G+B/pixel)
   int16_t epd_col = 0, epd_row = 0;
@@ -248,7 +248,7 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
   uint16_t srcidx = sizeof sdbuf;
 #endif
   uint32_t destidx = 0;
-  uint8_t *dest1 = NULL;     // Dest ptr for 1-bit BMPs to img
+  uint8_t* dest1 = NULL;     // Dest ptr for 1-bit BMPs to img
   boolean flip = true;       // BMP is stored bottom-to-top
   uint32_t bmpPos = 0;       // Next pixel position in file
   int loadWidth, loadHeight, // Region being loaded (clipped)
@@ -366,7 +366,7 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
             }
 
             if ((depth >= 16) ||
-                (quantized = (uint16_t *)malloc(colors * sizeof(uint16_t)))) {
+                (quantized = (uint16_t*)malloc(colors * sizeof(uint16_t)))) {
               if (depth < 16) {
                 // Load and quantize color table
                 thinkinkmode_t displayMode =
