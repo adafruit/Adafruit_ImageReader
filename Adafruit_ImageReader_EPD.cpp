@@ -7,6 +7,86 @@
 #endif
 
 /*!
+    @brief   Maps RGB color values to EPD display colors based on display mode.
+    @param   r
+             Red component of the color (0-255).
+    @param   g
+             Green component of the color (0-255).
+    @param   b
+             Blue component of the color (0-255).
+    @param   mode
+             The display mode (THINKINK_MONO, THINKINK_TRICOLOR,
+             THINKINK_GRAYSCALE4, THINKINK_QUADCOLOR, etc.) that
+             determines the available colors and mapping strategy.
+    @return  EPD color constant (EPD_BLACK, EPD_WHITE, EPD_RED, EPD_YELLOW,
+             EPD_DARK, EPD_LIGHT) appropriate for the display mode.
+    @note    Color mapping thresholds:
+             - Monochrome: Simple average threshold at 128
+             - Tricolor: Black < 0x60, Red >= 0x80 (red only), White otherwise
+             - Grayscale: Black < 0x40, Dark < 0x80, Light < 0xC0, White >= 0xC0
+             - Quadcolor: Black < 0x60, White >= 0xE0 (all channels),
+               Yellow >= 0xC0 red + >= 0x80 green, Red >= 0xC0 red + < 0x80
+   green
+*/
+uint8_t Adafruit_ImageReader_EPD::mapColorForDisplay(uint8_t r, uint8_t g,
+                                                     uint8_t b,
+                                                     thinkinkmode_t mode) {
+  switch (mode) {
+    case THINKINK_MONO:
+    case THINKINK_MONO_PARTIAL:
+      if ((r + g + b) / 3 < 128) {
+        return EPD_BLACK;
+      } else {
+        return EPD_WHITE;
+      }
+
+    case THINKINK_TRICOLOR:
+      if ((r < 0x60) && (g < 0x60) && (b < 0x60)) {
+        return EPD_BLACK;
+      } else if ((r >= 0x80) && (g < 0x80) && (b < 0x80)) {
+        return EPD_RED;
+      } else {
+        return EPD_WHITE;
+      }
+
+    case THINKINK_GRAYSCALE4: {
+      uint8_t gray = (r + g + b) / 3;
+      if (gray < 0x40) {
+        return EPD_BLACK;
+      } else if (gray < 0x80) {
+        return EPD_DARK;
+      } else if (gray < 0xC0) {
+        return EPD_LIGHT;
+      } else {
+        return EPD_WHITE;
+      }
+    }
+
+    case THINKINK_QUADCOLOR:
+      if ((r < 0x60) && (g < 0x60) && (b < 0x60)) {
+        return EPD_BLACK;
+      } else if ((r >= 0xE0) && (g >= 0xE0) && (b >= 0xE0)) {
+        return EPD_WHITE;
+      } else if ((r >= 0xC0) && (g >= 0x80) && (b < 0x40)) {
+        return EPD_YELLOW;
+      } else if ((r >= 0xC0) && (g < 0x80) && (b < 0x40)) {
+        return EPD_RED;
+      } else {
+        return EPD_WHITE;
+      }
+
+    default:
+      if ((r < 0x60) && (g < 0x60) && (b < 0x60)) {
+        return EPD_BLACK;
+      } else if ((r >= 0x80) && (g < 0x80) && (b < 0x80)) {
+        return EPD_RED;
+      } else {
+        return EPD_WHITE;
+      }
+  }
+}
+
+/*!
     @brief   Draw image to an Adafruit ePaper-type display.
     @param   epd
              Screen to draw to (any Adafruit_EPD-derived class).
@@ -43,24 +123,16 @@ void Adafruit_Image_EPD::draw(Adafruit_EPD &epd, int16_t x, int16_t y) {
   } else if (format == IMAGE_8) {
   } else if (format == IMAGE_16) {
     uint16_t *buffer = canvas.canvas16->getBuffer();
+    thinkinkmode_t displayMode = epd.getMode();
+
     while (row < y + canvas.canvas16->height()) {
       // RGB in 565 format
       uint8_t r = (*buffer & 0xf800) >> 8;
       uint8_t g = (*buffer & 0x07e0) >> 3;
       uint8_t b = (*buffer & 0x001f) << 3;
 
-      uint8_t c = 0;
-      if ((r < 0x60) && (g < 0x60) && (b < 0x60)) {
-        c = EPD_BLACK; // try to infer black
-      } else if ((r < 0x80) && (g < 0x80) && (b < 0x80)) {
-        c = EPD_DARK; // try to infer dark gray
-      } else if ((r < 0xD0) && (g < 0xD0) && (b < 0xD0)) {
-        c = EPD_LIGHT; // try to infer light gray
-      } else if ((r >= 0x80) && (g >= 0x80) && (b >= 0x80)) {
-        c = EPD_WHITE;
-      } else if (r >= 0x80) {
-        c = EPD_RED; // try to infer red color
-      }
+      uint8_t c =
+          Adafruit_ImageReader_EPD::mapColorForDisplay(r, g, b, displayMode);
 
       epd.writePixel(col, row, c);
       col++;
@@ -157,7 +229,7 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
     int16_t y,
     Adafruit_Image_EPD *img, // NULL if load-to-screen
     boolean transact) {      // SD & EPD sharing bus, use transactions
-
+  thinkinkmode_t displayMode = epd ? epd->getMode() : THINKINK_TRICOLOR;
   ImageReturnCode status = IMAGE_ERR_FORMAT; // IMAGE_SUCCESS on valid file
   uint32_t offset;                           // Start of image data in file
   uint32_t headerSize;                       // Indicates BMP version
@@ -297,23 +369,14 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
                 (quantized = (uint16_t *)malloc(colors * sizeof(uint16_t)))) {
               if (depth < 16) {
                 // Load and quantize color table
+                thinkinkmode_t displayMode =
+                    epd ? epd->getMode() : THINKINK_TRICOLOR;
                 for (uint16_t c = 0; c < colors; c++) {
                   b = file.read();
                   g = file.read();
                   r = file.read();
                   (void)file.read(); // Ignore 4th byte
-                  color = 0;
-                  if ((r < 0x60) && (g < 0x60) && (b < 0x60)) {
-                    color = EPD_BLACK; // try to infer black
-                  } else if ((r < 0x80) && (g < 0x80) && (b < 0x80)) {
-                    color = EPD_DARK; // try to infer dark gray
-                  } else if ((r < 0xD0) && (g < 0xD0) && (b < 0xD0)) {
-                    color = EPD_LIGHT; // try to infer light gray
-                  } else if ((r >= 0x80) && (g >= 0x80) && (b >= 0x80)) {
-                    color = EPD_WHITE;
-                  } else if (r >= 0x80) {
-                    color = EPD_RED; // try to infer red color
-                  }
+                  color = mapColorForDisplay(r, g, b, displayMode);
                   quantized[c] = color;
                 }
               }
@@ -400,18 +463,7 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
                     g = sdbuf[srcidx++];
                     r = sdbuf[srcidx++];
 
-                    color = 0;
-                    if ((r < 0x60) && (g < 0x60) && (b < 0x60)) {
-                      color = EPD_BLACK; // try to infer black
-                    } else if ((r < 0x80) && (g < 0x80) && (b < 0x80)) {
-                      color = EPD_DARK; // try to infer dark gray
-                    } else if ((r < 0xD0) && (g < 0xD0) && (b < 0xD0)) {
-                      color = EPD_LIGHT; // try to infer light gray
-                    } else if ((r >= 0x80) && (g >= 0x80) && (b >= 0x80)) {
-                      color = EPD_WHITE;
-                    } else if (r >= 0x80) {
-                      color = EPD_RED; // try to infer red color
-                    }
+                    color = mapColorForDisplay(r, g, b, displayMode);
                     dest[destidx++] = color;
                   } else {
                     // Extract 1-bit color index

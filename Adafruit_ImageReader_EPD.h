@@ -48,6 +48,9 @@ public:
   ImageReturnCode drawBMP(char *filename, Adafruit_EPD &epd, int16_t x,
                           int16_t y, boolean transact = true);
 
+  static uint8_t mapColorForDisplay(uint8_t r, uint8_t g, uint8_t b,
+                                    thinkinkmode_t mode);
+
 private:
   ImageReturnCode coreBMP(char *filename, Adafruit_EPD *epd, uint16_t *dest,
                           int16_t x, int16_t y, Adafruit_Image_EPD *img,
