@@ -60,6 +60,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="class_adafruit___image_reader___e_p_d-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">Adafruit_ImageReader_EPD Class Reference</div>  </div>
@@ -107,6 +108,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af805ca644e8cf5100bb1638dff014c36 inherit pub_methods_class_adafruit___image_reader"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#af805ca644e8cf5100bb1638dff014c36">printStatus</a> (<a class="el" href="_adafruit___image_reader_8h.html#acb79d38140fda8bba70a1282ecfaff51">ImageReturnCode</a> stat, Stream &amp;stream=Serial)</td></tr>
 <tr class="memdesc:af805ca644e8cf5100bb1638dff014c36 inherit pub_methods_class_adafruit___image_reader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print human-readable status message corresponding to an ImageReturnCode type.  <a href="class_adafruit___image_reader.html#af805ca644e8cf5100bb1638dff014c36">More...</a><br /></td></tr>
 <tr class="separator:af805ca644e8cf5100bb1638dff014c36 inherit pub_methods_class_adafruit___image_reader"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:ab86ef2c9d6f39afadbb6e71388fd378e"><td class="memItemLeft" align="right" valign="top">static uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader___e_p_d.html#ab86ef2c9d6f39afadbb6e71388fd378e">mapColorForDisplay</a> (uint8_t r, uint8_t g, uint8_t b, thinkinkmode_t mode)</td></tr>
+<tr class="memdesc:ab86ef2c9d6f39afadbb6e71388fd378e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maps RGB color values to EPD display colors based on display mode.  <a href="#ab86ef2c9d6f39afadbb6e71388fd378e">More...</a><br /></td></tr>
+<tr class="separator:ab86ef2c9d6f39afadbb6e71388fd378e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -217,6 +224,73 @@ File32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>One of the ImageReturnCode values (IMAGE_SUCCESS on successful completion, other values on failure). </dd></dl>
+
+</div>
+</div>
+<a id="ab86ef2c9d6f39afadbb6e71388fd378e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab86ef2c9d6f39afadbb6e71388fd378e">&#9670;&nbsp;</a></span>mapColorForDisplay()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint8_t Adafruit_ImageReader_EPD::mapColorForDisplay </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>r</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>g</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>b</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">thinkinkmode_t&#160;</td>
+          <td class="paramname"><em>mode</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Maps RGB color values to EPD display colors based on display mode. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">r</td><td>Red component of the color (0-255). </td></tr>
+    <tr><td class="paramname">g</td><td>Green component of the color (0-255). </td></tr>
+    <tr><td class="paramname">b</td><td>Blue component of the color (0-255). </td></tr>
+    <tr><td class="paramname">mode</td><td>The display mode (THINKINK_MONO, THINKINK_TRICOLOR, THINKINK_GRAYSCALE4, THINKINK_QUADCOLOR, etc.) that determines the available colors and mapping strategy. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>EPD color constant (EPD_BLACK, EPD_WHITE, EPD_RED, EPD_YELLOW, EPD_DARK, EPD_LIGHT) appropriate for the display mode. </dd></dl>
+<dl class="section note"><dt>Note</dt><dd>Color mapping thresholds:<ul>
+<li>Monochrome: Simple average threshold at 128</li>
+<li>Tricolor: Black &lt; 0x60, Red &gt;= 0x80 (red only), White otherwise</li>
+<li>Grayscale: Black &lt; 0x40, Dark &lt; 0x80, Light &lt; 0xC0, White &gt;= 0xC0</li>
+<li>Quadcolor: Black &lt; 0x60, White &gt;= 0xE0 (all channels), Yellow &gt;= 0xC0 red + &gt;= 0x80 green, Red &gt;= 0xC0 red + &lt; 0x80 green </li>
+</ul>
+</dd></dl>
 
 </div>
 </div>

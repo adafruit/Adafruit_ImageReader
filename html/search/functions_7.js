@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['printstatus',['printStatus',['../class_adafruit___image_reader.html#af805ca644e8cf5100bb1638dff014c36',1,'Adafruit_ImageReader']]]
+  ['mapcolorfordisplay',['mapColorForDisplay',['../class_adafruit___image_reader___e_p_d.html#ab86ef2c9d6f39afadbb6e71388fd378e',1,'Adafruit_ImageReader_EPD']]]
 ];
