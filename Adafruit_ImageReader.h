@@ -95,6 +95,7 @@ protected:
 class Adafruit_ImageReader {
 public:
   Adafruit_ImageReader(FatVolume &fs);
+  Adafruit_ImageReader(void);
   ~Adafruit_ImageReader(void);
   ImageReturnCode drawBMP(const char *filename, Adafruit_SPITFT &tft, int16_t x,
                           int16_t y, boolean transact = true);

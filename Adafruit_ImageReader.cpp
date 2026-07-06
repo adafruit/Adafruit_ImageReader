@@ -217,6 +217,12 @@ void Adafruit_Image::draw(Adafruit_SPITFT &tft, int16_t x, int16_t y) {
 Adafruit_ImageReader::Adafruit_ImageReader(FatVolume &fs) { filesys = &fs; }
 
 /*!
+    @brief   Constructor with no filesystem. Used for loading images from memory rather than SD card or FAT filesystem.
+    @return  Adafruit_ImageReader object.
+*/
+Adafruit_ImageReader::Adafruit_ImageReader(void) { filesys = NULL; };
+
+/*!
     @brief   Destructor.
     @return  None (void).
 */

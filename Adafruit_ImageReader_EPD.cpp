@@ -164,6 +164,12 @@ Adafruit_ImageReader_EPD::Adafruit_ImageReader_EPD(FatVolume &fs)
     : Adafruit_ImageReader(fs) {}
 
 /*!
+    @brief   Constructor for Adafruit_ImageReader_EPD object without an associated filesystem for loading from a BMP in-memory.
+    @return  Adafruit_ImageReader object.
+*/
+Adafruit_ImageReader_EPD::Adafruit_ImageReader_EPD(void) : Adafruit_ImageReader() {}
+
+/*!
     @brief   Loads BMP image file from SD card directly to Adafruit_EPD screen.
     @param   filename
              Name of BMP image file to load.
@@ -524,4 +530,11 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
 
   file.close();
   return status;
+}
+
+
+
+
+ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(const uint8_t *bmp, size_t bmp_len, Adafruit_EPD *epd, int16_t x, int16_t y) {
+  // Implementation of coreBMP for in-memory BMP data
 }
