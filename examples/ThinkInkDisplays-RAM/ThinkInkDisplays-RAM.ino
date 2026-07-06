@@ -4,6 +4,7 @@
 #include <Adafruit_GFX.h>         // Core graphics library
 #include "Adafruit_ThinkInk.h"
 #include <Adafruit_ImageReader_EPD.h> // Image-reading functions
+#include "adabot_head.h"
 
 
 // Mono Displays
@@ -32,51 +33,25 @@
 //ThinkInk_290_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
 // 2.9" 4-level Grayscale (use mono) displays with 296x128 pixels and SSD1680 chip
-ThinkInk_290_Grayscale4_EAAMFGN display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY, EPD_SPI);
+ThinkInk_290_Grayscale4_EAAMFGN display(EPD_DC, EPD_RESET, EPD_CS, -1, -1);
 
 // Reader (no filesystem, in-memory only)
-Adafruit_ImageReader_EPD reader();
+Adafruit_ImageReader_EPD reader;
 
 Adafruit_Image_EPD   img;        // An image loaded into RAM
 int32_t              width  = 0, // BMP image dimensions
                      height = 0;
 
 void setup(void) {
-
-  ImageReturnCode stat; // Status from image-reading functions
-
-  Serial.begin(9600);
-  //while(!Serial);           // Wait for Serial Monitor before continuing
-  display.begin();
-
-#if defined(FLEXIBLE_213) || defined(FLEXIBLE_290)
-  // The flexible displays have different buffers and invert settings!
-  display.setBlackBuffer(1, false);
-  display.setColorBuffer(1, false);
-#endif
-
-
-  // Load full-screen BMP file 'blinka.bmp' at position (0,0) (top left).
-  // Notice the 'reader' object performs this, with 'epd' as an argument.
-  Serial.print(F("Loading blinka.bmp to canvas..."));
-  Serial.print(F("Drawing canvas to EPD..."));
+  Serial.begin(115200);
+  while(!Serial);           // Wait for Serial Monitor before continuing
+  display.begin(THINKINK_GRAYSCALE4);
   display.clearBuffer();
-  stat = reader.drawBMP((char *)"/blinka.bmp", display, 0, 0);
-  reader.printStatus(stat); // How'd we do?
+
+  ImageReturnCode rc = reader.drawBMP(adabot_head_bmp, ADABOT_HEAD_BMP_LEN, display, 0, 0);
+  Serial.print("drawBMP rc = ");
+  Serial.println(rc);          // 0 == IMAGE_SUCCESS
   display.display();
-
-  // Query the dimensions of image 'blinka.bmp' WITHOUT loading to screen:
-/*   Serial.print(F("Querying blinka.bmp image size..."));
-  stat = reader.bmpDimensions("blinka.bmp", &width, &height);
-  reader.printStatus(stat);   // How'd we do?
-  if(stat == IMAGE_SUCCESS) { // If it worked, print image size...
-    Serial.print(F("Image dimensions: "));
-    Serial.print(width);
-    Serial.write('x');
-    Serial.println(height);
-  } */
-
-  delay(30 * 1000); // Pause 30 seconds before continuing because it's eInk
 }
 
 void loop() {
