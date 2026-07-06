@@ -690,7 +690,7 @@ uint32_t Adafruit_ImageReader::readLE32(void) {
              Pointer to buffer containing 2 bytes of data.
     @return  Unsigned 16-bit value, native endianism.
 */
-uint16_t readLE16(const uint8_t *buf) {
+uint16_t Adafruit_ImageReader::readLE16(const uint8_t *buf) {
     return (uint16_t)buf[0] | ((uint16_t)buf[1] << 8);
 }
 
@@ -702,7 +702,7 @@ uint16_t readLE16(const uint8_t *buf) {
              Pointer to buffer containing 4 bytes of data.
     @return  Unsigned 32-bit value, native endianism.
 */
-uint32_t readLE32(const uint8_t *buf) {
+uint32_t Adafruit_ImageReader::readLE32(const uint8_t *buf) {
   return (uint32_t)buf[0] | ((uint32_t)buf[1] << 8) |
          ((uint32_t)buf[2] << 16) | ((uint32_t)buf[3] << 24);
 }

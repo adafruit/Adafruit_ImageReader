@@ -303,10 +303,10 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
     return IMAGE_ERR_FILE_NOT_FOUND;
   }
 
-  // Parse BMP header. 0x4D42 (ASCII 'BM') is the Windows BMP signature.
+  // Parse BMP header. BMP_HEADER (ASCII 'BM') is the Windows BMP signature.
   // There are other values possible in a .BMP file but these are super
   // esoteric (e.g. OS/2 struct bitmap array) and NOT supported here!
-  if (readLE16() == 0x4D42) { // BMP signature
+  if (readLE16() == BMP_HEADER) { // BMP signature
     (void)readLE32();         // Read & ignore file size
     (void)readLE32();         // Read & ignore creator bytes
     offset = readLE32();      // Start of image data
@@ -557,8 +557,114 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
 }
 
 
-
-
 ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(const uint8_t *bmp, size_t bmp_len, Adafruit_EPD *epd, int16_t x, int16_t y) {
-  // Implementation of coreBMP for in-memory BMP data
+  if (!bmp || !epd || bmp_len < MIN_SZ_BMP_HEADER) {
+    return IMAGE_ERR_FORMAT;
+  }
+
+  // Check for BMP signature (ASCII 'BM') at the start of the file
+  if (readLE16(bmp) != BMP_HEADER) {
+    return IMAGE_ERR_FORMAT;
+  }
+
+  // If BMP is being drawn off the right or bottom edge of the screen,
+  // nothing to do here. NOT an error, just a trivial clip operation.
+  if (epd && ((x >= epd->width()) || (y >= epd->height())))
+    return IMAGE_SUCCESS;
+
+  // Configure the display mode
+  thinkinkmode_t displayMode = epd ? epd->getMode() : THINKINK_TRICOLOR;
+
+  // Parse the BMP header from the bmp data
+  uint32_t offset = readLE32(bmp + 10);     // Start of image data
+  uint32_t headerSize = readLE32(bmp + 14); // Indicates BMP version
+  int bmpWidth = readLE32(bmp + 18);        // BMP width, in pixels
+  int bmpHeight = readLE32(bmp + 22);       // BMP height, in pixels
+  uint8_t planes = readLE16(bmp + 26);      // BMP planes
+  uint8_t depth = readLE16(bmp + 28);       // BMP bit depth
+  // Compression mode is present in later BMP versions (default = none)
+  uint32_t compression = 0;
+  uint32_t colors = 0;
+  if (headerSize > 12) {
+    compression = readLE32(bmp + 30);
+    colors = readLE32(bmp + 46);
+  }
+  if (!colors)
+    colors = 1 << depth;
+
+  // If bmpHeight is negative, image is in top-down order.
+  // This is not canon but has been observed in the wild.
+  boolean flip = true;
+  if (bmpHeight < 0) {
+    bmpHeight = -bmpHeight;
+    flip = false;
+  }
+
+  // Only uncompressed BMPs are compatible
+  if ((planes != 1) || (compression != 0))
+    return IMAGE_ERR_FORMAT;
+  // Only 1BPP and 24BPP BMPs are compatible
+  if ((depth != 24) && (depth != 1))
+    return IMAGE_ERR_FORMAT;
+
+  // BMP rows are padded to a 4-byte boundary
+  uint32_t rowSize = ((depth * (uint32_t)bmpWidth + 31) / 32) * 4;
+
+
+  // Check the BMP data length
+  if ((size_t)offset + (size_t)rowSize * (size_t)bmpHeight > bmp_len)
+    return IMAGE_ERR_FORMAT;
+
+  // Crop the region to be drawn to the display bounds.
+  int loadWidth = bmpWidth, loadHeight = bmpHeight, loadX = 0, loadY = 0;
+  if (x < 0) {
+    loadX = -x;
+    loadWidth += x;
+    x = 0;
+  }
+
+  if (y < 0) {
+    loadY = -y;
+    loadHeight += y;
+    y = 0;
+  }
+
+  if ((x + loadWidth) > epd->width())
+    loadWidth = epd->width() - x;
+  if ((y + loadHeight) > epd->height())
+    loadHeight = epd->height() - y;
+  if ((loadWidth <= 0) || (loadHeight <= 0))
+    return IMAGE_SUCCESS;
+
+  // For 1-bit BMPs, quantize the 2-entry palette up front. Reading the actual
+  // palette RGB makes inversion "just work" -- no do_invert heuristic needed.
+  uint16_t quantized[2] = {EPD_BLACK, EPD_WHITE};
+  if (depth == 1) {
+    const uint8_t *pal = bmp + 14 + headerSize; // BGRA entries
+    if ((size_t)(14 + headerSize) + (size_t)colors * 4 <= bmp_len) {
+      for (uint32_t c = 0; (c < colors) && (c < 2); c++)
+        quantized[c] = mapColorForDisplay(pal[c * 4 + 2], pal[c * 4 + 1],
+                                          pal[c * 4], displayMode);
+    }
+  }
+
+  epd->startWrite();
+  for (int row = 0; row < loadHeight; row++) { // For each scanline...
+    yield();                                   // Keep ESP8266 happy
+    uint32_t srcRow = flip ? (bmpHeight - 1 - (row + loadY)) : (row + loadY);
+    const uint8_t *rowPtr = bmp + offset + (size_t)srcRow * rowSize;
+    for (int col = 0; col < loadWidth; col++) { // For each pixel...
+      uint8_t color;
+      if (depth == 24) {
+        const uint8_t *px = rowPtr + (size_t)(loadX + col) * 3; // BGR order
+        color = mapColorForDisplay(px[2], px[1], px[0], displayMode);
+      } else { // depth == 1, MSB-first
+        uint32_t bit = (uint32_t)(loadX + col);
+        color = quantized[(rowPtr[bit >> 3] >> (7 - (bit & 7))) & 1];
+      }
+      epd->writePixel(x + col, y + row, color);
+    }
+  }
+  epd->endWrite();
+  return IMAGE_SUCCESS;
 }

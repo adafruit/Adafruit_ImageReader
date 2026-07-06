@@ -18,6 +18,9 @@
 #include "Adafruit_EPD.h"
 #include "Adafruit_ImageReader.h"
 
+#define MIN_SZ_BMP_HEADER 54 ///< Minimum size of the BMP header, in bytes
+#define BMP_HEADER 0x4D42    ///< BMP signature (ASCII 'BM')
+
 /*!
    @brief  Data bundle returned with an image loaded to RAM. Used by
            ImageReader.loadBMP() and Image.draw(), not ImageReader.drawBMP().
