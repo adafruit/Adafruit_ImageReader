@@ -200,6 +200,30 @@ ImageReturnCode Adafruit_ImageReader_EPD::drawBMP(char *filename,
 }
 
 /*!
+    @brief   Loads BMP image file from memory to Adafruit_EPD screen.
+    @param   bmp
+             Pointer to BMP image data in memory.
+    @param   bmp_len
+             Length of BMP image data in bytes.
+    @param   epd
+             Screen to draw to (any Adafruit_EPD-derived class).
+    @param   x
+             Horizontal offset in pixels; left edge = 0, positive = right.
+             Value is signed, image will be clipped if all or part is off
+             the screen edges. Screen rotation setting is observed.
+    @param   y
+             Vertical offset in pixels; top edge = 0, positive = down.
+    @return  One of the ImageReturnCode values (IMAGE_SUCCESS on successful
+             completion, other values on failure).
+*/
+ImageReturnCode Adafruit_ImageReader_EPD::drawBMP(const uint8_t *bmp, size_t bmp_len,
+                                                  Adafruit_EPD &epd, int16_t x,
+                                                  int16_t y) {
+  // Read from the in-memory BMP and read to EPD.
+  return coreBMP(bmp, bmp_len, &epd, x, y);
+}
+
+/*!
     @brief   BMP-reading function common both to the draw function (to EPD)
              and load function (to canvas object in RAM). BMP code has been
              centralized here so if/when more BMP format variants are added

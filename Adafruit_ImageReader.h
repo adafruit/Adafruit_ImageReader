@@ -111,6 +111,8 @@ protected:
                           Adafruit_Image *img, boolean transact);
   uint16_t readLE16(void);
   uint32_t readLE32(void);
+  uint16_t readLE16(const uint8_t *buf);
+  uint32_t readLE32(const uint8_t *buf);
 };
 
 #endif // __ADAFRUIT_IMAGE_READER_H__

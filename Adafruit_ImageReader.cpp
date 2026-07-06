@@ -681,6 +681,32 @@ uint32_t Adafruit_ImageReader::readLE32(void) {
 #endif
 }
 
+
+/*!
+    @brief   Reads a little-endian 16-bit unsigned value from a buffer,
+             converting if necessary to the microcontroller's native endianism.
+             (BMP files use little-endian values.)
+    @param   buf
+             Pointer to buffer containing 2 bytes of data.
+    @return  Unsigned 16-bit value, native endianism.
+*/
+uint16_t readLE16(const uint8_t *buf) {
+    return (uint16_t)buf[0] | ((uint16_t)buf[1] << 8);
+}
+
+/*!
+    @brief   Reads a little-endian 32-bit unsigned value from a buffer,
+             converting if necessary to the microcontroller's native endianism.
+             (BMP files use little-endian values.)
+    @param   buf
+             Pointer to buffer containing 4 bytes of data.
+    @return  Unsigned 32-bit value, native endianism.
+*/
+uint32_t readLE32(const uint8_t *buf) {
+  return (uint32_t)buf[0] | ((uint32_t)buf[1] << 8) |
+         ((uint32_t)buf[2] << 16) | ((uint32_t)buf[3] << 24);
+}
+
 /*!
     @brief   Print human-readable status message corresponding to an
              ImageReturnCode type.
