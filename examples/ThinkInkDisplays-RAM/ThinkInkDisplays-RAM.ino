@@ -6,6 +6,11 @@
 #include <Adafruit_ImageReader_EPD.h> // Image-reading functions
 #include "blinka.h"
 
+#define EPD_DC      10 // can be any pin, but required!
+#define EPD_CS      9  // can be any pin, but required!
+#define SRAM_CS     6  // can set to -1 to not use a pin (uses a lot of RAM!)
+#define EPD_BUSY    7  // can set to -1 to not use a pin (will wait a fixed delay)
+#define EPD_RESET   8  // can set to -1 and share with chip Reset (can't deep sleep)
 
 // Mono Displays
 //ThinkInk_154_Mono_D67 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
@@ -22,7 +27,7 @@
 //ThinkInk_213_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //ThinkInk_213_Tricolor_Z16 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //ThinkInk_270_Tricolor_C44 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
-// ThinkInk_290_Tricolor_Z10 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
+ThinkInk_290_Tricolor_Z10 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //ThinkInk_420_Tricolor_RW display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //ThinkInk_290_Tricolor_Z13 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //ThinkInk_290_Tricolor_Z94 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
@@ -32,9 +37,6 @@
 //ThinkInk_213_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 //ThinkInk_290_Grayscale4_T5 display(EPD_DC, EPD_RESET, EPD_CS, SRAM_CS, EPD_BUSY);
 
-// 2.9" 4-level Grayscale (use mono) displays with 296x128 pixels and SSD1680 chip
-ThinkInk_290_Grayscale4_EAAMFGN display(EPD_DC, EPD_RESET, EPD_CS, -1, -1);
-
 // Reader (no filesystem, in-memory only)
 Adafruit_ImageReader_EPD reader;
 
@@ -43,8 +45,8 @@ int32_t              width  = 0, // BMP image dimensions
 
 void setup(void) {
   Serial.begin(115200);
-  while(!Serial);           // Wait for Serial Monitor before continuing
-  display.begin(THINKINK_GRAYSCALE4);
+  //while(!Serial);           // Wait for Serial Monitor before continuing
+  display.begin();
   display.clearBuffer();
 
   ImageReturnCode rc = reader.drawBMP(blinka_bmp, BLINKA_BMP_LEN, display, 0, 0);
@@ -62,6 +64,8 @@ void setup(void) {
     Serial.write('x');
     Serial.println(height);
   }
+
+  delay(30 * 1000); // Pause 30 seconds before continuing because it's eInk
 }
 
 void loop() {
