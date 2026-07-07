@@ -217,7 +217,8 @@ void Adafruit_Image::draw(Adafruit_SPITFT &tft, int16_t x, int16_t y) {
 Adafruit_ImageReader::Adafruit_ImageReader(FatVolume &fs) { filesys = &fs; }
 
 /*!
-    @brief   Constructor with no filesystem. Used for loading images from memory rather than SD card or FAT filesystem.
+    @brief   Constructor with no filesystem. Used for loading images from memory
+   rather than SD card or FAT filesystem.
     @return  Adafruit_ImageReader object.
 */
 Adafruit_ImageReader::Adafruit_ImageReader(void) { filesys = NULL; };
@@ -668,7 +669,7 @@ ImageReturnCode Adafruit_ImageReader::bmpDimensions(const uint8_t *bmp,
     return status;
 
   if (readLE16(bmp) == 0x4D42) { // BMP signature?
-    status = IMAGE_ERR_FORMAT;  // File's there, might not be BMP tho
+    status = IMAGE_ERR_FORMAT;   // File's there, might not be BMP tho
     if (width)
       *width = readLE32(bmp + 18);
     if (height) {
@@ -734,7 +735,7 @@ uint32_t Adafruit_ImageReader::readLE32(void) {
     @return  Unsigned 16-bit value, native endianism.
 */
 uint16_t Adafruit_ImageReader::readLE16(const uint8_t *buf) {
-    return (uint16_t)buf[0] | ((uint16_t)buf[1] << 8);
+  return (uint16_t)buf[0] | ((uint16_t)buf[1] << 8);
 }
 
 /*!
@@ -746,8 +747,8 @@ uint16_t Adafruit_ImageReader::readLE16(const uint8_t *buf) {
     @return  Unsigned 32-bit value, native endianism.
 */
 uint32_t Adafruit_ImageReader::readLE32(const uint8_t *buf) {
-  return (uint32_t)buf[0] | ((uint32_t)buf[1] << 8) |
-         ((uint32_t)buf[2] << 16) | ((uint32_t)buf[3] << 24);
+  return (uint32_t)buf[0] | ((uint32_t)buf[1] << 8) | ((uint32_t)buf[2] << 16) |
+         ((uint32_t)buf[3] << 24);
 }
 
 /*!

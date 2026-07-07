@@ -164,10 +164,12 @@ Adafruit_ImageReader_EPD::Adafruit_ImageReader_EPD(FatVolume &fs)
     : Adafruit_ImageReader(fs) {}
 
 /*!
-    @brief   Constructor for Adafruit_ImageReader_EPD object without an associated filesystem for loading from a BMP in-memory.
+    @brief   Constructor for Adafruit_ImageReader_EPD object without an
+   associated filesystem for loading from a BMP in-memory.
     @return  Adafruit_ImageReader object.
 */
-Adafruit_ImageReader_EPD::Adafruit_ImageReader_EPD(void) : Adafruit_ImageReader() {}
+Adafruit_ImageReader_EPD::Adafruit_ImageReader_EPD(void)
+    : Adafruit_ImageReader() {}
 
 /*!
     @brief   Loads BMP image file from SD card directly to Adafruit_EPD screen.
@@ -216,7 +218,8 @@ ImageReturnCode Adafruit_ImageReader_EPD::drawBMP(char *filename,
     @return  One of the ImageReturnCode values (IMAGE_SUCCESS on successful
              completion, other values on failure).
 */
-ImageReturnCode Adafruit_ImageReader_EPD::drawBMP(const uint8_t *bmp, size_t bmp_len,
+ImageReturnCode Adafruit_ImageReader_EPD::drawBMP(const uint8_t *bmp,
+                                                  size_t bmp_len,
                                                   Adafruit_EPD &epd, int16_t x,
                                                   int16_t y) {
   // Read from the in-memory BMP and read to EPD.
@@ -310,9 +313,9 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
   // There are other values possible in a .BMP file but these are super
   // esoteric (e.g. OS/2 struct bitmap array) and NOT supported here!
   if (readLE16() == BMP_HEADER) { // BMP signature
-    (void)readLE32();         // Read & ignore file size
-    (void)readLE32();         // Read & ignore creator bytes
-    offset = readLE32();      // Start of image data
+    (void)readLE32();             // Read & ignore file size
+    (void)readLE32();             // Read & ignore creator bytes
+    offset = readLE32();          // Start of image data
     // Read DIB header
     headerSize = readLE32();
     bmpWidth = readLE32();
@@ -560,7 +563,10 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
 }
 
 
-ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(const uint8_t *bmp, size_t bmp_len, Adafruit_EPD *epd, int16_t x, int16_t y) {
+ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(const uint8_t *bmp,
+                                                  size_t bmp_len,
+                                                  Adafruit_EPD *epd, int16_t x,
+                                                  int16_t y) {
   if (!bmp || !epd || bmp_len < MIN_SZ_BMP_HEADER) {
     return IMAGE_ERR_FORMAT;
   }

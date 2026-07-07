@@ -101,7 +101,8 @@ public:
                           int16_t y, boolean transact = true);
   ImageReturnCode loadBMP(const char *filename, Adafruit_Image &img);
   ImageReturnCode bmpDimensions(const char *filename, int32_t *w, int32_t *h);
-  ImageReturnCode bmpDimensions(const uint8_t *bmp, size_t bmp_len, int32_t *w, int32_t *h);
+  ImageReturnCode bmpDimensions(const uint8_t *bmp, size_t bmp_len, int32_t *w,
+                                int32_t *h);
   void printStatus(ImageReturnCode stat, Stream &stream = Serial);
 
 protected:
