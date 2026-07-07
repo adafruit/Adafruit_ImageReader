@@ -52,6 +52,18 @@ void setup(void) {
   Serial.print("drawBMP rc = ");
   Serial.println(rc);          // 0 == IMAGE_SUCCESS
   display.display();
+
+  // Query the dimensions of image 'adabot_head_bmp' WITHOUT loading to screen:
+  Serial.print(F("Querying adabot_head_bmp image size..."));
+  stat = reader.bmpDimensions(adabot_head_bmp, &width, &height);
+  reader.printStatus(stat);   // How'd we do?
+  if(stat == IMAGE_SUCCESS) { // If it worked, print image size...
+    Serial.print(F("Image dimensions: "));
+    Serial.print(width);
+    Serial.write('x');
+    Serial.println(height);
+  }
+
 }
 
 void loop() {
@@ -59,7 +71,7 @@ void loop() {
     display.setRotation(r);    // Set rotation
     display.fillScreen(0);     // and clear screen
     display.clearBuffer();
-    img.draw(display, 0, 0);
+    reader.drawBMP(adabot_head_bmp, ADABOT_HEAD_BMP_LEN, display, 0, 0);
     display.display();
     delay(30 * 1000); // Pause 30 sec.
   }

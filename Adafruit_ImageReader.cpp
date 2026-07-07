@@ -640,6 +640,39 @@ ImageReturnCode Adafruit_ImageReader::bmpDimensions(const char *filename,
   return status;
 }
 
+/*!
+    @brief   Query pixel dimensions of BMP image file in memory.
+    @param   bmp
+             Pointer to BMP image data in memory.
+    @param   width
+             Pointer to int32_t; image width in pixels, returned.
+    @param   height
+             Pointer to int32_t; image height in pixels, returned.
+    @return  One of the ImageReturnCode values (IMAGE_SUCCESS on successful
+             completion, other values on failure).
+*/
+ImageReturnCode Adafruit_ImageReader::bmpDimensions(const uint8_t *bmp,
+                                                    int32_t *width,
+                                                    int32_t *height) {
+
+  ImageReturnCode status = IMAGE_ERR_FILE_NOT_FOUND; // Guilty until innocent
+
+  if (readLE16(bmp) == 0x4D42) { // BMP signature?
+    status = IMAGE_ERR_FORMAT;  // File's there, might not be BMP tho
+    if (width)
+      *width = readLE32(bmp + 18);
+    if (height) {
+      int32_t h = readLE32(bmp + 22); // Don't abs() this, may be a macro
+      if (h < 0)
+        h = -h; // Do manually instead
+      *height = h;
+    }
+    status = IMAGE_SUCCESS; // YAY.
+  }
+
+  return status;
+}
+
 // UTILITY FUNCTIONS *******************************************************
 
 /*!
