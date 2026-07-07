@@ -298,6 +298,9 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
   if (epd && ((x >= epd->width()) || (y >= epd->height())))
     return IMAGE_SUCCESS;
 
+  // No filesystem (reader constructed without one) -- cannot load by name.
+  if (!filesys)
+    return IMAGE_ERR_FILE_NOT_FOUND;
   // Open requested file on SD card
   if (!(file = filesys->open(filename, FILE_READ))) {
     return IMAGE_ERR_FILE_NOT_FOUND;
@@ -612,7 +615,8 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(const uint8_t *bmp, size_t bmp
 
 
   // Check the BMP data length
-  if ((size_t)offset + (size_t)rowSize * (size_t)bmpHeight > bmp_len)
+  size_t imageBytes = (size_t)rowSize * (size_t)bmpHeight;
+  if ((size_t)offset > bmp_len || imageBytes > (bmp_len - (size_t)offset))
     return IMAGE_ERR_FORMAT;
 
   // Crop the region to be drawn to the display bounds.

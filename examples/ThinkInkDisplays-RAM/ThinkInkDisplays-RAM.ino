@@ -56,7 +56,7 @@ void setup(void) {
 
   // Query the dimensions of image 'blinka_bmp' WITHOUT loading to screen:
   Serial.print(F("Querying blinka_bmp image size..."));
-  ImageReturnCode stat = reader.bmpDimensions(blinka_bmp, &width, &height);
+  ImageReturnCode stat = reader.bmpDimensions(blinka_bmp, BLINKA_BMP_LEN, &width, &height);
   reader.printStatus(stat);   // How'd we do?
   if(stat == IMAGE_SUCCESS) { // If it worked, print image size...
     Serial.print(F("Image dimensions: "));

@@ -359,6 +359,9 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
   if (tft && ((x >= tft->width()) || (y >= tft->height())))
     return IMAGE_SUCCESS;
 
+  // No filesystem (reader constructed without one) -- cannot load by name.
+  if (!filesys)
+    return IMAGE_ERR_FILE_NOT_FOUND;
   // Open requested file on SD card
   if (!(file = filesys->open(filename, FILE_READ))) {
     return IMAGE_ERR_FILE_NOT_FOUND;
@@ -617,6 +620,9 @@ ImageReturnCode Adafruit_ImageReader::bmpDimensions(const char *filename,
 
   ImageReturnCode status = IMAGE_ERR_FILE_NOT_FOUND; // Guilty until innocent
 
+  // No filesystem (reader constructed without one) -- cannot load by name.
+  if (!filesys)
+    return IMAGE_ERR_FILE_NOT_FOUND;
   if ((file = filesys->open(filename, FILE_READ))) { // Open requested file
     status = IMAGE_ERR_FORMAT;  // File's there, might not be BMP tho
     if (readLE16() == 0x4D42) { // BMP signature?
@@ -644,6 +650,8 @@ ImageReturnCode Adafruit_ImageReader::bmpDimensions(const char *filename,
     @brief   Query pixel dimensions of BMP image file in memory.
     @param   bmp
              Pointer to BMP image data in memory.
+    @param   bmp_len
+             Length of BMP image data in bytes.
     @param   width
              Pointer to int32_t; image width in pixels, returned.
     @param   height
@@ -652,10 +660,12 @@ ImageReturnCode Adafruit_ImageReader::bmpDimensions(const char *filename,
              completion, other values on failure).
 */
 ImageReturnCode Adafruit_ImageReader::bmpDimensions(const uint8_t *bmp,
+                                                    size_t bmp_len,
                                                     int32_t *width,
                                                     int32_t *height) {
-
   ImageReturnCode status = IMAGE_ERR_FILE_NOT_FOUND; // Guilty until innocent
+  if (!bmp || bmp_len < 54)
+    return status;
 
   if (readLE16(bmp) == 0x4D42) { // BMP signature?
     status = IMAGE_ERR_FORMAT;  // File's there, might not be BMP tho
