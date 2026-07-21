@@ -86,13 +86,22 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a55c4fa6be33706cfd2e7e862a501f5e4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader___e_p_d.html#a55c4fa6be33706cfd2e7e862a501f5e4">Adafruit_ImageReader_EPD</a> (FatVolume &amp;fs)</td></tr>
 <tr class="memdesc:a55c4fa6be33706cfd2e7e862a501f5e4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#a55c4fa6be33706cfd2e7e862a501f5e4">More...</a><br /></td></tr>
 <tr class="separator:a55c4fa6be33706cfd2e7e862a501f5e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9a7dc5f0332da85d704f20b614cc9039"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader___e_p_d.html#a9a7dc5f0332da85d704f20b614cc9039">Adafruit_ImageReader_EPD</a> (void)</td></tr>
+<tr class="memdesc:a9a7dc5f0332da85d704f20b614cc9039"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for <a class="el" href="class_adafruit___image_reader___e_p_d.html" title="An optional adjunct to Adafruit_EPD that reads RGB BMP images (maybe others in the future) from a fla...">Adafruit_ImageReader_EPD</a> object without an associated filesystem for loading from a BMP in-memory.  <a href="#a9a7dc5f0332da85d704f20b614cc9039">More...</a><br /></td></tr>
+<tr class="separator:a9a7dc5f0332da85d704f20b614cc9039"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7292a8972f6d0e7a239971b4999002b9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_adafruit___image_reader_8h.html#acb79d38140fda8bba70a1282ecfaff51">ImageReturnCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader___e_p_d.html#a7292a8972f6d0e7a239971b4999002b9">drawBMP</a> (char *filename, Adafruit_EPD &amp;epd, int16_t x, int16_t y, boolean transact=true)</td></tr>
 <tr class="memdesc:a7292a8972f6d0e7a239971b4999002b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads BMP image file from SD card directly to Adafruit_EPD screen.  <a href="#a7292a8972f6d0e7a239971b4999002b9">More...</a><br /></td></tr>
 <tr class="separator:a7292a8972f6d0e7a239971b4999002b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4ffd24569a99afa537fcf9924e0e71cb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_adafruit___image_reader_8h.html#acb79d38140fda8bba70a1282ecfaff51">ImageReturnCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader___e_p_d.html#a4ffd24569a99afa537fcf9924e0e71cb">drawBMP</a> (const uint8_t *bmp, size_t bmp_len, Adafruit_EPD &amp;epd, int16_t x, int16_t y)</td></tr>
+<tr class="memdesc:a4ffd24569a99afa537fcf9924e0e71cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Loads BMP image file from memory to Adafruit_EPD screen.  <a href="#a4ffd24569a99afa537fcf9924e0e71cb">More...</a><br /></td></tr>
+<tr class="separator:a4ffd24569a99afa537fcf9924e0e71cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_adafruit___image_reader"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_adafruit___image_reader')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_adafruit___image_reader.html">Adafruit_ImageReader</a></td></tr>
 <tr class="memitem:ad67d5ff40333394dc03701566dfa5f52 inherit pub_methods_class_adafruit___image_reader"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#ad67d5ff40333394dc03701566dfa5f52">Adafruit_ImageReader</a> (FatVolume &amp;fs)</td></tr>
 <tr class="memdesc:ad67d5ff40333394dc03701566dfa5f52 inherit pub_methods_class_adafruit___image_reader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="class_adafruit___image_reader.html#ad67d5ff40333394dc03701566dfa5f52">More...</a><br /></td></tr>
 <tr class="separator:ad67d5ff40333394dc03701566dfa5f52 inherit pub_methods_class_adafruit___image_reader"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad14ff315f29a6151840d114f9e7d22fe inherit pub_methods_class_adafruit___image_reader"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#ad14ff315f29a6151840d114f9e7d22fe">Adafruit_ImageReader</a> (void)</td></tr>
+<tr class="memdesc:ad14ff315f29a6151840d114f9e7d22fe inherit pub_methods_class_adafruit___image_reader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor with no filesystem. Used for loading images from memory rather than SD card or FAT filesystem.  <a href="class_adafruit___image_reader.html#ad14ff315f29a6151840d114f9e7d22fe">More...</a><br /></td></tr>
+<tr class="separator:ad14ff315f29a6151840d114f9e7d22fe inherit pub_methods_class_adafruit___image_reader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3da727d1ab406b637110743e40866ac7 inherit pub_methods_class_adafruit___image_reader"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a3da727d1ab406b637110743e40866ac7">~Adafruit_ImageReader</a> (void)</td></tr>
 <tr class="memdesc:a3da727d1ab406b637110743e40866ac7 inherit pub_methods_class_adafruit___image_reader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="class_adafruit___image_reader.html#a3da727d1ab406b637110743e40866ac7">More...</a><br /></td></tr>
 <tr class="separator:a3da727d1ab406b637110743e40866ac7 inherit pub_methods_class_adafruit___image_reader"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -105,6 +114,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac8bf8f2c5f68b7dbdd72166cb1958db1 inherit pub_methods_class_adafruit___image_reader"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_adafruit___image_reader_8h.html#acb79d38140fda8bba70a1282ecfaff51">ImageReturnCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#ac8bf8f2c5f68b7dbdd72166cb1958db1">bmpDimensions</a> (const char *filename, int32_t *w, int32_t *h)</td></tr>
 <tr class="memdesc:ac8bf8f2c5f68b7dbdd72166cb1958db1 inherit pub_methods_class_adafruit___image_reader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query pixel dimensions of BMP image file on SD card.  <a href="class_adafruit___image_reader.html#ac8bf8f2c5f68b7dbdd72166cb1958db1">More...</a><br /></td></tr>
 <tr class="separator:ac8bf8f2c5f68b7dbdd72166cb1958db1 inherit pub_methods_class_adafruit___image_reader"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55b20fdfcb1301f68d8325c9e626621f inherit pub_methods_class_adafruit___image_reader"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_adafruit___image_reader_8h.html#acb79d38140fda8bba70a1282ecfaff51">ImageReturnCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a55b20fdfcb1301f68d8325c9e626621f">bmpDimensions</a> (const uint8_t *bmp, size_t bmp_len, int32_t *w, int32_t *h)</td></tr>
+<tr class="memdesc:a55b20fdfcb1301f68d8325c9e626621f inherit pub_methods_class_adafruit___image_reader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query pixel dimensions of BMP image file in memory.  <a href="class_adafruit___image_reader.html#a55b20fdfcb1301f68d8325c9e626621f">More...</a><br /></td></tr>
+<tr class="separator:a55b20fdfcb1301f68d8325c9e626621f inherit pub_methods_class_adafruit___image_reader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af805ca644e8cf5100bb1638dff014c36 inherit pub_methods_class_adafruit___image_reader"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#af805ca644e8cf5100bb1638dff014c36">printStatus</a> (<a class="el" href="_adafruit___image_reader_8h.html#acb79d38140fda8bba70a1282ecfaff51">ImageReturnCode</a> stat, Stream &amp;stream=Serial)</td></tr>
 <tr class="memdesc:af805ca644e8cf5100bb1638dff014c36 inherit pub_methods_class_adafruit___image_reader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print human-readable status message corresponding to an ImageReturnCode type.  <a href="class_adafruit___image_reader.html#af805ca644e8cf5100bb1638dff014c36">More...</a><br /></td></tr>
 <tr class="separator:af805ca644e8cf5100bb1638dff014c36 inherit pub_methods_class_adafruit___image_reader"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -127,6 +139,12 @@ Additional Inherited Members</h2></td></tr>
 <tr class="memitem:a5c219992b34ef3a626f94da7ce3bd649 inherit pro_methods_class_adafruit___image_reader"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a5c219992b34ef3a626f94da7ce3bd649">readLE32</a> (void)</td></tr>
 <tr class="memdesc:a5c219992b34ef3a626f94da7ce3bd649 inherit pro_methods_class_adafruit___image_reader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a little-endian 32-bit unsigned value from currently- open File, converting if necessary to the microcontroller's native endianism. (BMP files use little-endian values.)  <a href="class_adafruit___image_reader.html#a5c219992b34ef3a626f94da7ce3bd649">More...</a><br /></td></tr>
 <tr class="separator:a5c219992b34ef3a626f94da7ce3bd649 inherit pro_methods_class_adafruit___image_reader"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7184ddeabb20c0da8bb5df5b5daba168 inherit pro_methods_class_adafruit___image_reader"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a7184ddeabb20c0da8bb5df5b5daba168">readLE16</a> (const uint8_t *buf)</td></tr>
+<tr class="memdesc:a7184ddeabb20c0da8bb5df5b5daba168 inherit pro_methods_class_adafruit___image_reader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a little-endian 16-bit unsigned value from a buffer, converting if necessary to the microcontroller's native endianism. (BMP files use little-endian values.)  <a href="class_adafruit___image_reader.html#a7184ddeabb20c0da8bb5df5b5daba168">More...</a><br /></td></tr>
+<tr class="separator:a7184ddeabb20c0da8bb5df5b5daba168 inherit pro_methods_class_adafruit___image_reader"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42e60e22677b9cbd222a60df16f76aff inherit pro_methods_class_adafruit___image_reader"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a42e60e22677b9cbd222a60df16f76aff">readLE32</a> (const uint8_t *buf)</td></tr>
+<tr class="memdesc:a42e60e22677b9cbd222a60df16f76aff inherit pro_methods_class_adafruit___image_reader"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a little-endian 32-bit unsigned value from a buffer, converting if necessary to the microcontroller's native endianism. (BMP files use little-endian values.)  <a href="class_adafruit___image_reader.html#a42e60e22677b9cbd222a60df16f76aff">More...</a><br /></td></tr>
+<tr class="separator:a42e60e22677b9cbd222a60df16f76aff inherit pro_methods_class_adafruit___image_reader"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_class_adafruit___image_reader"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_class_adafruit___image_reader')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_adafruit___image_reader.html">Adafruit_ImageReader</a></td></tr>
 <tr class="memitem:aaa4763ea50b0cf71d984b638db6bb792 inherit pro_attribs_class_adafruit___image_reader"><td class="memItemLeft" align="right" valign="top"><a id="aaa4763ea50b0cf71d984b638db6bb792"></a>
 FatVolume *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#aaa4763ea50b0cf71d984b638db6bb792">filesys</a></td></tr>
@@ -141,7 +159,7 @@ File32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 <div class="textblock"><p>An optional adjunct to Adafruit_EPD that reads RGB BMP images (maybe others in the future) from a flash filesystem (SD card or SPI/QSPI flash). It's purposefully been made an entirely separate class (rather than part of SPITFT or GFX classes) so that Arduino code that uses GFX or SPITFT <em>without</em> image loading does not need to incur the RAM overhead and additional dependencies of the Adafruit_SPIFlash library by its mere inclusion. The syntaxes can therefore be a bit bizarre (passing display object as an argument), see examples for use. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a55c4fa6be33706cfd2e7e862a501f5e4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a55c4fa6be33706cfd2e7e862a501f5e4">&#9670;&nbsp;</a></span>Adafruit_ImageReader_EPD()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a55c4fa6be33706cfd2e7e862a501f5e4">&#9670;&nbsp;</a></span>Adafruit_ImageReader_EPD() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -167,9 +185,30 @@ File32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 
 </div>
 </div>
+<a id="a9a7dc5f0332da85d704f20b614cc9039"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a7dc5f0332da85d704f20b614cc9039">&#9670;&nbsp;</a></span>Adafruit_ImageReader_EPD() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Adafruit_ImageReader_EPD::Adafruit_ImageReader_EPD </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Constructor for <a class="el" href="class_adafruit___image_reader___e_p_d.html" title="An optional adjunct to Adafruit_EPD that reads RGB BMP images (maybe others in the future) from a fla...">Adafruit_ImageReader_EPD</a> object without an associated filesystem for loading from a BMP in-memory. </p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_adafruit___image_reader.html" title="An optional adjunct to Adafruit_SPITFT that reads RGB BMP images (maybe others in the future) from a ...">Adafruit_ImageReader</a> object. </dd></dl>
+
+</div>
+</div>
 <h2 class="groupheader">Member Function Documentation</h2>
 <a id="a7292a8972f6d0e7a239971b4999002b9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7292a8972f6d0e7a239971b4999002b9">&#9670;&nbsp;</a></span>drawBMP()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7292a8972f6d0e7a239971b4999002b9">&#9670;&nbsp;</a></span>drawBMP() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -220,6 +259,65 @@ File32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
     <tr><td class="paramname">x</td><td>Horizontal offset in pixels; left edge = 0, positive = right. Value is signed, image will be clipped if all or part is off the screen edges. Screen rotation setting is observed. </td></tr>
     <tr><td class="paramname">y</td><td>Vertical offset in pixels; top edge = 0, positive = down. </td></tr>
     <tr><td class="paramname">transact</td><td>Pass 'true' if TFT and SD are on the same SPI bus, in which case SPI transactions are necessary. If separate peripherals, can pass 'false'. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>One of the ImageReturnCode values (IMAGE_SUCCESS on successful completion, other values on failure). </dd></dl>
+
+</div>
+</div>
+<a id="a4ffd24569a99afa537fcf9924e0e71cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4ffd24569a99afa537fcf9924e0e71cb">&#9670;&nbsp;</a></span>drawBMP() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_adafruit___image_reader_8h.html#acb79d38140fda8bba70a1282ecfaff51">ImageReturnCode</a> Adafruit_ImageReader_EPD::drawBMP </td>
+          <td>(</td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>bmp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>bmp_len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Adafruit_EPD &amp;&#160;</td>
+          <td class="paramname"><em>epd</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int16_t&#160;</td>
+          <td class="paramname"><em>y</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Loads BMP image file from memory to Adafruit_EPD screen. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bmp</td><td>Pointer to BMP image data in memory. </td></tr>
+    <tr><td class="paramname">bmp_len</td><td>Length of BMP image data in bytes. </td></tr>
+    <tr><td class="paramname">epd</td><td>Screen to draw to (any Adafruit_EPD-derived class). </td></tr>
+    <tr><td class="paramname">x</td><td>Horizontal offset in pixels; left edge = 0, positive = right. Value is signed, image will be clipped if all or part is off the screen edges. Screen rotation setting is observed. </td></tr>
+    <tr><td class="paramname">y</td><td>Vertical offset in pixels; top edge = 0, positive = down. </td></tr>
   </table>
   </dd>
 </dl>

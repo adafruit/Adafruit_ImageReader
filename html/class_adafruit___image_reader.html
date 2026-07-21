@@ -87,6 +87,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad67d5ff40333394dc03701566dfa5f52"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#ad67d5ff40333394dc03701566dfa5f52">Adafruit_ImageReader</a> (FatVolume &amp;fs)</td></tr>
 <tr class="memdesc:ad67d5ff40333394dc03701566dfa5f52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor.  <a href="#ad67d5ff40333394dc03701566dfa5f52">More...</a><br /></td></tr>
 <tr class="separator:ad67d5ff40333394dc03701566dfa5f52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad14ff315f29a6151840d114f9e7d22fe"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#ad14ff315f29a6151840d114f9e7d22fe">Adafruit_ImageReader</a> (void)</td></tr>
+<tr class="memdesc:ad14ff315f29a6151840d114f9e7d22fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor with no filesystem. Used for loading images from memory rather than SD card or FAT filesystem.  <a href="#ad14ff315f29a6151840d114f9e7d22fe">More...</a><br /></td></tr>
+<tr class="separator:ad14ff315f29a6151840d114f9e7d22fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3da727d1ab406b637110743e40866ac7"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a3da727d1ab406b637110743e40866ac7">~Adafruit_ImageReader</a> (void)</td></tr>
 <tr class="memdesc:a3da727d1ab406b637110743e40866ac7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor.  <a href="#a3da727d1ab406b637110743e40866ac7">More...</a><br /></td></tr>
 <tr class="separator:a3da727d1ab406b637110743e40866ac7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -99,6 +102,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ac8bf8f2c5f68b7dbdd72166cb1958db1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_adafruit___image_reader_8h.html#acb79d38140fda8bba70a1282ecfaff51">ImageReturnCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#ac8bf8f2c5f68b7dbdd72166cb1958db1">bmpDimensions</a> (const char *filename, int32_t *w, int32_t *h)</td></tr>
 <tr class="memdesc:ac8bf8f2c5f68b7dbdd72166cb1958db1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query pixel dimensions of BMP image file on SD card.  <a href="#ac8bf8f2c5f68b7dbdd72166cb1958db1">More...</a><br /></td></tr>
 <tr class="separator:ac8bf8f2c5f68b7dbdd72166cb1958db1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55b20fdfcb1301f68d8325c9e626621f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="_adafruit___image_reader_8h.html#acb79d38140fda8bba70a1282ecfaff51">ImageReturnCode</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a55b20fdfcb1301f68d8325c9e626621f">bmpDimensions</a> (const uint8_t *bmp, size_t bmp_len, int32_t *w, int32_t *h)</td></tr>
+<tr class="memdesc:a55b20fdfcb1301f68d8325c9e626621f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Query pixel dimensions of BMP image file in memory.  <a href="#a55b20fdfcb1301f68d8325c9e626621f">More...</a><br /></td></tr>
+<tr class="separator:a55b20fdfcb1301f68d8325c9e626621f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af805ca644e8cf5100bb1638dff014c36"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#af805ca644e8cf5100bb1638dff014c36">printStatus</a> (<a class="el" href="_adafruit___image_reader_8h.html#acb79d38140fda8bba70a1282ecfaff51">ImageReturnCode</a> stat, Stream &amp;stream=Serial)</td></tr>
 <tr class="memdesc:af805ca644e8cf5100bb1638dff014c36"><td class="mdescLeft">&#160;</td><td class="mdescRight">Print human-readable status message corresponding to an ImageReturnCode type.  <a href="#af805ca644e8cf5100bb1638dff014c36">More...</a><br /></td></tr>
 <tr class="separator:af805ca644e8cf5100bb1638dff014c36"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -114,6 +120,12 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:a5c219992b34ef3a626f94da7ce3bd649"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a5c219992b34ef3a626f94da7ce3bd649">readLE32</a> (void)</td></tr>
 <tr class="memdesc:a5c219992b34ef3a626f94da7ce3bd649"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a little-endian 32-bit unsigned value from currently- open File, converting if necessary to the microcontroller's native endianism. (BMP files use little-endian values.)  <a href="#a5c219992b34ef3a626f94da7ce3bd649">More...</a><br /></td></tr>
 <tr class="separator:a5c219992b34ef3a626f94da7ce3bd649"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7184ddeabb20c0da8bb5df5b5daba168"><td class="memItemLeft" align="right" valign="top">uint16_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a7184ddeabb20c0da8bb5df5b5daba168">readLE16</a> (const uint8_t *buf)</td></tr>
+<tr class="memdesc:a7184ddeabb20c0da8bb5df5b5daba168"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a little-endian 16-bit unsigned value from a buffer, converting if necessary to the microcontroller's native endianism. (BMP files use little-endian values.)  <a href="#a7184ddeabb20c0da8bb5df5b5daba168">More...</a><br /></td></tr>
+<tr class="separator:a7184ddeabb20c0da8bb5df5b5daba168"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a42e60e22677b9cbd222a60df16f76aff"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader.html#a42e60e22677b9cbd222a60df16f76aff">readLE32</a> (const uint8_t *buf)</td></tr>
+<tr class="memdesc:a42e60e22677b9cbd222a60df16f76aff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads a little-endian 32-bit unsigned value from a buffer, converting if necessary to the microcontroller's native endianism. (BMP files use little-endian values.)  <a href="#a42e60e22677b9cbd222a60df16f76aff">More...</a><br /></td></tr>
+<tr class="separator:a42e60e22677b9cbd222a60df16f76aff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -130,7 +142,7 @@ File32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 <div class="textblock"><p>An optional adjunct to Adafruit_SPITFT that reads RGB BMP images (maybe others in the future) from a flash filesystem (SD card or SPI/QSPI flash). It's purposefully been made an entirely separate class (rather than part of SPITFT or GFX classes) so that Arduino code that uses GFX or SPITFT <em>without</em> image loading does not need to incur the RAM overhead and additional dependencies of the Adafruit_SPIFlash library by its mere inclusion. The syntaxes can therefore be a bit bizarre (passing display object as an argument), see examples for use. </p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ad67d5ff40333394dc03701566dfa5f52"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad67d5ff40333394dc03701566dfa5f52">&#9670;&nbsp;</a></span>Adafruit_ImageReader()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad67d5ff40333394dc03701566dfa5f52">&#9670;&nbsp;</a></span>Adafruit_ImageReader() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -153,6 +165,27 @@ File32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a id="ad14ff315f29a6151840d114f9e7d22fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad14ff315f29a6151840d114f9e7d22fe">&#9670;&nbsp;</a></span>Adafruit_ImageReader() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Adafruit_ImageReader::Adafruit_ImageReader </td>
+          <td>(</td>
+          <td class="paramtype">void&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Constructor with no filesystem. Used for loading images from memory rather than SD card or FAT filesystem. </p>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="class_adafruit___image_reader.html" title="An optional adjunct to Adafruit_SPITFT that reads RGB BMP images (maybe others in the future) from a ...">Adafruit_ImageReader</a> object. </dd></dl>
 
 </div>
 </div>
@@ -276,7 +309,7 @@ File32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 </div>
 </div>
 <a id="ac8bf8f2c5f68b7dbdd72166cb1958db1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac8bf8f2c5f68b7dbdd72166cb1958db1">&#9670;&nbsp;</a></span>bmpDimensions()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac8bf8f2c5f68b7dbdd72166cb1958db1">&#9670;&nbsp;</a></span>bmpDimensions() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -311,6 +344,58 @@ File32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">filename</td><td>Name of BMP image file to query. </td></tr>
+    <tr><td class="paramname">width</td><td>Pointer to int32_t; image width in pixels, returned. </td></tr>
+    <tr><td class="paramname">height</td><td>Pointer to int32_t; image height in pixels, returned. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>One of the ImageReturnCode values (IMAGE_SUCCESS on successful completion, other values on failure). </dd></dl>
+
+</div>
+</div>
+<a id="a55b20fdfcb1301f68d8325c9e626621f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55b20fdfcb1301f68d8325c9e626621f">&#9670;&nbsp;</a></span>bmpDimensions() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="_adafruit___image_reader_8h.html#acb79d38140fda8bba70a1282ecfaff51">ImageReturnCode</a> Adafruit_ImageReader::bmpDimensions </td>
+          <td>(</td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>bmp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>bmp_len</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t *&#160;</td>
+          <td class="paramname"><em>width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int32_t *&#160;</td>
+          <td class="paramname"><em>height</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Query pixel dimensions of BMP image file in memory. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">bmp</td><td>Pointer to BMP image data in memory. </td></tr>
+    <tr><td class="paramname">bmp_len</td><td>Length of BMP image data in bytes. </td></tr>
     <tr><td class="paramname">width</td><td>Pointer to int32_t; image width in pixels, returned. </td></tr>
     <tr><td class="paramname">height</td><td>Pointer to int32_t; image height in pixels, returned. </td></tr>
   </table>
@@ -440,7 +525,7 @@ File32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 </div>
 </div>
 <a id="aa6dbce0de3e941a87b00acf433213757"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa6dbce0de3e941a87b00acf433213757">&#9670;&nbsp;</a></span>readLE16()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa6dbce0de3e941a87b00acf433213757">&#9670;&nbsp;</a></span>readLE16() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -469,7 +554,7 @@ File32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 </div>
 </div>
 <a id="a5c219992b34ef3a626f94da7ce3bd649"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5c219992b34ef3a626f94da7ce3bd649">&#9670;&nbsp;</a></span>readLE32()</h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5c219992b34ef3a626f94da7ce3bd649">&#9670;&nbsp;</a></span>readLE32() <span class="overload">[1/2]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -493,6 +578,76 @@ File32&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="cl
 </div><div class="memdoc">
 
 <p>Reads a little-endian 32-bit unsigned value from currently- open File, converting if necessary to the microcontroller's native endianism. (BMP files use little-endian values.) </p>
+<dl class="section return"><dt>Returns</dt><dd>Unsigned 32-bit value, native endianism. </dd></dl>
+
+</div>
+</div>
+<a id="a7184ddeabb20c0da8bb5df5b5daba168"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7184ddeabb20c0da8bb5df5b5daba168">&#9670;&nbsp;</a></span>readLE16() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint16_t Adafruit_ImageReader::readLE16 </td>
+          <td>(</td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>buf</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reads a little-endian 16-bit unsigned value from a buffer, converting if necessary to the microcontroller's native endianism. (BMP files use little-endian values.) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buf</td><td>Pointer to buffer containing 2 bytes of data. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Unsigned 16-bit value, native endianism. </dd></dl>
+
+</div>
+</div>
+<a id="a42e60e22677b9cbd222a60df16f76aff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42e60e22677b9cbd222a60df16f76aff">&#9670;&nbsp;</a></span>readLE32() <span class="overload">[2/2]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">uint32_t Adafruit_ImageReader::readLE32 </td>
+          <td>(</td>
+          <td class="paramtype">const uint8_t *&#160;</td>
+          <td class="paramname"><em>buf</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Reads a little-endian 32-bit unsigned value from a buffer, converting if necessary to the microcontroller's native endianism. (BMP files use little-endian values.) </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">buf</td><td>Pointer to buffer containing 4 bytes of data. </td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section return"><dt>Returns</dt><dd>Unsigned 32-bit value, native endianism. </dd></dl>
 
 </div>

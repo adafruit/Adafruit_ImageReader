@@ -59,7 +59,8 @@ $(function() {
 </div><!-- top -->
 <div class="header">
   <div class="summary">
-<a href="#nested-classes">Classes</a>  </div>
+<a href="#nested-classes">Classes</a> &#124;
+<a href="#define-members">Macros</a>  </div>
   <div class="headertitle">
 <div class="title">Adafruit_ImageReader_EPD.h File Reference</div>  </div>
 </div><!--header-->
@@ -77,6 +78,17 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_adafruit___image_reader___e_p_d.html">Adafruit_ImageReader_EPD</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">An optional adjunct to Adafruit_EPD that reads RGB BMP images (maybe others in the future) from a flash filesystem (SD card or SPI/QSPI flash). It's purposefully been made an entirely separate class (rather than part of SPITFT or GFX classes) so that Arduino code that uses GFX or SPITFT <em>without</em> image loading does not need to incur the RAM overhead and additional dependencies of the Adafruit_SPIFlash library by its mere inclusion. The syntaxes can therefore be a bit bizarre (passing display object as an argument), see examples for use.  <a href="class_adafruit___image_reader___e_p_d.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a881a8d39d2fed3e127bb8598ad4b1c80"><td class="memItemLeft" align="right" valign="top"><a id="a881a8d39d2fed3e127bb8598ad4b1c80"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_adafruit___image_reader___e_p_d_8h.html#a881a8d39d2fed3e127bb8598ad4b1c80">MIN_SZ_BMP_HEADER</a>&#160;&#160;&#160;54</td></tr>
+<tr class="memdesc:a881a8d39d2fed3e127bb8598ad4b1c80"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum size of the BMP header, in bytes. <br /></td></tr>
+<tr class="separator:a881a8d39d2fed3e127bb8598ad4b1c80"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aedaf0833c1dcc34c50e2d4a941be8473"><td class="memItemLeft" align="right" valign="top"><a id="aedaf0833c1dcc34c50e2d4a941be8473"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="_adafruit___image_reader___e_p_d_8h.html#aedaf0833c1dcc34c50e2d4a941be8473">BMP_HEADER</a>&#160;&#160;&#160;0x4D42</td></tr>
+<tr class="memdesc:aedaf0833c1dcc34c50e2d4a941be8473"><td class="mdescLeft">&#160;</td><td class="mdescRight">BMP signature (ASCII 'BM') <br /></td></tr>
+<tr class="separator:aedaf0833c1dcc34c50e2d4a941be8473"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This is part of Adafruit's ImageReader library for Arduino, designed to work with Adafruit_GFX plus a display device-specific library.</p>
