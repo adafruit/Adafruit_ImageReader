@@ -18,6 +18,9 @@
 #include "Adafruit_EPD.h"
 #include "Adafruit_ImageReader.h"
 
+#define MIN_SZ_BMP_HEADER 54 ///< Minimum size of the BMP header, in bytes
+#define BMP_HEADER 0x4D42    ///< BMP signature (ASCII 'BM')
+
 /*!
    @brief  Data bundle returned with an image loaded to RAM. Used by
            ImageReader.loadBMP() and Image.draw(), not ImageReader.drawBMP().
@@ -45,8 +48,11 @@ protected:
 class Adafruit_ImageReader_EPD : public Adafruit_ImageReader {
 public:
   Adafruit_ImageReader_EPD(FatVolume &fs);
+  Adafruit_ImageReader_EPD(void);
   ImageReturnCode drawBMP(char *filename, Adafruit_EPD &epd, int16_t x,
                           int16_t y, boolean transact = true);
+  ImageReturnCode drawBMP(const uint8_t *bmp, size_t bmp_len, Adafruit_EPD &epd,
+                          int16_t x, int16_t y);
 
   static uint8_t mapColorForDisplay(uint8_t r, uint8_t g, uint8_t b,
                                     thinkinkmode_t mode);
@@ -55,6 +61,8 @@ private:
   ImageReturnCode coreBMP(char *filename, Adafruit_EPD *epd, uint16_t *dest,
                           int16_t x, int16_t y, Adafruit_Image_EPD *img,
                           boolean transact);
+  ImageReturnCode coreBMP(const uint8_t *bmp, size_t bmp_len, Adafruit_EPD *epd,
+                          int16_t x, int16_t y);
 };
 
 #endif // __ADAFRUIT_IMAGE_READER_EPD_H__

@@ -95,11 +95,14 @@ protected:
 class Adafruit_ImageReader {
 public:
   Adafruit_ImageReader(FatVolume &fs);
+  Adafruit_ImageReader(void);
   ~Adafruit_ImageReader(void);
   ImageReturnCode drawBMP(const char *filename, Adafruit_SPITFT &tft, int16_t x,
                           int16_t y, boolean transact = true);
   ImageReturnCode loadBMP(const char *filename, Adafruit_Image &img);
   ImageReturnCode bmpDimensions(const char *filename, int32_t *w, int32_t *h);
+  ImageReturnCode bmpDimensions(const uint8_t *bmp, size_t bmp_len, int32_t *w,
+                                int32_t *h);
   void printStatus(ImageReturnCode stat, Stream &stream = Serial);
 
 protected:
@@ -110,6 +113,8 @@ protected:
                           Adafruit_Image *img, boolean transact);
   uint16_t readLE16(void);
   uint32_t readLE32(void);
+  uint16_t readLE16(const uint8_t *buf);
+  uint32_t readLE32(const uint8_t *buf);
 };
 
 #endif // __ADAFRUIT_IMAGE_READER_H__

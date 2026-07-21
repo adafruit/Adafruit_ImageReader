@@ -217,6 +217,13 @@ void Adafruit_Image::draw(Adafruit_SPITFT &tft, int16_t x, int16_t y) {
 Adafruit_ImageReader::Adafruit_ImageReader(FatVolume &fs) { filesys = &fs; }
 
 /*!
+    @brief   Constructor with no filesystem. Used for loading images from memory
+   rather than SD card or FAT filesystem.
+    @return  Adafruit_ImageReader object.
+*/
+Adafruit_ImageReader::Adafruit_ImageReader(void) { filesys = NULL; };
+
+/*!
     @brief   Destructor.
     @return  None (void).
 */
@@ -353,6 +360,9 @@ ImageReturnCode Adafruit_ImageReader::coreBMP(
   if (tft && ((x >= tft->width()) || (y >= tft->height())))
     return IMAGE_SUCCESS;
 
+  // No filesystem (reader constructed without one) -- cannot load by name.
+  if (!filesys)
+    return IMAGE_ERR_FILE_NOT_FOUND;
   // Open requested file on SD card
   if (!(file = filesys->open(filename, FILE_READ))) {
     return IMAGE_ERR_FILE_NOT_FOUND;
@@ -611,6 +621,9 @@ ImageReturnCode Adafruit_ImageReader::bmpDimensions(const char *filename,
 
   ImageReturnCode status = IMAGE_ERR_FILE_NOT_FOUND; // Guilty until innocent
 
+  // No filesystem (reader constructed without one) -- cannot load by name.
+  if (!filesys)
+    return IMAGE_ERR_FILE_NOT_FOUND;
   if ((file = filesys->open(filename, FILE_READ))) { // Open requested file
     status = IMAGE_ERR_FORMAT;  // File's there, might not be BMP tho
     if (readLE16() == 0x4D42) { // BMP signature?
@@ -629,6 +642,43 @@ ImageReturnCode Adafruit_ImageReader::bmpDimensions(const char *filename,
       status = IMAGE_SUCCESS; // YAY.
     }
     file.close();
+  }
+
+  return status;
+}
+
+/*!
+    @brief   Query pixel dimensions of BMP image file in memory.
+    @param   bmp
+             Pointer to BMP image data in memory.
+    @param   bmp_len
+             Length of BMP image data in bytes.
+    @param   width
+             Pointer to int32_t; image width in pixels, returned.
+    @param   height
+             Pointer to int32_t; image height in pixels, returned.
+    @return  One of the ImageReturnCode values (IMAGE_SUCCESS on successful
+             completion, other values on failure).
+*/
+ImageReturnCode Adafruit_ImageReader::bmpDimensions(const uint8_t *bmp,
+                                                    size_t bmp_len,
+                                                    int32_t *width,
+                                                    int32_t *height) {
+  ImageReturnCode status = IMAGE_ERR_FILE_NOT_FOUND; // Guilty until innocent
+  if (!bmp || bmp_len < 54)
+    return status;
+
+  if (readLE16(bmp) == 0x4D42) { // BMP signature?
+    status = IMAGE_ERR_FORMAT;   // File's there, might not be BMP tho
+    if (width)
+      *width = readLE32(bmp + 18);
+    if (height) {
+      int32_t h = readLE32(bmp + 22); // Don't abs() this, may be a macro
+      if (h < 0)
+        h = -h; // Do manually instead
+      *height = h;
+    }
+    status = IMAGE_SUCCESS; // YAY.
   }
 
   return status;
@@ -673,6 +723,32 @@ uint32_t Adafruit_ImageReader::readLE32(void) {
   return file.read() | ((uint32_t)file.read() << 8) |
          ((uint32_t)file.read() << 16) | ((uint32_t)file.read() << 24);
 #endif
+}
+
+
+/*!
+    @brief   Reads a little-endian 16-bit unsigned value from a buffer,
+             converting if necessary to the microcontroller's native endianism.
+             (BMP files use little-endian values.)
+    @param   buf
+             Pointer to buffer containing 2 bytes of data.
+    @return  Unsigned 16-bit value, native endianism.
+*/
+uint16_t Adafruit_ImageReader::readLE16(const uint8_t *buf) {
+  return (uint16_t)buf[0] | ((uint16_t)buf[1] << 8);
+}
+
+/*!
+    @brief   Reads a little-endian 32-bit unsigned value from a buffer,
+             converting if necessary to the microcontroller's native endianism.
+             (BMP files use little-endian values.)
+    @param   buf
+             Pointer to buffer containing 4 bytes of data.
+    @return  Unsigned 32-bit value, native endianism.
+*/
+uint32_t Adafruit_ImageReader::readLE32(const uint8_t *buf) {
+  return (uint32_t)buf[0] | ((uint32_t)buf[1] << 8) | ((uint32_t)buf[2] << 16) |
+         ((uint32_t)buf[3] << 24);
 }
 
 /*!
