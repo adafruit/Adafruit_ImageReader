@@ -687,12 +687,13 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(const uint8_t *bmp,
     // Limit the number of colors to the maximum allowed by the depth
     if (colors > (1 << depth))
       colors = 1 << depth;
-    // Default to black if palette is missing or invalid
+    // Sensible fallback if the palette is missing or invalid: mirror the
+    // standard monochrome BMP convention (index 0 = black, index 1 = white)
+    // so images don't render as a solid black block.
     for (uint32_t c = 0; c < colors; c++)
-      quantized[c] = EPD_BLACK;
+      quantized[c] = (c == 0) ? EPD_BLACK : EPD_WHITE;
 
-    // for 24bpp - map each indexed-palette entry to its EPD color constant
-    // (EPD_COLOR_x)
+    // Map each indexed-palette entry to its EPD color constant (EPD_COLOR_x)
     const uint8_t *pal = bmp + 14 + headerSize; // BGRA entries
     if ((size_t)(14 + headerSize) + (size_t)colors * 4 <= bmp_len) {
       for (uint32_t c = 0; c < colors; c++)
