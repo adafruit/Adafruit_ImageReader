@@ -458,7 +458,8 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
                 }
                 for (col = 0; col < loadWidth; col++) { // For each pixel...
                   // Sub-byte depths fill dest[] faster than sdbuf drains; flush
-                  // when full so wide displays don't overrun the working buffer.
+                  // when full so wide displays don't overrun the working
+                  // buffer.
                   if (epd && (destidx >= BUFPIXELS)) {
                     uint16_t index = 0;
                     while (index < destidx && epd_row < y + loadHeight) {
@@ -472,8 +473,8 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
                     };
                     destidx = 0; // and reset dest index
                   }
-                  if (srcidx >= sizeof sdbuf) {         // Time to load more?
-                    if (epd) {                          // Drawing to TFT?
+                  if (srcidx >= sizeof sdbuf) { // Time to load more?
+                    if (epd) {                  // Drawing to TFT?
                       if (transact) {
                         epd->endWrite(); // End EPD SPI transact
                       }
@@ -690,11 +691,13 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(const uint8_t *bmp,
     for (uint32_t c = 0; c < colors; c++)
       quantized[c] = EPD_BLACK;
 
-    // for 24bpp - map each indexed-palette entry to its EPD color constant (EPD_COLOR_x)
+    // for 24bpp - map each indexed-palette entry to its EPD color constant
+    // (EPD_COLOR_x)
     const uint8_t *pal = bmp + 14 + headerSize; // BGRA entries
     if ((size_t)(14 + headerSize) + (size_t)colors * 4 <= bmp_len) {
       for (uint32_t c = 0; c < colors; c++)
-        quantized[c] = mapColorForDisplay(pal[c * 4 + 2], pal[c * 4 + 1], pal[c * 4], displayMode);
+        quantized[c] = mapColorForDisplay(pal[c * 4 + 2], pal[c * 4 + 1],
+                                          pal[c * 4], displayMode);
     }
   }
 
@@ -713,7 +716,7 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(const uint8_t *bmp,
         uint8_t byte = rowPtr[idx >> 1];
         // Extract the nibble and map it to the quantized color
         uint8_t shift = 4 - ((idx & 1) << 2);
-        uint8_t nib   = (byte >> shift) & 0x0F;
+        uint8_t nib = (byte >> shift) & 0x0F;
         color = quantized[nib];
       } else { // depth == 1, MSB-first
         uint32_t bit = (uint32_t)(loadX + col);
