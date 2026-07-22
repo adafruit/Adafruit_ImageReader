@@ -290,6 +290,7 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
   uint8_t r, g, b, color;    // Current pixel color
   uint8_t bitIn = 0;         // Bit number for 1-bit data in
   uint8_t bitOut = 0;        // Column mask for 1-bit data out
+  uint8_t nibble_high = 0;   // High nibble for 4-bit data
 
   // If an Adafruit_Image object is passed and currently contains anything,
   // free its contents as it's about to be overwritten with new stuff.
@@ -368,7 +369,8 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
       // BMP rows are padded (if needed) to 4-byte boundary
       rowSize = ((depth * bmpWidth + 31) / 32) * 4;
 
-      if ((depth == 24) || (depth == 1)) { // BGR or 1-bit bitmap format
+      if ((depth == 24) || (depth == 4) ||
+          (depth == 1)) { // BGR, 4-bit, or 1-bit bitmap format
 
         if (img) {
           // Loading to RAM -- allocate GFX 16-bit canvas type
@@ -433,7 +435,13 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
                   bmpPos = offset + (row + loadY) * rowSize;
                 if (depth == 24) {
                   bmpPos += loadX * 3;
+                } else if (depth == 4) {
+                  // 4-bit BMP, 2 pixels per byte
+                  bmpPos += loadX / 2;
+                  // Determine if starting with high or low nibble
+                  nibble_high = !(loadX & 1);
                 } else {
+                  // depth == 1
                   bmpPos += loadX / 8;
                   bitIn = 7 - (loadX & 7);
                   bitOut = 0x80;
@@ -449,8 +457,24 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
                   srcidx = sizeof sdbuf; // Force buffer reload
                 }
                 for (col = 0; col < loadWidth; col++) { // For each pixel...
-                  if (srcidx >= sizeof sdbuf) {         // Time to load more?
-                    if (epd) {                          // Drawing to TFT?
+                  // Sub-byte depths fill dest[] faster than sdbuf drains; flush
+                  // when full so wide displays don't overrun the working
+                  // buffer.
+                  if (epd && (destidx >= BUFPIXELS)) {
+                    uint16_t index = 0;
+                    while (index < destidx && epd_row < y + loadHeight) {
+                      epd->writePixel(epd_col, epd_row, dest[index]);
+                      epd_col++;
+                      if (epd_col == x + loadWidth) {
+                        epd_col = x;
+                        epd_row++;
+                      }
+                      index++;
+                    };
+                    destidx = 0; // and reset dest index
+                  }
+                  if (srcidx >= sizeof sdbuf) { // Time to load more?
+                    if (epd) {                  // Drawing to TFT?
                       if (transact) {
                         epd->endWrite(); // End EPD SPI transact
                       }
@@ -501,6 +525,17 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(
 
                     color = mapColorForDisplay(r, g, b, displayMode);
                     dest[destidx++] = color;
+                  } else if (depth == 4) {
+                    uint8_t nibble;
+                    // left pixel
+                    if (nibble_high) {
+                      nibble = (sdbuf[srcidx] >> 4) & 0x0F;
+                    } else {
+                      nibble = sdbuf[srcidx] & 0x0F;
+                      srcidx++;
+                    }
+                    nibble_high = !nibble_high;
+                    dest[destidx++] = quantized[nibble];
                   } else {
                     // Extract 1-bit color index
                     uint8_t n = (sdbuf[srcidx] >> bitIn) & 1;
@@ -612,8 +647,8 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(const uint8_t *bmp,
   // Only uncompressed BMPs are compatible
   if ((planes != 1) || (compression != 0))
     return IMAGE_ERR_FORMAT;
-  // Only 1BPP and 24BPP BMPs are compatible
-  if ((depth != 24) && (depth != 1))
+  // 1BPP, 4BPP, and 24BPP BMPs are compatible
+  if ((depth != 24) && (depth != 1) && (depth != 4))
     return IMAGE_ERR_FORMAT;
 
   // BMP rows are padded to a 4-byte boundary
@@ -646,13 +681,22 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(const uint8_t *bmp,
   if ((loadWidth <= 0) || (loadHeight <= 0))
     return IMAGE_SUCCESS;
 
-  // For 1-bit BMPs, quantize the 2-entry palette up front. Reading the actual
-  // palette RGB makes inversion "just work" -- no do_invert heuristic needed.
-  uint16_t quantized[2] = {EPD_BLACK, EPD_WHITE};
-  if (depth == 1) {
+  // Create a quantized color palette for 1-bit and 4-bit BMPs.
+  uint16_t quantized[16] = {0};
+  if (depth <= 4) {
+    // Limit the number of colors to the maximum allowed by the depth
+    if (colors > (1 << depth))
+      colors = 1 << depth;
+    // Sensible fallback if the palette is missing or invalid: mirror the
+    // standard monochrome BMP convention (index 0 = black, index 1 = white)
+    // so images don't render as a solid black block.
+    for (uint32_t c = 0; c < colors; c++)
+      quantized[c] = (c == 0) ? EPD_BLACK : EPD_WHITE;
+
+    // Map each indexed-palette entry to its EPD color constant (EPD_COLOR_x)
     const uint8_t *pal = bmp + 14 + headerSize; // BGRA entries
     if ((size_t)(14 + headerSize) + (size_t)colors * 4 <= bmp_len) {
-      for (uint32_t c = 0; (c < colors) && (c < 2); c++)
+      for (uint32_t c = 0; c < colors; c++)
         quantized[c] = mapColorForDisplay(pal[c * 4 + 2], pal[c * 4 + 1],
                                           pal[c * 4], displayMode);
     }
@@ -668,6 +712,13 @@ ImageReturnCode Adafruit_ImageReader_EPD::coreBMP(const uint8_t *bmp,
       if (depth == 24) {
         const uint8_t *px = rowPtr + (size_t)(loadX + col) * 3; // BGR order
         color = mapColorForDisplay(px[2], px[1], px[0], displayMode);
+      } else if (depth == 4) { // 4-bit BMP
+        uint32_t idx = (uint32_t)(loadX + col);
+        uint8_t byte = rowPtr[idx >> 1];
+        // Extract the nibble and map it to the quantized color
+        uint8_t shift = 4 - ((idx & 1) << 2);
+        uint8_t nib = (byte >> shift) & 0x0F;
+        color = quantized[nib];
       } else { // depth == 1, MSB-first
         uint32_t bit = (uint32_t)(loadX + col);
         color = quantized[(rowPtr[bit >> 3] >> (7 - (bit & 7))) & 1];
